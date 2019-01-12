@@ -14,7 +14,7 @@ body {
 .caption {
 	position: absolute;
 	left: 0;
-	top: 75%;
+	top: 58.5%;
 	width: 100%;
 	text-align: center;
 }
@@ -26,11 +26,11 @@ body {
 }
 
 .caption .empty {
-	height: 25px;
+	height: 15vh;
 }
 
 .caption span {
-	font-size: 15px;
+	font-size: 18px;
 }
 
 .caption a {
