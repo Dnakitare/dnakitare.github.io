@@ -1,0 +1,42 @@
+html{
+	background-color: black;
+	font: 400 15px/1.8 "Lato", sans-serif;
+}
+
+body {
+	height: 100vh;
+	background-image: url("images/SpaceSick.jpg");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.caption {
+	position: absolute;
+	left: 0;
+	top: 75%;
+	width: 100%;
+	text-align: center;
+}
+
+.caption span, a{
+	color: #ef0613;
+	border: solid black;
+	background-color: rgba(0,0,0,.5);
+}
+
+.caption .empty {
+	height: 25px;
+}
+
+.caption span {
+	font-size: 15px;
+}
+
+.caption a {
+	font-size: 35px;
+}
+
+.caption a:hover{
+	transform: scale(1,1.25);
+}
