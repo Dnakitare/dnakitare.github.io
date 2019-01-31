@@ -25,6 +25,7 @@ html, body {
 .content {
 	max-width: 500px;
 	margin: auto;
+	margin-top: 20vh;
 	text-align: center;
 }
 
@@ -32,7 +33,7 @@ html, body {
 	font-family: 'Century Cothis', sans-serif;
 	color: #f9f3f4;
 	font-size: 500%;
-	text-shadow: 0 0 300px #000;
+	text-shadow: 0 0 50px rgba(0,0,0,1);
 }
 
 .content .btn {
@@ -44,4 +45,25 @@ html, body {
 	padding: 7px 13px;
 	font-weight: bold;
 }
+
+.content .btn:hover {
+	transition: .5s;
+	color: #fff8a4;
+}
+
+.content	.lang {
+	margin-top: 50px;
+	font-family:'Century Cothis', sans-serif;
+	font-weight: bold;
+	color: transparent;
+
+}
+
+.content .lang.active {
+	color: #fff8a4;
+	text-shadow: 0 0 30px red;
+}
+
+
+
 
