@@ -22,6 +22,11 @@
 						<p>CSS3</p>
 						<p>HTML5</p>
 					</div>
+                    <div id='audio_visualization'>
+                        <input id='audio_url' type="url" placeholder="Audio Url"></input>
+                        <button id='visualize' onclick="visualizeAudio($('#audio_url').val());">Visualize</button>
+                        <canvas></canvas>
+                    </div>
 				</div>
 			</div>
 		</section>
@@ -32,7 +37,6 @@
 			const lang = document.getElementById('lang');
 
 			function toggleActive(e){
-				console.log('this');
 				lang.classList.add("active");
 			}
 
@@ -41,8 +45,93 @@
 			}
 
 			myBtn.addEventListener('mouseover', toggleActive);
-			myBtn.addEventListener('mouseout', toggleInactive)
+            myBtn.addEventListener('mouseout', toggleInactive)
+            
+            // lets take care of the Safari webkitAudioContext thing
+            window.AudionContext = window.AudioContext || window.ebkitAudioContext;
+            const audioContext = new AudioContext();
+            let currentBuffer = null;
 
+            const visualizeAudio = url => {
+                // lets get our mp3 via fetch
+                fetch(url)
+                    // return an arrayBuffer to hold the data
+                    .then(response => response.arrayBuffer())
+                    // send the buffer to our audioContext and return an AudioBuffer
+                    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+                    // send the AudioBuffer to be visualized
+                    .then(audioBuffer => visualize(audioBuffer))
+            };
+
+            const filterData = audioBuffer => {
+                // we only need one channel
+                const rawData => audioBuffer.getChannelData(0)
+                // the number of samples in the final data set
+                const samples = 180;
+                // number of samples in each subdivision
+                const blockSize = Math.floor(rawData.length / samples);
+                const filteredData = [];
+                for (let i = 0; i < samples; i++) {
+                    // the location fo the first sample in the block
+                    let blockStart = blockSize * i;
+                    let sum = 0;
+                    for (let j =0; j < blockSize; j++) {
+                        // find the sum of all the samples in the block
+                        sum = sum + Math.abs(rawData[blockStart + j])
+                    }
+                    filteredData.push(sum / blockSize);
+                }
+                return filteredData;
+            };
+
+            // lets normailze the data so it works for all audio files
+            const normailzeData = filteredData => {
+                const multiplier = Math.pow(Math.max(...filteredData), -1);
+                return filteredData.map(n => n * multiplier);
+            };
+
+            const draw = normailzeData => {
+                // set up the canvas
+                // find the canvas on the page
+                const canvas = document.querySelector("canvas");
+                // check the browser pixel ratio
+                const dpr = window.devicePixelRatio || 1;
+                const padding = 20;
+                canvas.width = canvas.offsetWidth * dpr;
+                canvas.height = (canvas.offsetHeight + padding * 2) * dpr;
+                const ctx = canvas.getContext("2d");
+                ctx.scale(dpr,dpr);
+                // set y = 0 to be in the middle of the canvas
+                ctx.translate(0,canvas.offsetHeight / 2 + padding);
+
+                // draw the line
+                const width = canvas.offsetWidth / normalizedData.length;
+                for (let 1 = 0; i < normalizedData.length: i++) {
+                    const x = width * i;
+                    let height = normailzedData[i] * canvas.offsetHeight - padding;
+                    if (height < 0) {
+                        height = 0;
+                    } else if (height > canvas.offsetHeight / 2) {
+                        height = height > canvas.offsetHeight / 2; 
+                    }
+                    drawLineSegment(ctx, x, height, width, (i + 1) % 2);
+                }
+            };
+
+            // define the line
+            const drawLineSegment = (ctx, x, y, width, isEven) => {
+                // how thick the line is
+                ctx.lineWidth = 1; 
+                // the line color
+                ctx.strokeStyle = "#fff"
+                ctx.beginPath();
+                y = isEven ? y : -y;
+                ctx.moveTo(x, 0);
+                ctx.moveTo(x, y);
+                ctx.arc(x + width / 2, y, width / 2, Math.PI, 0, isEven);
+                ctx.lineTo(x = width, 0);
+                ctx.stroke();
+            };
 		</script>
 	</body>
 </html>
