@@ -28,11 +28,10 @@
     $(window).scrollTop(0);
   });
   $(window).on('load', function () {
-    $(this).scrollTop(0);
     $(".backdrop").css("opacity", 0);
-    $(".backdrop").removeAttr('hidden');
     $(".backdrop").delay(600).animate({
       opacity: 1,
+      hidden: 'false'
     }, 1600);
     $(window).scroll(function () {
       $(".backdrop").css("opacity", 1 - $(window).scrollTop() / $('.backdrop').height() * 1.2);
