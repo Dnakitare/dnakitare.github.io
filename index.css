@@ -1,69 +1,31 @@
-html, body {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100%;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
 }
 
-.b1	{
-	width: 100%;
-	height: 100%;
-	margin: auto;
-	background: url("image/IMG_0231.jpg") no-repeat 50% 50%;
-	top: 0;
-	display: table;
-	background-size: cover;
+.hero {
+  position: fixed;
 }
 
-.b1 .in1 {
-	display: table-cell;
-	vertical-align: middle;
-	width: 100%;
-	max-width: none;
+.backdrop {
+  background: url("/image/cloud-pour.png") center;
+  margin: 12vw;
+  width: 75vw;
+  position: unset;
+  background-attachment: fixed;
+  background-position: -0vh -23vh;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-.content {
-	max-width: 500px;
-	margin: auto;
-	margin-top: 20vh;
-	text-align: center;
+.text {
+  color: white;
+  border: 10px solid;
+  background: rgb(0, 0, 0);
+  mix-blend-mode: multiply;
+  font: bolder 15vw 'Orbitron';
+  text-align: center;
+  margin: 0;
 }
-
-.content h1 {
-	font-family: 'Century Cothis', sans-serif;
-	color: #f9f3f4;
-	font-size: 500%;
-	text-shadow: 0 0 50px rgba(0,0,0,1);
-}
-
-.content .btn {
-	border-radius: 9px;
-	color: #f9f3f4;
-	text-decoration: none;
-	font-family:'Century Cothis', sans-serif;
-	border: 3px solid;
-	padding: 7px 13px;
-	font-weight: bold;
-}
-
-.content .btn:hover {
-	transition: .5s;
-	color: #fff8a4;
-}
-
-.content	.lang {
-	margin-top: 50px;
-	font-family:'Century Cothis', sans-serif;
-	font-weight: bold;
-	color: transparent;
-
-}
-
-.content .lang.active {
-	color: #fff8a4;
-	text-shadow: 0 0 30px red;
-}
-
-
-
-
