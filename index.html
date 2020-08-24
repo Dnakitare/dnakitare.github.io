@@ -17,14 +17,23 @@
 <body>
   <div class='mask'></div>
   <div class='hero'>
-    <div class="backdrop">
+    <div class="backdrop" hidden='hidden'>
       <h1 class="text multiply">Nakitare</h1>
     </div>
   </div>
   <p style="height:1000px;background-color:black;font-size:36px"></p>
 </body>
 <script>
-  $(document).ready(function () {
+  $(window).on('beforeunload', function () {
+    $(window).scrollTop(0);
+  });
+  $(window).on('load', function () {
+    $(this).scrollTop(0);
+    $(".backdrop").css("opacity", 0);
+    $(".backdrop").removeAttr('hidden');
+    $(".backdrop").delay(600).animate({
+      opacity: 1,
+    }, 1600);
     $(window).scroll(function () {
       $(".backdrop").css("opacity", 1 - $(window).scrollTop() / $('.backdrop').height() * 1.2);
     });
