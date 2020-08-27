@@ -7,17 +7,20 @@ body {
 
 .hero {
   position: fixed;
+  margin-top: 22%;
 }
 
 .backdrop {
   background: url("/image/cloud-pour.png") center;
-  margin: 12vw;
-  width: 75vw;
+  margin: auto;
+  width: 100vw;
   position: unset;
   background-attachment: fixed;
-  background-position: -0vh -23vh;
+  background-position-y: -25vh;
   background-repeat: no-repeat;
   background-size: cover;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .text {
@@ -25,7 +28,5 @@ body {
   border: 10px solid;
   background: rgb(0, 0, 0);
   mix-blend-mode: multiply;
-  font: bolder 14vw 'Orbitron';
-  text-align: center;
-  margin: 0;
+  font: bolder 20vw 'Orbitron';
 }
