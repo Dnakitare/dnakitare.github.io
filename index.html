@@ -33,14 +33,13 @@
     $('.hero').css('opacity', 0);
     // All night to see the sun rise
     $('.backdrop').show();
-    $('.hero').delay(600).animate({
+    $('.hero').delay(2000).animate({
       opacity: 1,
       hidden: 'false'
     }, 1900);
     $('.backdrop').animate({
       'background-position-y': $(window).height() * -0.18
     }, 10000);
-
   });
 </script>
 
