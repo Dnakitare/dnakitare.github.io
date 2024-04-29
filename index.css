@@ -5,19 +5,29 @@ body {
   background-color: black;
   display: flex;
   align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .backdrop {
   background: url("/image/cloud-pour.png") center;
   margin: auto;
   width: 100vw;
-  position: unset;
+  height: 100vh;
   background-attachment: fixed;
   background-position-y: -35vh;
   background-repeat: no-repeat;
   background-size: cover;
   text-align: center;
-  vertical-align: middle;
 }
 
 .text {
@@ -28,5 +38,14 @@ body {
   font: bolder 20vw 'Orbitron';
   padding: 20px;
   opacity: 0; /* Start with opacity 0 */
-  transition: opacity 1s ease; /* Add transition effect */
+  animation: fadeIn 1s ease forwards; /* Apply animation */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
