@@ -23,22 +23,13 @@
       </div>
     </div>
   </div>
+  <!-- Preload the background image to ensure it's loaded when needed -->
+  <img id="preload-image" src="/image/cloud-pour.png" style="display: none;">
 </body>
 <script>
-  // Function to check if the background image has loaded
-  function checkImageLoaded(imageSelector, callback) {
-    var image = $(imageSelector)[0];
-    if (image.complete) {
-      callback();
-    } else {
-      image.onload = callback;
-    }
-  }
-
-  window.onload = function () {
-    // Wait for the background image to load
-    checkImageLoaded('.backdrop', function () {
-      // Begin animation once the image is loaded
+  $(document).ready(function () {
+    // Function to start animation once the background image is loaded
+    function startAnimation() {
       $('.hero').css('opacity', 0);
       $('.backdrop').show();
       $('.hero').delay(2000).animate({
@@ -48,8 +39,18 @@
       $('.backdrop').animate({
         'background-position-y': $(window).height() * -0.18
       }, 10000);
-    });
-  };
+    }
+
+    // Check if the background image is already loaded
+    if ($('#preload-image')[0].complete) {
+      startAnimation();
+    } else {
+      // If not loaded, wait for the image to load
+      $('#preload-image').on('load', function () {
+        startAnimation();
+      });
+    }
+  });
 
   $(window).on('beforeunload', function () {
     $(window).scrollTop(0);
