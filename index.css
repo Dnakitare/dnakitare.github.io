@@ -5,25 +5,36 @@ body {
   background-color: black;
   display: flex;
   align-items: center;
+  justify-content: center; /* Add this line to horizontally center content */
+  height: 100vh; /* Add this line to ensure the body takes up the full viewport height */
+}
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent black overlay */
 }
 
 .backdrop {
   background: url("/image/cloud-pour.png") center;
   margin: auto;
   width: 100vw;
-  position: unset;
+  height: 100vh; /* Set backdrop height to cover the entire viewport */
   background-attachment: fixed;
   background-position-y: -35vh;
   background-repeat: no-repeat;
   background-size: cover;
   text-align: center;
-  vertical-align: middle;
 }
 
 .text {
   color: white;
   border: 10px solid;
-  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.7); /* Use rgba for background color with alpha transparency */
   mix-blend-mode: multiply;
   font: bolder 20vw 'Orbitron';
+  padding: 20px; /* Add padding for better readability */
 }
