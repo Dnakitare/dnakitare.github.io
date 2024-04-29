@@ -23,7 +23,10 @@ body {
 .text {
   color: white;
   border: 10px solid;
-  background: rgb(0, 0, 0);
+  background: rgba(0, 0, 0, 0.7);
   mix-blend-mode: multiply;
   font: bolder 20vw 'Orbitron';
+  padding: 20px;
+  opacity: 0; /* Start with opacity 0 */
+  transition: opacity 1s ease; /* Add transition effect */
 }
