@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Maze Game - A fun browser-based maze game">
+    <title>Maze Game - Daniel Nakitare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: rgb(157, 211, 247);
+            --text-color: #ffffff;
+            --background-color: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .game-container {
+            position: relative;
+            margin: 2rem auto;
+        }
+
+        canvas {
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 20px var(--primary-color);
+        }
+
+        .controls {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .controls button {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: var(--primary-color);
+            color: var(--background-color);
+        }
+
+        .back-link {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Back to Home</a>
+    <h1 class="game-title">Maze Game</h1>
+    
+    <div class="game-container">
+        <canvas id="mazeCanvas" width="600" height="600"></canvas>
+    </div>
+
+    <div class="controls">
+        <button id="newMaze">New Maze</button>
+        <button id="solveMaze">Solve Maze</button>
+    </div>
+
+    <script>
+        class MazeGame {
+            constructor() {
+                this.canvas = document.getElementById('mazeCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.cellSize = 30;
+                this.rows = Math.floor(this.canvas.height / this.cellSize);
+                this.cols = Math.floor(this.canvas.width / this.cellSize);
+                this.maze = [];
+                this.player = { x: 1, y: 1 };
+                this.end = { x: this.cols - 2, y: this.rows - 2 };
+                
+                this.init();
+            }
+
+            init() {
+                this.generateMaze();
+                this.drawMaze();
+                this.setupEventListeners();
+            }
+
+            generateMaze() {
+                // Initialize maze with walls
+                this.maze = Array(this.rows).fill().map(() => Array(this.cols).fill(1));
+                
+                // Create paths using recursive backtracking
+                const startX = 1;
+                const startY = 1;
+                this.carvePassages(startX, startY);
+                
+                // Ensure start and end points are clear
+                this.maze[startY][startX] = 0;
+                this.maze[this.end.y][this.end.x] = 0;
+            }
+
+            carvePassages(x, y) {
+                this.maze[y][x] = 0;
+                
+                const directions = [
+                    [0, -2], // North
+                    [2, 0],  // East
+                    [0, 2],  // South
+                    [-2, 0]  // West
+                ];
+                
+                // Shuffle directions
+                directions.sort(() => Math.random() - 0.5);
+                
+                for (const [dx, dy] of directions) {
+                    const newX = x + dx;
+                    const newY = y + dy;
+                    
+                    if (newX > 0 && newX < this.cols - 1 && newY > 0 && newY < this.rows - 1 
+                        && this.maze[newY][newX] === 1) {
+                        this.maze[y + dy/2][x + dx/2] = 0;
+                        this.carvePassages(newX, newY);
+                    }
+                }
+            }
+
+            drawMaze() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw maze
+                for (let y = 0; y < this.rows; y++) {
+                    for (let x = 0; x < this.cols; x++) {
+                        if (this.maze[y][x] === 1) {
+                            this.ctx.fillStyle = '#333';
+                            this.ctx.fillRect(x * this.cellSize, y * this.cellSize, 
+                                            this.cellSize, this.cellSize);
+                        }
+                    }
+                }
+                
+                // Draw player
+                this.ctx.fillStyle = 'var(--primary-color)';
+                this.ctx.beginPath();
+                this.ctx.arc(
+                    this.player.x * this.cellSize + this.cellSize/2,
+                    this.player.y * this.cellSize + this.cellSize/2,
+                    this.cellSize/3,
+                    0,
+                    Math.PI * 2
+                );
+                this.ctx.fill();
+                
+                // Draw end point
+                this.ctx.fillStyle = '#4CAF50';
+                this.ctx.fillRect(
+                    this.end.x * this.cellSize + this.cellSize/4,
+                    this.end.y * this.cellSize + this.cellSize/4,
+                    this.cellSize/2,
+                    this.cellSize/2
+                );
+            }
+
+            setupEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    const moves = {
+                        'ArrowUp': [0, -1],
+                        'ArrowRight': [1, 0],
+                        'ArrowDown': [0, 1],
+                        'ArrowLeft': [-1, 0]
+                    };
+                    
+                    if (moves[e.key]) {
+                        const [dx, dy] = moves[e.key];
+                        const newX = this.player.x + dx;
+                        const newY = this.player.y + dy;
+                        
+                        if (newX >= 0 && newX < this.cols && newY >= 0 && newY < this.rows 
+                            && this.maze[newY][newX] === 0) {
+                            this.player.x = newX;
+                            this.player.y = newY;
+                            this.drawMaze();
+                            
+                            // Check win condition
+                            if (this.player.x === this.end.x && this.player.y === this.end.y) {
+                                alert('Congratulations! You solved the maze!');
+                                this.generateMaze();
+                                this.player = { x: 1, y: 1 };
+                                this.drawMaze();
+                            }
+                        }
+                    }
+                });
+                
+                document.getElementById('newMaze').addEventListener('click', () => {
+                    this.generateMaze();
+                    this.player = { x: 1, y: 1 };
+                    this.drawMaze();
+                });
+            }
+        }
+
+        // Initialize game when page loads
+        window.addEventListener('load', () => {
+            new MazeGame();
+        });
+    </script>
+</body>
+</html> 
