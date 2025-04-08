@@ -3,238 +3,813 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Maze Game - A fun browser-based maze game">
-    <title>Maze Game - Daniel Nakitare</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>TERMINAL MAZE v1.0</title>
     <style>
-        :root {
-            --primary-color: rgb(157, 211, 247);
-            --text-color: #ffffff;
-            --background-color: #000000;
-        }
-
-        * {
+        body {
+            font-family: 'Courier New', monospace;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
+            background-color: #000;
+            color: #0f0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-
-        .game-container {
-            position: relative;
-            margin: 2rem auto;
-        }
-
-        canvas {
-            border: 2px solid var(--primary-color);
-            box-shadow: 0 0 20px var(--primary-color);
-        }
-
-        .controls {
-            margin-top: 2rem;
-            text-align: center;
-        }
-
-        .controls button {
-            background: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 0.5rem 1rem;
-            margin: 0 0.5rem;
-            font-family: 'Orbitron', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .controls button:hover {
-            background: var(--primary-color);
-            color: var(--background-color);
-        }
-
-        .back-link {
+        
+        /* CRT Screen Effect */
+        body::before {
+            content: "";
             position: fixed;
-            top: 2rem;
-            left: 2rem;
-            color: var(--text-color);
-            text-decoration: none;
-            font-family: 'Orbitron', sans-serif;
-            transition: color 0.3s ease;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(0, 0, 0, 0) 50%, 
+                rgba(0, 15, 0, 0.15) 50%),
+                linear-gradient(90deg, rgba(0, 15, 0, 0.06), rgba(0, 15, 0, 0.01));
+            background-size: 100% 4px, 4px 100%;
+            pointer-events: none;
+            z-index: 10;
         }
-
-        .back-link:hover {
-            color: var(--primary-color);
+        
+        /* Scanline Effect */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(0, 30, 0, 0.8),
+                rgba(0, 30, 0, 0.8) 3px,
+                transparent 3px,
+                transparent 6px
+            );
+            background-size: 100% 6px;
+            animation: scanline 6s linear infinite;
+            pointer-events: none;
+            z-index: 11;
         }
-
-        .game-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 10px var(--primary-color);
+        
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            background-color: #000;
+            border-bottom: 2px solid #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        h1 {
+            margin: 0;
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+            letter-spacing: 2px;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            flex-grow: 1;
+            position: relative;
+        }
+        
+        #gameCanvas {
+            background-color: #000;
+            border: 2px solid #0f0;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+            margin: 20px 0;
+            image-rendering: pixelated;
+        }
+        
+        .menu {
+            background-color: #000;
+            padding: 20px;
+            border: 2px solid #0f0;
+            border-radius: 0;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 500px;
+        }
+        
+        .menu-section {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #0f0;
+            text-shadow: 0 0 3px #0f0;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 0;
+            border: 1px solid #0f0;
+            background-color: #000;
+            color: #0f0;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            box-shadow: 0 0 5px #0f0;
+        }
+        
+        button {
+            background-color: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 10px 20px;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin: 5px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 3px #0f0;
+        }
+        
+        button:hover {
+            background-color: #0f0;
+            color: #000;
+            box-shadow: 0 0 10px #0f0;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .timer {
+            font-size: 24px;
+            margin: 10px 0;
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+            letter-spacing: 2px;
+        }
+        
+        .instructions {
+            background-color: #000;
+            padding: 15px;
+            border: 1px solid #0f0;
+            border-radius: 0;
+            margin-top: 20px;
+            width: 80%;
+            max-width: 500px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            background-color: #000;
+            border-top: 1px solid #0f0;
+            margin-top: auto;
+            font-size: 14px;
+        }
+        
+        /* Terminal Glitch Effect */
+        @keyframes glitch {
+            0% { text-shadow: 0 0 5px #0f0; }
+            25% { text-shadow: -2px 0 5px #f0f, 2px 0 5px #0ff; }
+            50% { text-shadow: 0 0 5px #0f0; }
+            75% { text-shadow: -3px 0 5px #f0f, 3px 0 5px #0ff; }
+            100% { text-shadow: 0 0 5px #0f0; }
+        }
+        
+        .glitch {
+            animation: glitch 10s infinite;
         }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-link">← Back to Home</a>
-    <h1 class="game-title">Maze Game</h1>
+    <header>
+        <h1 class="glitch">>_ TERMINAL MAZE v1.0</h1>
+    </header>
     
     <div class="game-container">
-        <canvas id="mazeCanvas" width="600" height="600"></canvas>
+        <div id="mainMenu" class="menu">
+            <h2>> SYSTEM CONFIGURATION</h2>
+            
+            <div class="menu-section">
+                <label for="difficulty">> DIFFICULTY LEVEL:</label>
+                <select id="difficulty">
+                    <option value="easy">NOVICE</option>
+                    <option value="medium" selected>STANDARD</option>
+                    <option value="hard">ADVANCED</option>
+                    <option value="extreme">TERMINAL</option>
+                </select>
+            </div>
+            
+            <div class="menu-section">
+                <label for="mazeType">> MAZE ALGORITHM:</label>
+                <select id="mazeType">
+                    <option value="dfs">DFS (STANDARD)</option>
+                    <option value="prim">PRIM'S (COMPLEX)</option>
+                    <option value="kruskal">KRUSKAL'S (RANDOMIZED)</option>
+                </select>
+            </div>
+            
+            <div class="controls">
+                <button id="startGame">> INITIALIZE SYSTEM</button>
+            </div>
+        </div>
+        
+        <div id="gameUI" class="hidden">
+            <div class="timer" id="timer">> TIME ELAPSED: 00:00</div>
+            <canvas id="gameCanvas"></canvas>
+            <div class="controls">
+                <button id="newGame">> NEW MAZE</button>
+                <button id="backToMenu">> MAIN MENU</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>> SYSTEM INSTRUCTIONS</h3>
+            <p>> USE [WASD] OR [ARROW KEYS] TO NAVIGATE</p>
+            <p>> REACH THE RED TARGET TO COMPLETE MAZE</p>
+            <p>> AVOID BACKTRACKING FOR OPTIMAL PATH</p>
+        </div>
     </div>
-
-    <div class="controls">
-        <button id="newMaze">New Maze</button>
-        <button id="solveMaze">Solve Maze</button>
-    </div>
+    
+    <footer>
+        <p>> SYSTEM READY</p>
+    </footer>
 
     <script>
-        class MazeGame {
-            constructor() {
-                this.canvas = document.getElementById('mazeCanvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.cellSize = 30;
-                this.rows = Math.floor(this.canvas.height / this.cellSize);
-                this.cols = Math.floor(this.canvas.width / this.cellSize);
-                this.maze = [];
-                this.player = { x: 1, y: 1 };
-                this.end = { x: this.cols - 2, y: this.rows - 2 };
-                
-                this.init();
-            }
+        // Game state
+        const gameState = {
+            maze: [],
+            player: { x: 0, y: 0 },
+            end: { x: 0, y: 0 },
+            cellSize: 30,
+            width: 15,
+            height: 15,
+            startTime: 0,
+            timerInterval: null,
+            difficulty: 'medium',
+            mazeType: 'dfs',
+            colors: {
+                wall: '#0f0',
+                path: '#000',
+                player: '#0f0',
+                end: '#f00',
+                backtrack: '#f80',
+                currentPath: '#0f0'
+            },
+            visited: new Map(), // Stores visit time for animation
+            pathHistory: [],
+            hueOffset: 0
+        };
 
-            init() {
-                this.generateMaze();
-                this.drawMaze();
-                this.setupEventListeners();
-            }
+        // DOM elements
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const mainMenu = document.getElementById('mainMenu');
+        const gameUI = document.getElementById('gameUI');
+        const timerElement = document.getElementById('timer');
+        const startGameBtn = document.getElementById('startGame');
+        const newGameBtn = document.getElementById('newGame');
+        const backToMenuBtn = document.getElementById('backToMenu');
+        const difficultySelect = document.getElementById('difficulty');
+        const mazeTypeSelect = document.getElementById('mazeType');
 
-            generateMaze() {
-                // Initialize maze with walls
-                this.maze = Array(this.rows).fill().map(() => Array(this.cols).fill(1));
-                
-                // Create paths using recursive backtracking
-                const startX = 1;
-                const startY = 1;
-                this.carvePassages(startX, startY);
-                
-                // Ensure start and end points are clear
-                this.maze[startY][startX] = 0;
-                this.maze[this.end.y][this.end.x] = 0;
-            }
+        // Event listeners
+        startGameBtn.addEventListener('click', startGame);
+        newGameBtn.addEventListener('click', startGame);
+        backToMenuBtn.addEventListener('click', () => {
+            stopTimer();
+            gameUI.classList.add('hidden');
+            mainMenu.classList.remove('hidden');
+        });
 
-            carvePassages(x, y) {
-                this.maze[y][x] = 0;
-                
-                const directions = [
-                    [0, -2], // North
-                    [2, 0],  // East
-                    [0, 2],  // South
-                    [-2, 0]  // West
-                ];
-                
-                // Shuffle directions
-                directions.sort(() => Math.random() - 0.5);
-                
-                for (const [dx, dy] of directions) {
-                    const newX = x + dx;
-                    const newY = y + dy;
-                    
-                    if (newX > 0 && newX < this.cols - 1 && newY > 0 && newY < this.rows - 1 
-                        && this.maze[newY][newX] === 1) {
-                        this.maze[y + dy/2][x + dx/2] = 0;
-                        this.carvePassages(newX, newY);
-                    }
-                }
+        // Initialize game
+        function startGame() {
+            // Set game parameters based on difficulty
+            gameState.difficulty = difficultySelect.value;
+            gameState.mazeType = mazeTypeSelect.value;
+            
+            switch(gameState.difficulty) {
+                case 'easy':
+                    gameState.width = 10;
+                    gameState.height = 10;
+                    gameState.cellSize = 40;
+                    break;
+                case 'medium':
+                    gameState.width = 15;
+                    gameState.height = 15;
+                    gameState.cellSize = 30;
+                    break;
+                case 'hard':
+                    gameState.width = 25;
+                    gameState.height = 25;
+                    gameState.cellSize = 20;
+                    break;
+                case 'extreme':
+                    gameState.width = 40;
+                    gameState.height = 40;
+                    gameState.cellSize = 15;
+                    break;
             }
-
-            drawMaze() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                // Draw maze
-                for (let y = 0; y < this.rows; y++) {
-                    for (let x = 0; x < this.cols; x++) {
-                        if (this.maze[y][x] === 1) {
-                            this.ctx.fillStyle = '#333';
-                            this.ctx.fillRect(x * this.cellSize, y * this.cellSize, 
-                                            this.cellSize, this.cellSize);
-                        }
-                    }
-                }
-                
-                // Draw player
-                this.ctx.fillStyle = 'var(--primary-color)';
-                this.ctx.beginPath();
-                this.ctx.arc(
-                    this.player.x * this.cellSize + this.cellSize/2,
-                    this.player.y * this.cellSize + this.cellSize/2,
-                    this.cellSize/3,
-                    0,
-                    Math.PI * 2
-                );
-                this.ctx.fill();
-                
-                // Draw end point
-                this.ctx.fillStyle = '#4CAF50';
-                this.ctx.fillRect(
-                    this.end.x * this.cellSize + this.cellSize/4,
-                    this.end.y * this.cellSize + this.cellSize/4,
-                    this.cellSize/2,
-                    this.cellSize/2
-                );
+            
+            // Set canvas size
+            canvas.width = gameState.width * gameState.cellSize;
+            canvas.height = gameState.height * gameState.cellSize;
+            
+            // Generate maze
+            generateMaze();
+            
+            // Set player and end positions
+            gameState.player = { x: 0, y: 0 };
+            gameState.end = { 
+                x: gameState.width - 1, 
+                y: gameState.height - 1 
+            };
+            gameState.visited = new Map();
+            gameState.visited.set(`${0},${0}`, { time: 0, isBacktrack: false });
+            gameState.pathHistory = [{x: 0, y: 0}];
+            
+            // Start timer
+            startTimer();
+            
+            // Show game UI
+            mainMenu.classList.add('hidden');
+            gameUI.classList.remove('hidden');
+            
+            // Start animation loop
+            if (!gameState.animationId) {
+                gameState.hueOffset = 0;
+                animate();
             }
+            
+            // Draw initial state
+            drawMaze();
+        }
 
-            setupEventListeners() {
-                document.addEventListener('keydown', (e) => {
-                    const moves = {
-                        'ArrowUp': [0, -1],
-                        'ArrowRight': [1, 0],
-                        'ArrowDown': [0, 1],
-                        'ArrowLeft': [-1, 0]
-                    };
-                    
-                    if (moves[e.key]) {
-                        const [dx, dy] = moves[e.key];
-                        const newX = this.player.x + dx;
-                        const newY = this.player.y + dy;
-                        
-                        if (newX >= 0 && newX < this.cols && newY >= 0 && newY < this.rows 
-                            && this.maze[newY][newX] === 0) {
-                            this.player.x = newX;
-                            this.player.y = newY;
-                            this.drawMaze();
-                            
-                            // Check win condition
-                            if (this.player.x === this.end.x && this.player.y === this.end.y) {
-                                alert('Congratulations! You solved the maze!');
-                                this.generateMaze();
-                                this.player = { x: 1, y: 1 };
-                                this.drawMaze();
-                            }
-                        }
-                    }
-                });
-                
-                document.getElementById('newMaze').addEventListener('click', () => {
-                    this.generateMaze();
-                    this.player = { x: 1, y: 1 };
-                    this.drawMaze();
-                });
+        // Animation loop
+        function animate() {
+            gameState.hueOffset = (gameState.hueOffset + 0.5) % 360;
+            drawMaze();
+            gameState.animationId = requestAnimationFrame(animate);
+        }
+
+        // Maze generation
+        function generateMaze() {
+            switch(gameState.mazeType) {
+                case 'dfs':
+                    generateDFSMaze();
+                    break;
+                case 'prim':
+                    generatePrimMaze();
+                    break;
+                case 'kruskal':
+                    generateKruskalMaze();
+                    break;
             }
         }
 
-        // Initialize game when page loads
-        window.addEventListener('load', () => {
-            new MazeGame();
+        // Depth-First Search maze generation
+        function generateDFSMaze() {
+            // Initialize grid with all walls
+            gameState.maze = Array(gameState.height).fill().map(() => 
+                Array(gameState.width).fill().map(() => ({
+                    top: true,
+                    right: true,
+                    bottom: true,
+                    left: true,
+                    visited: false
+                }))
+            );
+            
+            // Start from random cell
+            const stack = [];
+            const startX = Math.floor(Math.random() * gameState.width);
+            const startY = Math.floor(Math.random() * gameState.height);
+            let current = gameState.maze[startY][startX];
+            current.visited = true;
+            stack.push([startX, startY]);
+            
+            // Depth-first search maze generation
+            while (stack.length > 0) {
+                const [x, y] = stack[stack.length - 1];
+                const neighbors = [];
+                
+                // Check neighbors
+                if (y > 0 && !gameState.maze[y-1][x].visited) neighbors.push([x, y-1, 'top', 'bottom']);
+                if (x < gameState.width-1 && !gameState.maze[y][x+1].visited) neighbors.push([x+1, y, 'right', 'left']);
+                if (y < gameState.height-1 && !gameState.maze[y+1][x].visited) neighbors.push([x, y+1, 'bottom', 'top']);
+                if (x > 0 && !gameState.maze[y][x-1].visited) neighbors.push([x-1, y, 'left', 'right']);
+                
+                if (neighbors.length > 0) {
+                    // Choose random neighbor
+                    const [nx, ny, dir, oppositeDir] = neighbors[
+                        Math.floor(Math.random() * neighbors.length)
+                    ];
+                    
+                    // Remove walls between current and neighbor
+                    current[dir] = false;
+                    gameState.maze[ny][nx][oppositeDir] = false;
+                    
+                    // Mark as visited and push to stack
+                    gameState.maze[ny][nx].visited = true;
+                    stack.push([nx, ny]);
+                    current = gameState.maze[ny][nx];
+                } else {
+                    // Backtrack
+                    stack.pop();
+                    if (stack.length > 0) {
+                        const [px, py] = stack[stack.length - 1];
+                        current = gameState.maze[py][px];
+                    }
+                }
+            }
+        }
+
+        // Prim's algorithm maze generation
+        function generatePrimMaze() {
+            // Initialize grid with all walls
+            gameState.maze = Array(gameState.height).fill().map(() => 
+                Array(gameState.width).fill().map(() => ({
+                    top: true,
+                    right: true,
+                    bottom: true,
+                    left: true,
+                    visited: false
+                }))
+            );
+            
+            // Start from random cell
+            const startX = Math.floor(Math.random() * gameState.width);
+            const startY = Math.floor(Math.random() * gameState.height);
+            gameState.maze[startY][startX].visited = true;
+            
+            // List of frontier cells
+            const frontiers = [];
+            addFrontiers(startX, startY, frontiers);
+            
+            while (frontiers.length > 0) {
+                // Randomly select a frontier cell
+                const randomIndex = Math.floor(Math.random() * frontiers.length);
+                const [fx, fy] = frontiers[randomIndex];
+                frontiers.splice(randomIndex, 1);
+                
+                // Get visited neighbors
+                const neighbors = [];
+                if (fy > 0 && gameState.maze[fy-1][fx].visited) neighbors.push([fx, fy-1, 'top', 'bottom']);
+                if (fx < gameState.width-1 && gameState.maze[fy][fx+1].visited) neighbors.push([fx+1, fy, 'right', 'left']);
+                if (fy < gameState.height-1 && gameState.maze[fy+1][fx].visited) neighbors.push([fx, fy+1, 'bottom', 'top']);
+                if (fx > 0 && gameState.maze[fy][fx-1].visited) neighbors.push([fx-1, fy, 'left', 'right']);
+                
+                if (neighbors.length > 0) {
+                    // Connect to random visited neighbor
+                    const [nx, ny, dir, oppositeDir] = neighbors[
+                        Math.floor(Math.random() * neighbors.length)
+                    ];
+                    
+                    gameState.maze[fy][fx][dir] = false;
+                    gameState.maze[ny][nx][oppositeDir] = false;
+                    gameState.maze[fy][fx].visited = true;
+                    
+                    // Add new frontiers
+                    addFrontiers(fx, fy, frontiers);
+                }
+            }
+            
+            function addFrontiers(x, y, frontiers) {
+                if (y > 0 && !gameState.maze[y-1][x].visited) {
+                    frontiers.push([x, y-1]);
+                }
+                if (x < gameState.width-1 && !gameState.maze[y][x+1].visited) {
+                    frontiers.push([x+1, y]);
+                }
+                if (y < gameState.height-1 && !gameState.maze[y+1][x].visited) {
+                    frontiers.push([x, y+1]);
+                }
+                if (x > 0 && !gameState.maze[y][x-1].visited) {
+                    frontiers.push([x-1, y]);
+                }
+            }
+        }
+
+        // Kruskal's algorithm maze generation
+        function generateKruskalMaze() {
+            // Initialize grid with all walls
+            gameState.maze = Array(gameState.height).fill().map(() => 
+                Array(gameState.width).fill().map(() => ({
+                    top: true,
+                    right: true,
+                    bottom: true,
+                    left: true,
+                    set: null
+                }))
+            );
+            
+            // Create list of all walls
+            const walls = [];
+            
+            // Assign unique set to each cell
+            let setCounter = 0;
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    gameState.maze[y][x].set = setCounter++;
+                    
+                    // Add walls to the list (only right and bottom to avoid duplicates)
+                    if (x < gameState.width - 1) {
+                        walls.push({ x, y, dir: 'right' });
+                    }
+                    if (y < gameState.height - 1) {
+                        walls.push({ x, y, dir: 'bottom' });
+                    }
+                }
+            }
+            
+            // Shuffle walls
+            shuffleArray(walls);
+            
+            // Process walls
+            for (const wall of walls) {
+                const { x, y, dir } = wall;
+                const cell = gameState.maze[y][x];
+                let neighborX = x, neighborY = y;
+                let oppositeDir;
+                
+                if (dir === 'right') {
+                    neighborX = x + 1;
+                    oppositeDir = 'left';
+                } else { // bottom
+                    neighborY = y + 1;
+                    oppositeDir = 'top';
+                }
+                
+                const neighbor = gameState.maze[neighborY][neighborX];
+                
+                if (cell.set !== neighbor.set) {
+                    // Remove the wall
+                    cell[dir] = false;
+                    neighbor[oppositeDir] = false;
+                    
+                    // Merge sets
+                    const oldSet = neighbor.set;
+                    const newSet = cell.set;
+                    for (let y = 0; y < gameState.height; y++) {
+                        for (let x = 0; x < gameState.width; x++) {
+                            if (gameState.maze[y][x].set === oldSet) {
+                                gameState.maze[y][x].set = newSet;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+        }
+
+        // Drawing functions
+        function drawMaze() {
+            // Clear canvas with black background
+            ctx.fillStyle = gameState.colors.path;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw walls in green
+            ctx.strokeStyle = gameState.colors.wall;
+            ctx.lineWidth = 2;
+            
+            for (let y = 0; y < gameState.height; y++) {
+                for (let x = 0; x < gameState.width; x++) {
+                    const cell = gameState.maze[y][x];
+                    const xPos = x * gameState.cellSize;
+                    const yPos = y * gameState.cellSize;
+                    
+                    if (cell.top) {
+                        ctx.beginPath();
+                        ctx.moveTo(xPos, yPos);
+                        ctx.lineTo(xPos + gameState.cellSize, yPos);
+                        ctx.stroke();
+                    }
+                    
+                    if (cell.right) {
+                        ctx.beginPath();
+                        ctx.moveTo(xPos + gameState.cellSize, yPos);
+                        ctx.lineTo(xPos + gameState.cellSize, yPos + gameState.cellSize);
+                        ctx.stroke();
+                    }
+                    
+                    if (cell.bottom) {
+                        ctx.beginPath();
+                        ctx.moveTo(xPos, yPos + gameState.cellSize);
+                        ctx.lineTo(xPos + gameState.cellSize, yPos + gameState.cellSize);
+                        ctx.stroke();
+                    }
+                    
+                    if (cell.left) {
+                        ctx.beginPath();
+                        ctx.moveTo(xPos, yPos);
+                        ctx.lineTo(xPos, yPos + gameState.cellSize);
+                        ctx.stroke();
+                    }
+                    
+                    // Draw visited cells with RGB cycling effect
+                    if (gameState.visited.has(`${x},${y}`)) {
+                        const visitData = gameState.visited.get(`${x},${y}`);
+                        const isCurrentPath = gameState.pathHistory.some(pos => 
+                            pos.x === x && pos.y === y
+                        );
+                        
+                        if (visitData.isBacktrack) {
+                            // Backtrack path (orange)
+                            ctx.fillStyle = gameState.colors.backtrack;
+                        } else if (isCurrentPath) {
+                            // Current path (RGB cycling)
+                            const hue = (gameState.hueOffset + x * 3 + y * 3) % 360;
+                            ctx.fillStyle = `hsl(${hue}, 100%, 30%)`;
+                        } else {
+                            // Visited but not current path (darker green)
+                            ctx.fillStyle = '#030';
+                        }
+                        
+                        ctx.fillRect(
+                            xPos + 1, 
+                            yPos + 1, 
+                            gameState.cellSize - 2, 
+                            gameState.cellSize - 2
+                        );
+                    }
+                }
+            }
+            
+            // Draw end point (red)
+            const endX = gameState.end.x * gameState.cellSize;
+            const endY = gameState.end.y * gameState.cellSize;
+            ctx.fillStyle = gameState.colors.end;
+            ctx.fillRect(
+                endX + 2, 
+                endY + 2, 
+                gameState.cellSize - 4, 
+                gameState.cellSize - 4
+            );
+            
+            // Draw player (green square with scanline effect)
+            const playerX = gameState.player.x * gameState.cellSize;
+            const playerY = gameState.player.y * gameState.cellSize;
+            ctx.fillStyle = gameState.colors.player;
+            ctx.fillRect(
+                playerX + 2, 
+                playerY + 2, 
+                gameState.cellSize - 4, 
+                gameState.cellSize - 4
+            );
+            
+            // Add scanline effect to player
+            ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
+            ctx.lineWidth = 1;
+            for (let y = playerY + 2; y < playerY + gameState.cellSize - 2; y += 2) {
+                ctx.beginPath();
+                ctx.moveTo(playerX + 2, y);
+                ctx.lineTo(playerX + gameState.cellSize - 2, y);
+                ctx.stroke();
+            }
+        }
+
+        // Timer functions
+        function startTimer() {
+            gameState.startTime = Date.now();
+            stopTimer();
+            gameState.timerInterval = setInterval(updateTimer, 100);
+        }
+
+        function stopTimer() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+                gameState.timerInterval = null;
+            }
+        }
+
+        function updateTimer() {
+            const elapsed = Date.now() - gameState.startTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const displaySeconds = (seconds % 60).toString().padStart(2, '0');
+            const displayMinutes = minutes.toString().padStart(2, '0');
+            timerElement.textContent = `> TIME ELAPSED: ${displayMinutes}:${displaySeconds}`;
+        }
+
+        // Player movement
+        function movePlayer(dx, dy) {
+            const newX = gameState.player.x + dx;
+            const newY = gameState.player.y + dy;
+            const currentPosKey = `${gameState.player.x},${gameState.player.y}`;
+            const newPosKey = `${newX},${newY}`;
+            
+            // Check bounds
+            if (newX < 0 || newX >= gameState.width || newY < 0 || newY >= gameState.height) {
+                return;
+            }
+            
+            // Check walls
+            const cell = gameState.maze[gameState.player.y][gameState.player.x];
+            let canMove = false;
+            
+            if (dx === 1 && !cell.right) canMove = true;
+            if (dx === -1 && !cell.left) canMove = true;
+            if (dy === 1 && !cell.bottom) canMove = true;
+            if (dy === -1 && !cell.top) canMove = true;
+            
+            if (canMove) {
+                // Check if this is backtracking (revisiting a cell)
+                const isBacktrack = gameState.visited.has(newPosKey);
+                
+                // Update visited cells
+                gameState.visited.set(newPosKey, { 
+                    time: Date.now(), 
+                    isBacktrack 
+                });
+                
+                // Update path history
+                if (!isBacktrack) {
+                    gameState.pathHistory.push({x: newX, y: newY});
+                } else {
+                    // Remove from path history if backtracking
+                    const index = gameState.pathHistory.findIndex(pos => 
+                        pos.x === newX && pos.y === newY
+                    );
+                    if (index !== -1) {
+                        gameState.pathHistory.splice(index + 1);
+                    }
+                }
+                
+                // Update player position
+                gameState.player.x = newX;
+                gameState.player.y = newY;
+                
+                // Check win condition
+                if (newX === gameState.end.x && newY === gameState.end.y) {
+                    stopTimer();
+                    cancelAnimationFrame(gameState.animationId);
+                    setTimeout(() => {
+                        alert(`> MAZE COMPLETED IN ${timerElement.textContent}\n> SYSTEM RESETTING...`);
+                        startGame();
+                    }, 100);
+                }
+            }
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (gameUI.classList.contains('hidden')) return;
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    movePlayer(0, -1);
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    movePlayer(1, 0);
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    movePlayer(0, 1);
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    movePlayer(-1, 0);
+                    break;
+            }
         });
+
+        // Initialize menu
+        mainMenu.classList.remove('hidden');
+        gameUI.classList.add('hidden');
     </script>
 </body>
-</html> 
+</html>
