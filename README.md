@@ -1,2 +1,2 @@
 # dnakitare.github.io
-Lets see what we can build together
+Lets build together
