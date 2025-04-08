@@ -70,6 +70,10 @@
       letter-spacing: 0.1em;
       mix-blend-mode: difference;
       text-shadow: 0 0 10px var(--primary-color),
+                   -2px -2px 0 #000,  
+                    2px -2px 0 #000,
+                   -2px  2px 0 #000,
+                    2px  2px 0 #000,
                    -1px -1px 0 #000,  
                     1px -1px 0 #000,
                    -1px  1px 0 #000,
@@ -121,11 +125,27 @@
 
     @keyframes glow {
       from {
-        text-shadow: 0 0 10px var(--primary-color);
+        text-shadow: 0 0 10px var(--primary-color),
+                     -2px -2px 0 #000,  
+                      2px -2px 0 #000,
+                     -2px  2px 0 #000,
+                      2px  2px 0 #000,
+                     -1px -1px 0 #000,  
+                      1px -1px 0 #000,
+                     -1px  1px 0 #000,
+                      1px  1px 0 #000;
       }
       to {
         text-shadow: 0 0 20px var(--primary-color),
-                    0 0 30px var(--primary-color);
+                     0 0 30px var(--primary-color),
+                     -2px -2px 0 #000,  
+                      2px -2px 0 #000,
+                     -2px  2px 0 #000,
+                      2px  2px 0 #000,
+                     -1px -1px 0 #000,  
+                      1px -1px 0 #000,
+                     -1px  1px 0 #000,
+                      1px  1px 0 #000;
       }
     }
 
