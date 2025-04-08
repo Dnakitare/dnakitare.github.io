@@ -67,6 +67,9 @@
             background-color: #000;
             border-bottom: 2px solid #0f0;
             box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         h1 {
@@ -74,6 +77,27 @@
             color: #0f0;
             text-shadow: 0 0 5px #0f0;
             letter-spacing: 2px;
+        }
+        
+        .home-button {
+            background-color: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 8px 15px;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 3px #0f0;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        
+        .home-button:hover {
+            background-color: #0f0;
+            color: #000;
+            box-shadow: 0 0 10px #0f0;
         }
         
         .game-container {
@@ -206,6 +230,7 @@
 <body>
     <header>
         <h1 class="glitch">>_ TERMINAL MAZE v1.0</h1>
+        <a href="index.html" class="home-button">> HOME</a>
     </header>
     
     <div class="game-container">
