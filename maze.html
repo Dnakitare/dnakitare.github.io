@@ -384,11 +384,12 @@
             mainMenu.classList.add('hidden');
             gameUI.classList.remove('hidden');
             
-            // Start animation loop
-            if (!gameState.animationId) {
-                gameState.hueOffset = 0;
-                animate();
+            // Start animation loop (always restart to ensure it's running)
+            if (gameState.animationId) {
+                cancelAnimationFrame(gameState.animationId);
             }
+            gameState.hueOffset = 0;
+            gameState.animationId = requestAnimationFrame(animate);
             
             // Draw initial state
             drawMaze();
@@ -797,7 +798,10 @@
                 // Check win condition
                 if (newX === gameState.end.x && newY === gameState.end.y) {
                     stopTimer();
-                    cancelAnimationFrame(gameState.animationId);
+                    if (gameState.animationId) {
+                        cancelAnimationFrame(gameState.animationId);
+                        gameState.animationId = null;
+                    }
                     setTimeout(() => {
                         alert(`> MAZE COMPLETED IN ${timerElement.textContent}\n> SYSTEM RESETTING...`);
                         startGame();
