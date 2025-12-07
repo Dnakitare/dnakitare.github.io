@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Daniel Nakitare - Personal Website">
-  <meta name="keywords" content="Daniel Nakitare, Portfolio, Personal Website">
-  <meta property="og:title" content="Daniel Nakitare">
-  <meta property="og:description" content="Welcome to Daniel Nakitare's personal website">
+  <meta name="description" content="Daniel Nakitare - Software Engineer specializing in backend architecture, distributed systems, and high-performance APIs">
+  <meta name="keywords" content="Daniel Nakitare, Software Engineer, Backend Architecture, Laravel, Distributed Systems, PHP Developer">
+  <meta property="og:title" content="Daniel Nakitare - Software Engineer">
+  <meta property="og:description" content="Architecting reliable, high-performance systems at scale. Specializing in distributed systems, backend architecture, and API design.">
   <meta property="og:image" content="/image/cloud-pour.jpg">
   <title>Daniel Nakitare</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -16,12 +16,17 @@
       --primary-color: rgb(157, 211, 247);
       --text-color: #ffffff;
       --background-color: #000000;
+      --section-spacing: 100px;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     html, body {
@@ -31,6 +36,17 @@
       font-family: 'Inter', sans-serif;
       color: var(--text-color);
       overflow-x: hidden;
+    }
+
+    /* Particle Canvas Background */
+    #particleCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.6;
     }
 
     .backdrop {
@@ -43,9 +59,66 @@
       background-repeat: no-repeat;
       background-size: cover;
       transition: background-position-y 10s linear;
+      z-index: 0;
     }
 
-    .content {
+    .backdrop::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+    }
+
+    /* Navigation */
+    .nav-menu {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 100;
+      display: flex;
+      gap: 2rem;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(157, 211, 247, 0.2);
+    }
+
+    .nav-menu a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 0.5rem 0;
+    }
+
+    .nav-menu a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+
+    .nav-menu a:hover::after,
+    .nav-menu a.active::after {
+      width: 100%;
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+      color: var(--primary-color);
+    }
+
+    /* Hero Section */
+    .hero {
       position: relative;
       z-index: 1;
       min-height: 100vh;
@@ -54,10 +127,10 @@
       justify-content: center;
       align-items: center;
       padding: 2rem;
+      text-align: center;
     }
 
     .text-container {
-      text-align: center;
       margin-bottom: 2rem;
     }
 
@@ -79,24 +152,325 @@
                    -1px  1px 0 #000,
                     1px  1px 0 #000;
       animation: glow 2s ease-in-out infinite alternate;
+      opacity: 0;
+      transform: translateY(30px);
+      animation-fill-mode: forwards;
     }
 
-    .nav-menu {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      z-index: 2;
+    .subtitle {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      color: var(--primary-color);
+      margin-top: 1rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s ease-out 0.5s forwards;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      letter-spacing: 0.2em;
     }
 
-    .nav-menu a {
+    .scroll-indicator {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 1s forwards;
+      cursor: pointer;
+    }
+
+    .scroll-indicator span {
+      font-size: 0.8rem;
+      color: var(--primary-color);
+      letter-spacing: 0.1em;
+    }
+
+    .scroll-indicator::after {
+      content: '';
+      width: 2px;
+      height: 30px;
+      background: var(--primary-color);
+      animation: scrollBounce 2s infinite;
+    }
+
+    /* Sections */
+    section {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: var(--section-spacing) 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem, 5vw, 4rem);
+      color: var(--primary-color);
+      margin-bottom: 3rem;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--primary-color);
+      box-shadow: 0 0 10px var(--primary-color);
+    }
+
+    /* About Section */
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .about-text p {
+      margin-bottom: 1.5rem;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .skill-item {
+      background: rgba(157, 211, 247, 0.1);
+      border: 1px solid rgba(157, 211, 247, 0.3);
+      padding: 1rem;
+      text-align: center;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .skill-item:hover {
+      background: rgba(157, 211, 247, 0.2);
+      border-color: var(--primary-color);
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(157, 211, 247, 0.3);
+    }
+
+    /* Projects Section */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .project-card {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(157, 211, 247, 0.3);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(157, 211, 247, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .project-card:hover::before {
+      left: 100%;
+    }
+
+    .project-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--primary-color);
+      box-shadow: 0 10px 40px rgba(157, 211, 247, 0.4);
+    }
+
+    .project-card h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-card p {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .project-tag {
+      background: rgba(157, 211, 247, 0.2);
+      color: var(--primary-color);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      border: 1px solid rgba(157, 211, 247, 0.3);
+    }
+
+    .project-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .project-link:hover {
+      transform: translateX(5px);
+    }
+
+    .project-link::after {
+      content: ' →';
+      transition: transform 0.3s ease;
+    }
+
+    .project-link:hover::after {
+      transform: translateX(5px);
+    }
+
+    /* Experience Section */
+    .experience-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .experience-item {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(157, 211, 247, 0.3);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .experience-item:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 10px 40px rgba(157, 211, 247, 0.2);
+      transform: translateY(-5px);
+    }
+
+    .experience-item h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .experience-item h4 {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .experience-item ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .experience-item li {
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.8;
+      margin-bottom: 0.8rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .experience-item li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--primary-color);
+    }
+
+    /* Contact Section */
+    .contact-content {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .contact-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2rem;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       color: var(--text-color);
       text-decoration: none;
-      margin-left: 2rem;
-      font-size: 1.1rem;
-      transition: color 0.3s ease;
+      padding: 1rem 2rem;
+      background: rgba(157, 211, 247, 0.1);
+      border: 1px solid rgba(157, 211, 247, 0.3);
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      font-size: 1rem;
     }
 
-    .nav-menu a:hover {
+    .social-link:hover {
+      background: rgba(157, 211, 247, 0.2);
+      border-color: var(--primary-color);
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(157, 211, 247, 0.3);
       color: var(--primary-color);
     }
 
@@ -110,19 +484,22 @@
       font-size: 1.2rem;
       padding: 1rem 2rem;
       border: 2px solid var(--primary-color);
-      border-radius: 5px;
+      border-radius: 50px;
       transition: all 0.3s ease;
       background: rgba(0, 0, 0, 0.7);
-      z-index: 10;
+      z-index: 100;
       box-shadow: 0 0 15px rgba(157, 211, 247, 0.3);
+      backdrop-filter: blur(10px);
     }
 
     .game-link:hover {
       background: var(--primary-color);
       color: var(--background-color);
-      box-shadow: 0 0 20px var(--primary-color);
+      box-shadow: 0 0 30px var(--primary-color);
+      transform: scale(1.05);
     }
 
+    /* Animations */
     @keyframes glow {
       from {
         text-shadow: 0 0 10px var(--primary-color),
@@ -149,15 +526,48 @@
       }
     }
 
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      50% {
+        transform: translateY(10px);
+        opacity: 0.5;
+      }
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
       .nav-menu {
         top: 1rem;
         right: 1rem;
+        padding: 0.8rem 1.5rem;
+        gap: 1rem;
       }
 
       .nav-menu a {
-        margin-left: 1rem;
-        font-size: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .about-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 60px 1.5rem;
       }
 
       .game-link {
@@ -166,45 +576,400 @@
         font-size: 1rem;
         padding: 0.8rem 1.5rem;
       }
+
+      .social-links {
+        flex-direction: column;
+        align-items: center;
+      }
     }
   </style>
 </head>
 
 <body>
-  <nav class="nav-menu">
-    <!-- <a href="#about">About</a>
-    <a href="#projects">Projects</a>
-    <a href="#contact">Contact</a> -->
-  </nav>
-
+  <canvas id="particleCanvas"></canvas>
   <div class="backdrop"></div>
   
-  <main class="content">
+  <nav class="nav-menu">
+    <a href="#home" class="nav-link active">Home</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#projects" class="nav-link">Projects</a>
+    <a href="#experience" class="nav-link">Experience</a>
+    <a href="#contact" class="nav-link">Contact</a>
+  </nav>
+
+  <section id="home" class="hero">
     <div class="text-container">
       <h1 class="text">Nakitare</h1>
+      <p class="subtitle">Software Engineer • Backend Architect • Distributed Systems Specialist</p>
     </div>
-  </main>
+    <div class="scroll-indicator" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2 class="section-title">About</h2>
+    <div class="about-content">
+      <div class="about-text">
+        <p>
+          I'm a software engineer specializing in architecting reliable, high-performance systems at scale. 
+          With expertise in distributed systems, API design, and database optimization, I build resilient 
+          architectures that handle millions of requests daily.
+        </p>
+        <p>
+          My focus areas include backend architecture, data engineering, API design, and system reliability. 
+          I've architected systems processing 50M+ records daily, reduced integration times by 65%, and 
+          built HIPAA-compliant platforms handling $5M+ in monthly transactions.
+        </p>
+        <div class="skills-grid">
+          <div class="skill-item">PHP</div>
+          <div class="skill-item">Laravel</div>
+          <div class="skill-item">JavaScript</div>
+          <div class="skill-item">Vue.js</div>
+          <div class="skill-item">Python</div>
+          <div class="skill-item">PostgreSQL</div>
+          <div class="skill-item">Redis</div>
+          <div class="skill-item">Docker</div>
+          <div class="skill-item">Solidity</div>
+          <div class="skill-item">MySQL</div>
+          <div class="skill-item">MongoDB</div>
+          <div class="skill-item">Tailwind</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2 class="section-title">Projects</h2>
+    <div class="projects-grid">
+      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/laravel-outbox', '_blank')">
+        <h3>Laravel Outbox</h3>
+        <p>
+          A robust implementation of the Transactional Outbox Pattern for Laravel applications. 
+          Guarantees at-least-once message delivery in distributed systems, preventing data loss 
+          during service failures.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Laravel</span>
+          <span class="project-tag">PHP</span>
+          <span class="project-tag">Redis</span>
+          <span class="project-tag">Distributed Systems</span>
+        </div>
+        <a href="https://github.com/Dnakitare/laravel-outbox" target="_blank" class="project-link">View on GitHub</a>
+      </div>
+      
+      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/atproto-mention-tracker', '_blank')">
+        <h3>AT Protocol Mention Tracker</h3>
+        <p>
+          A Laravel application for tracking and analyzing mentions on the AT Protocol (Bluesky) platform. 
+          Built with real-time processing capabilities and efficient data storage.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Laravel</span>
+          <span class="project-tag">PostgreSQL</span>
+          <span class="project-tag">Redis</span>
+          <span class="project-tag">API Integration</span>
+        </div>
+        <a href="https://github.com/Dnakitare/atproto-mention-tracker" target="_blank" class="project-link">View on GitHub</a>
+      </div>
+
+      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/service-agreement-smart-contract', '_blank')">
+        <h3>Service Agreement Smart Contract</h3>
+        <p>
+          A comprehensive decentralized service agreement platform built on Ethereum. Enables secure, 
+          milestone-based service agreements between clients and service providers using blockchain technology.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Solidity</span>
+          <span class="project-tag">Ethereum</span>
+          <span class="project-tag">Node.js</span>
+          <span class="project-tag">Blockchain</span>
+        </div>
+        <a href="https://github.com/Dnakitare/service-agreement-smart-contract" target="_blank" class="project-link">View on GitHub</a>
+      </div>
+
+      <div class="project-card" onclick="window.open('maze.html', '_blank')">
+        <h3>Terminal Maze</h3>
+        <p>
+          An interactive terminal-themed maze game with multiple difficulty levels and 
+          maze generation algorithms. Features real-time path tracking and a retro aesthetic.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">JavaScript</span>
+          <span class="project-tag">Canvas</span>
+          <span class="project-tag">Game</span>
+        </div>
+        <a href="maze.html" class="project-link">Play Game</a>
+      </div>
+
+      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/html-table-to-csv', '_blank')">
+        <h3>HTML Table to CSV</h3>
+        <p>
+          A simple HTML table to CSV converter for a specific application in the building industry. 
+          Streamlines data export processes with clean, efficient conversion.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Python</span>
+          <span class="project-tag">Data Processing</span>
+        </div>
+        <a href="https://github.com/Dnakitare/html-table-to-csv" target="_blank" class="project-link">View on GitHub</a>
+      </div>
+
+      <div class="project-card" onclick="window.open('https://github.com/Dnakitare', '_blank')">
+        <h3>More Projects</h3>
+        <p>
+          Explore additional repositories and contributions on GitHub. Including enterprise solutions, 
+          open-source packages, and innovative system architectures.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">Open Source</span>
+          <span class="project-tag">GitHub</span>
+          <span class="project-tag">49 Repositories</span>
+        </div>
+        <a href="https://github.com/Dnakitare" target="_blank" class="project-link">Visit GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <h2 class="section-title">Experience</h2>
+    <div class="experience-content">
+      <div class="experience-item">
+        <h3>Integrations Lead</h3>
+        <h4>Carefeed</h4>
+        <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1rem; font-style: italic;">
+          Carefeed is an all-in-one platform for senior living and long-term care communities, 
+          replacing manual paperwork and disconnected point solutions with a unified system that 
+          integrates seamlessly with EHR and payroll providers.
+        </p>
+        <ul>
+          <li>Leading integration architecture and development for healthcare platform connecting EHR and HR systems</li>
+          <li>Designing and implementing scalable integration solutions for admissions, communications, payments, and training modules</li>
+          <li>Enabling seamless data flow between Carefeed and external systems to eliminate manual work and improve compliance</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>Senior Developer</h3>
+        <h4>nQ Zebraworks</h4>
+        <ul>
+          <li>Architected DataQ's API infrastructure processing 50M+ records daily</li>
+          <li>Designed RBAC implementation with granular access control, enforcing conflict of interest compliance through code</li>
+          <li>Reduced data integration times by 65% through batch processing optimization</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>Full Stack Developer</h3>
+        <h4>Sensible Care</h4>
+        <ul>
+          <li>Led development of HIPAA-compliant telehealth platform</li>
+          <li>Built billing system handling $5M+ in monthly transactions</li>
+          <li>Implemented OCR pipeline for automated medical documentation processing</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>Software Developer</h3>
+        <h4>nQ Zebraworks</h4>
+        <ul>
+          <li>Engineered real-time analytics platform for law firm operations</li>
+          <li>Achieved 50% cost reduction through database query optimization</li>
+          <li>Boosted transaction processing by 75% with Redis caching</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>Software Engineer</h3>
+        <h4>Buckeye Interactive</h4>
+        <ul>
+          <li>Delivered 5 mission-critical web applications for enterprise clients</li>
+          <li>Established AWS/Docker CI/CD pipeline reducing deployment time by 80%</li>
+          <li>Implemented data synchronization system for offline-first applications</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2 class="section-title">Contact</h2>
+    <div class="contact-content">
+      <p class="contact-text">
+        Open to discussing challenging backend architecture problems, distributed systems design, 
+        and high-performance API solutions. Feel free to reach out through any of the channels below.
+      </p>
+      <div class="social-links">
+        <a href="https://github.com/Dnakitare" target="_blank" class="social-link">
+          <span>GitHub</span>
+        </a>
+        <a href="mailto:dnakitare@gmail.com" class="social-link">
+          <span>Email</span>
+        </a>
+        <a href="https://linkedin.com/in/dnakitare" target="_blank" class="social-link">
+          <span>LinkedIn</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
   <a href="maze.html" class="game-link">Play Maze Game</a>
 
   <script>
+    // Particle System
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.opacity = Math.random() * 0.5 + 0.2;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x > canvas.width) this.x = 0;
+        if (this.x < 0) this.x = canvas.width;
+        if (this.y > canvas.height) this.y = 0;
+        if (this.y < 0) this.y = canvas.height;
+      }
+
+      draw() {
+        ctx.fillStyle = `rgba(157, 211, 247, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function connectParticles() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 120) {
+            ctx.strokeStyle = `rgba(157, 211, 247, ${0.2 * (1 - distance / 120)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+      connectParticles();
+      requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+
+    // Scroll Animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('section').forEach(section => {
+      observer.observe(section);
+    });
+
+    // Animate hero text
+    const heroText = document.querySelector('.text');
+    setTimeout(() => {
+      heroText.style.animation = 'glow 2s ease-in-out infinite alternate, fadeInUp 1s ease-out forwards';
+    }, 100);
+
+    // Navigation Active State
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section');
+
+    function updateActiveNav() {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.pageYOffset >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveNav);
+    updateActiveNav();
+
+    // Smooth scroll for nav links
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        if (targetId === '#home') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          const targetSection = document.querySelector(targetId);
+          if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
+    // Backdrop animation
     document.addEventListener('DOMContentLoaded', () => {
       const backdrop = document.querySelector('.backdrop');
       
-      // Initial animation
       requestAnimationFrame(() => {
         backdrop.style.transition = 'background-position-y 10s linear';
         backdrop.style.backgroundPositionY = `${-window.innerHeight * 0.11}px`;
       });
 
-      // Smooth scroll for navigation
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-          e.preventDefault();
-          document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-          });
-        });
+      // Parallax effect on scroll
+      window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        backdrop.style.transform = `translateY(${scrolled * 0.5}px)`;
       });
     });
   </script>
