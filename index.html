@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Daniel Nakitare - Software Engineer building AI agent infrastructure, governance systems, and high-performance distributed architectures">
-  <meta name="keywords" content="Daniel Nakitare, Software Engineer, AI Engineering, Agent Infrastructure, Distributed Systems, AI Governance">
-  <meta property="og:title" content="Daniel Nakitare - Software Engineer">
-  <meta property="og:description" content="Building AI agent infrastructure and governance systems. From distributed backends to agentic architectures — engineering trust into autonomous systems.">
-  <meta property="og:image" content="/image/cloud-pour.jpg">
+  <meta name="description" content="Daniel Nakitare - Senior Software Engineer | MBA | Combat Veteran. 7+ years building production backend and full-stack systems in healthcare SaaS, legal tech, and enterprise platforms.">
+  <meta name="keywords" content="Daniel Nakitare, Senior Software Engineer, Backend Engineer, Healthcare SaaS, EHR Integrations, Laravel, PHP, MBA, Combat Veteran">
+  <meta property="og:title" content="Daniel Nakitare - Senior Software Engineer">
+  <meta property="og:description" content="Senior software engineer with 7+ years building production backend and full-stack systems in healthcare SaaS and legal tech. MBA. Combat veteran. Currently building an AI-powered iOS SSH terminal.">
   <title>Daniel Nakitare</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%23000'/><text x='16' y='22' font-family='sans-serif' font-size='16' font-weight='bold' fill='%239dd3f7' text-anchor='middle'>DN</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -38,7 +38,7 @@
       overflow-x: hidden;
     }
 
-    /* Particle Canvas Background */
+    /* Background Canvas */
     #particleCanvas {
       position: fixed;
       top: 0;
@@ -46,44 +46,6 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      opacity: 0.6;
-    }
-
-    .backdrop {
-      background: url("/image/cloud-pour.jpg") center;
-      width: 100vw;
-      height: 100vh;
-      position: fixed;
-      background-attachment: fixed;
-      background-position-y: -26vh;
-      background-repeat: no-repeat;
-      background-size: cover;
-      transition: background-position-y 10s linear;
-      z-index: 0;
-    }
-
-    .backdrop::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
-      transition: opacity 0.3s ease;
-    }
-
-    .backdrop-fade-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #000000;
-      opacity: 0;
-      z-index: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
     }
 
     /* Navigation */
@@ -151,7 +113,7 @@
     .text {
       color: var(--text-color);
       font-family: 'Orbitron', sans-serif;
-      font-size: clamp(3rem, 15vw, 8rem);
+      font-size: clamp(2rem, 10vw, 6rem);
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -181,6 +143,30 @@
       font-family: 'Inter', sans-serif;
       font-weight: 300;
       letter-spacing: 0.2em;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 1rem 2.5rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      color: var(--primary-color);
+      text-decoration: none;
+      border: 2px solid var(--primary-color);
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s ease-out 0.8s forwards;
+      letter-spacing: 0.1em;
+    }
+
+    .hero-cta:hover {
+      background: var(--primary-color);
+      color: var(--background-color);
+      box-shadow: 0 0 30px rgba(157, 211, 247, 0.5);
+      transform: translateY(-3px);
     }
 
     .scroll-indicator {
@@ -215,7 +201,6 @@
     section {
       position: relative;
       z-index: 1;
-      min-height: 100vh;
       padding: var(--section-spacing) 2rem;
       max-width: 1200px;
       margin: 0 auto;
@@ -256,10 +241,8 @@
 
     /* About Section */
     .about-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .about-text {
@@ -294,6 +277,24 @@
       border-color: var(--primary-color);
       transform: translateY(-5px);
       box-shadow: 0 5px 20px rgba(157, 211, 247, 0.3);
+    }
+
+    .skills-section {
+      margin-top: 2.5rem;
+    }
+
+    .skill-category {
+      margin-bottom: 1.5rem;
+    }
+
+    .skill-category-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.75rem;
+      opacity: 0.7;
     }
 
     /* Projects Section */
@@ -420,8 +421,17 @@
     .experience-item h4 {
       color: rgba(255, 255, 255, 0.7);
       font-size: 1.1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.3rem;
       font-weight: 500;
+    }
+
+    .experience-date {
+      display: block;
+      font-size: 0.85rem;
+      color: rgba(157, 211, 247, 0.7);
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
     }
 
     .experience-item ul {
@@ -486,6 +496,36 @@
       transform: translateY(-5px);
       box-shadow: 0 5px 20px rgba(157, 211, 247, 0.3);
       color: var(--primary-color);
+    }
+
+    .social-link svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .availability-status {
+      margin-top: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     .game-link {
@@ -571,11 +611,6 @@
         font-size: 0.9rem;
       }
 
-      .about-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
       .projects-grid {
         grid-template-columns: 1fr;
       }
@@ -601,21 +636,20 @@
 
 <body>
   <canvas id="particleCanvas"></canvas>
-  <div class="backdrop"></div>
-  <div class="backdrop-fade-overlay"></div>
   
   <nav class="nav-menu">
     <a href="#home" class="nav-link active">Home</a>
     <a href="#about" class="nav-link">About</a>
-    <a href="#projects" class="nav-link">Projects</a>
     <a href="#experience" class="nav-link">Experience</a>
+    <a href="#projects" class="nav-link">Building</a>
     <a href="#contact" class="nav-link">Contact</a>
   </nav>
 
   <section id="home" class="hero">
     <div class="text-container">
-      <h1 class="text">Nakitare</h1>
-      <p class="subtitle">Software Engineer • AI Agent Infrastructure • Distributed Systems</p>
+      <h1 class="text">Daniel Nakitare</h1>
+      <p class="subtitle">Senior Software Engineer &bull; MBA &bull; Combat Veteran</p>
+      <a href="#experience" class="hero-cta">View My Work</a>
     </div>
     <div class="scroll-indicator" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
       <span>Scroll</span>
@@ -627,49 +661,161 @@
     <div class="about-content">
       <div class="about-text">
         <p>
-          I build the infrastructure that makes AI agents trustworthy. From runtime governance layers
-          to distributed backends processing 50M+ records daily, I engineer systems where reliability
-          and accountability are non-negotiable.
+          Senior software engineer with 7+ years building production backend and full-stack systems
+          in healthcare SaaS, legal tech, and enterprise platforms. I own EHR integrations across
+          9+ platforms at scale, architect data pipelines, and design APIs that regulated industries
+          depend on. Before tech, I served in the 101st Airborne and ran a business in East Africa
+          for a decade. I bring that same discipline to every system I build.
         </p>
-        <p>
-          My work sits at the intersection of AI systems and enterprise infrastructure — agent
-          governance, policy enforcement, cryptographic audit trails, and HIPAA-compliant platforms
-          handling $5M+ in monthly transactions. I've reduced integration times by 65% and built
-          systems across healthcare, legal tech, and financial services.
-        </p>
-        <div class="skills-grid">
-          <div class="skill-item">TypeScript</div>
-          <div class="skill-item">Go</div>
-          <div class="skill-item">Python</div>
-          <div class="skill-item">PHP / Laravel</div>
-          <div class="skill-item">Next.js</div>
-          <div class="skill-item">PostgreSQL</div>
-          <div class="skill-item">Redis</div>
-          <div class="skill-item">Docker</div>
-          <div class="skill-item">AWS / GCP</div>
-          <div class="skill-item">MCP / Agent SDK</div>
-          <div class="skill-item">AI Governance</div>
-          <div class="skill-item">Vue.js</div>
+        <div class="skills-section">
+          <div class="skill-category">
+            <div class="skill-category-label">Languages</div>
+            <div class="skills-grid">
+              <div class="skill-item">PHP</div>
+              <div class="skill-item">Python</div>
+              <div class="skill-item">TypeScript</div>
+              <div class="skill-item">JavaScript</div>
+              <div class="skill-item">SQL</div>
+              <div class="skill-item">Swift</div>
+              <div class="skill-item">Go</div>
+            </div>
+          </div>
+          <div class="skill-category">
+            <div class="skill-category-label">Frameworks &amp; Databases</div>
+            <div class="skills-grid">
+              <div class="skill-item">Laravel</div>
+              <div class="skill-item">Vue.js / Nuxt</div>
+              <div class="skill-item">React</div>
+              <div class="skill-item">Node.js</div>
+              <div class="skill-item">SwiftUI</div>
+              <div class="skill-item">PostgreSQL</div>
+              <div class="skill-item">MySQL</div>
+              <div class="skill-item">Redis</div>
+            </div>
+          </div>
+          <div class="skill-category">
+            <div class="skill-category-label">Infrastructure &amp; Practices</div>
+            <div class="skills-grid">
+              <div class="skill-item">AWS / GCP</div>
+              <div class="skill-item">Docker</div>
+              <div class="skill-item">REST API Design</div>
+              <div class="skill-item">EHR / HL7</div>
+              <div class="skill-item">CI/CD</div>
+              <div class="skill-item">ETL / OCR</div>
+              <div class="skill-item">AI / LLM Integration</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
+  <section id="experience">
+    <h2 class="section-title">Experience</h2>
+    <div class="experience-content">
+      <div class="experience-item">
+        <h3>Senior Software Engineer</h3>
+        <h4>Carefeed</h4>
+        <span class="experience-date">Jun 2025 &mdash; Present</span>
+        <ul>
+          <li>Own all EHR integrations across 9+ platforms (Epic, PointClickCare, MatrixCare) &mdash; architected secure data exchange protocols and webhook handlers for patient and facility data sync</li>
+          <li>Architected enterprise PDF/OCR processing pipeline automating invoice handling for hundreds of healthcare facilities</li>
+          <li>Cleared a 4-year backlog of 27,000+ failed EHR uploads with a memory-efficient, fault-tolerant retry system &mdash; restored data integrity to 99%+ reliability</li>
+          <li>Modernized SFTP integration architecture for 20+ payroll systems, standardizing data mapping and cutting code duplication</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>Senior Engineer</h3>
+        <h4>nQ Zebraworks</h4>
+        <span class="experience-date">Aug 2024 &mdash; Jun 2025</span>
+        <ul>
+          <li>Owned the DataQ product's API infrastructure end-to-end &mdash; a data integration platform for law firms handling sensitive conflict-of-interest data</li>
+          <li>Built high-performance RESTful APIs improving data processing efficiency by 30%</li>
+          <li>Implemented OAuth2 and role-based access control to meet legal sector compliance requirements</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>Full Stack Engineer</h3>
+        <h4>Sensible Care</h4>
+        <span class="experience-date">Jun 2023 &mdash; Apr 2024</span>
+        <ul>
+          <li>Full-stack engineer on a healthcare SaaS platform serving behavioral health providers (Laravel/Vue.js)</li>
+          <li>Automated medical referral processing using Tesseract OCR, eliminating manual data entry across clinical workflows</li>
+          <li>Integrated payment processor and insurance validation APIs; migrated billing system from legacy codebase into modern Laravel monolith</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>Software Engineer</h3>
+        <h4>nQ Zebraworks</h4>
+        <span class="experience-date">Jul 2021 &mdash; May 2023</span>
+        <ul>
+          <li>Architected the backend of a business intelligence dashboard on a cloud-based legal practice management platform</li>
+          <li>Cut infrastructure costs by 50% through MySQL query optimization</li>
+          <li>Slashed data aggregation processing times by 75% using Redis caching and Laravel deferred job queues</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>Software Engineer</h3>
+        <h4>Buckeye Interactive</h4>
+        <span class="experience-date">Oct 2020 &mdash; Jul 2021</span>
+        <ul>
+          <li>Built MVPs for multiple clients simultaneously at a small engineering agency; led projects as primary developer</li>
+          <li>Managed AWS EC2/Docker/Nginx cloud infrastructure for all client projects</li>
+          <li>Shipped production applications for Columbus Metropolitan Library, OpportunityPort, and AFCPE</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>Software Engineer</h3>
+        <h4>boomtime Word of Mouth Marketing</h4>
+        <span class="experience-date">Mar 2019 &mdash; Oct 2020</span>
+        <ul>
+          <li>Built secure internal and external APIs with authentication and RBAC for a digital agency's proprietary platforms</li>
+          <li>Established comprehensive unit test coverage, reducing bug reports by 90%</li>
+          <li>Designed custom integrations automating data export to clients' third-party services</li>
+        </ul>
+      </div>
+      <div class="experience-item">
+        <h3>11B Infantryman</h3>
+        <h4>United States Army, 101st Airborne Division</h4>
+        <span class="experience-date">2011 &mdash; 2014</span>
+        <ul>
+          <li>Combat Infantry Badge &bull; Purple Heart &bull; Afghanistan Deployment</li>
+          <li>Trained 200+ personnel on tactical operations; managed $2M+ in military equipment under combat conditions</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <section id="projects">
-    <h2 class="section-title">Projects</h2>
+    <h2 class="section-title">Currently Building</h2>
     <div class="projects-grid">
+      <div class="project-card">
+        <h3>Kombe</h3>
+        <p>
+          AI-assisted iOS SSH terminal with WireGuard encrypted tunneling, Claude API-powered
+          command assistance, session resilience across network changes, and gesture-optimized
+          mobile input. Companion macOS daemon for tunnel management and device pairing. Pre-App Store.
+        </p>
+        <div class="project-tags">
+          <span class="project-tag">SwiftUI</span>
+          <span class="project-tag">WireGuard</span>
+          <span class="project-tag">Claude API</span>
+          <span class="project-tag">macOS Daemon</span>
+        </div>
+      </div>
+
       <div class="project-card" onclick="window.open('https://github.com/Dnakitare/imara', '_blank')">
         <h3>Imara</h3>
         <p>
-          Runtime governance layer for AI agents. Sits between agents and their tools to provide
-          cryptographic audit trails, YAML-based policy enforcement, and a real-time dashboard.
-          Maps to EU AI Act, SOC 2, and HIPAA compliance frameworks.
+          Runtime AI agent governance SaaS with compliance-grade audit trails, hash-chained
+          PostgreSQL audit log, and an OPA policy engine. Targeting EU AI Act compliance.
+          Deployed on npm.
         </p>
         <div class="project-tags">
-          <span class="project-tag">TypeScript</span>
-          <span class="project-tag">MCP</span>
-          <span class="project-tag">AI Governance</span>
-          <span class="project-tag">Compliance</span>
+          <span class="project-tag">Next.js</span>
+          <span class="project-tag">MCP Proxy</span>
+          <span class="project-tag">OPA</span>
+          <span class="project-tag">PostgreSQL</span>
         </div>
         <a href="https://github.com/Dnakitare/imara" target="_blank" class="project-link">View on GitHub</a>
       </div>
@@ -690,21 +836,6 @@
         <a href="https://github.com/Dnakitare/prior-auth-assistant" target="_blank" class="project-link">View on GitHub</a>
       </div>
 
-      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/technical-debt-tracker', '_blank')">
-        <h3>Technical Debt Tracker</h3>
-        <p>
-          Track, estimate, and reduce technical debt cost across engineering teams.
-          Quantifies debt in developer-hours and dollars to make invisible costs visible
-          for prioritization decisions.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">TypeScript</span>
-          <span class="project-tag">Engineering Tools</span>
-          <span class="project-tag">DevOps</span>
-        </div>
-        <a href="https://github.com/Dnakitare/technical-debt-tracker" target="_blank" class="project-link">View on GitHub</a>
-      </div>
-
       <div class="project-card" onclick="window.open('https://github.com/Dnakitare/laravel-outbox', '_blank')">
         <h3>Laravel Outbox</h3>
         <p>
@@ -716,7 +847,6 @@
           <span class="project-tag">PHP</span>
           <span class="project-tag">Laravel</span>
           <span class="project-tag">Redis</span>
-          <span class="project-tag">Distributed Systems</span>
         </div>
         <a href="https://github.com/Dnakitare/laravel-outbox" target="_blank" class="project-link">View on GitHub</a>
       </div>
@@ -737,71 +867,30 @@
       </div>
 
       <div class="project-card" onclick="window.open('https://github.com/Dnakitare', '_blank')">
-        <h3>More Projects</h3>
+        <h3>More on GitHub</h3>
         <p>
-          Healthcare integrations, smart contracts, real-time analytics, and more.
-          Explore the full portfolio of open-source work and enterprise solutions.
+          Technical debt tracker, smart contracts, and more open-source work.
         </p>
         <div class="project-tags">
           <span class="project-tag">Open Source</span>
-          <span class="project-tag">GitHub</span>
         </div>
         <a href="https://github.com/Dnakitare" target="_blank" class="project-link">Visit GitHub</a>
       </div>
     </div>
   </section>
 
-  <section id="experience">
-    <h2 class="section-title">Experience</h2>
+  <section id="education">
+    <h2 class="section-title">Education</h2>
     <div class="experience-content">
       <div class="experience-item">
-        <h3>Senior Software Engineer</h3>
-        <h4>Carefeed</h4>
-        <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1rem; font-style: italic;">
-          All-in-one platform for senior living and long-term care communities, replacing manual
-          paperwork with a unified system integrating EHR and payroll providers.
-        </p>
-        <ul>
-          <li>Leading integration architecture connecting healthcare EHR, HR, and compliance systems at scale</li>
-          <li>Building AI-assisted automation for admissions, communications, and billing workflows</li>
-          <li>Designing scalable data pipelines that eliminate manual work and enforce HIPAA compliance</li>
-        </ul>
+        <h3>Master of Business Administration</h3>
+        <h4>Temple University, Fox School of Business</h4>
+        <span class="experience-date">Innovation Management &amp; Strategy &bull; 2017</span>
       </div>
       <div class="experience-item">
-        <h3>Senior Developer</h3>
-        <h4>nQ Zebraworks</h4>
-        <ul>
-          <li>Architected DataQ's API infrastructure processing 50M+ records daily</li>
-          <li>Designed RBAC implementation with granular access control, enforcing conflict of interest compliance through code</li>
-          <li>Reduced data integration times by 65% through batch processing optimization</li>
-        </ul>
-      </div>
-      <div class="experience-item">
-        <h3>Full Stack Developer</h3>
-        <h4>Sensible Care</h4>
-        <ul>
-          <li>Led development of HIPAA-compliant telehealth platform</li>
-          <li>Built billing system handling $5M+ in monthly transactions</li>
-          <li>Implemented OCR pipeline for automated medical documentation processing</li>
-        </ul>
-      </div>
-      <div class="experience-item">
-        <h3>Software Developer</h3>
-        <h4>nQ Zebraworks</h4>
-        <ul>
-          <li>Engineered real-time analytics platform for law firm operations</li>
-          <li>Achieved 50% cost reduction through database query optimization</li>
-          <li>Boosted transaction processing by 75% with Redis caching</li>
-        </ul>
-      </div>
-      <div class="experience-item">
-        <h3>Software Engineer</h3>
-        <h4>Buckeye Interactive</h4>
-        <ul>
-          <li>Delivered 5 mission-critical web applications for enterprise clients</li>
-          <li>Established AWS/Docker CI/CD pipeline reducing deployment time by 80%</li>
-          <li>Implemented data synchronization system for offline-first applications</li>
-        </ul>
+        <h3>Bachelor of Arts</h3>
+        <h4>Pomona College</h4>
+        <span class="experience-date">Politics &amp; Economics &bull; 2010</span>
       </div>
     </div>
   </section>
@@ -810,19 +899,26 @@
     <h2 class="section-title">Contact</h2>
     <div class="contact-content">
       <p class="contact-text">
-        Open to discussing AI agent infrastructure, governance systems, distributed architecture,
-        and high-stakes engineering problems. Let's build something that matters.
+        Open to discussing backend architecture, healthcare integrations,
+        API design, or anything you're building. Let's talk.
       </p>
       <div class="social-links">
         <a href="https://github.com/Dnakitare" target="_blank" class="social-link">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
           <span>GitHub</span>
         </a>
         <a href="mailto:dnakitare@gmail.com" class="social-link">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
           <span>Email</span>
         </a>
         <a href="https://linkedin.com/in/dnakitare" target="_blank" class="social-link">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           <span>LinkedIn</span>
         </a>
+      </div>
+      <div class="availability-status">
+        <span class="status-dot"></span>
+        Open to senior backend &amp; fullstack engineering roles
       </div>
     </div>
   </section>
@@ -830,30 +926,64 @@
   <a href="maze.html" class="game-link">Play Maze Game</a>
 
   <script>
-    // Particle System
     const canvas = document.getElementById('particleCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
+    let mouse = { x: -1000, y: -1000 };
+    let scrollProgress = 0;
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
-
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+
+    // Track mouse position relative to viewport
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    window.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
 
     class Particle {
       constructor() {
+        this.reset();
+      }
+
+      reset() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 1;
-        this.speedX = (Math.random() - 0.5) * 0.5;
-        this.speedY = (Math.random() - 0.5) * 0.5;
-        this.opacity = Math.random() * 0.5 + 0.2;
+        this.baseSize = Math.random() * 1.5 + 0.5;
+        this.size = this.baseSize;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.baseOpacity = Math.random() * 0.4 + 0.1;
+        this.opacity = this.baseOpacity;
+        // Slight color variation: some particles lean teal, some lean blue-white
+        this.hueShift = Math.random() * 30 - 15; // -15 to +15
       }
 
       update() {
+        // Mouse interaction: particles gently push away from cursor
+        const dx = this.x - mouse.x;
+        const dy = this.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const mouseRadius = 150;
+
+        if (dist < mouseRadius) {
+          const force = (mouseRadius - dist) / mouseRadius;
+          const angle = Math.atan2(dy, dx);
+          this.x += Math.cos(angle) * force * 2;
+          this.y += Math.sin(angle) * force * 2;
+          // Brighten near cursor
+          this.opacity = Math.min(0.8, this.baseOpacity + force * 0.5);
+          this.size = this.baseSize + force * 2;
+        } else {
+          this.opacity += (this.baseOpacity - this.opacity) * 0.05;
+          this.size += (this.baseSize - this.size) * 0.05;
+        }
+
         this.x += this.speedX;
         this.y += this.speedY;
 
@@ -864,7 +994,10 @@
       }
 
       draw() {
-        ctx.fillStyle = `rgba(157, 211, 247, ${this.opacity})`;
+        const r = 157 + this.hueShift;
+        const g = 211 + this.hueShift * 0.5;
+        const b = 247;
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -873,22 +1006,68 @@
 
     function initParticles() {
       particles = [];
-      const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
-      for (let i = 0; i < particleCount; i++) {
+      const count = Math.min(120, Math.floor((canvas.width * canvas.height) / 12000));
+      for (let i = 0; i < count; i++) {
         particles.push(new Particle());
       }
     }
 
+    function drawBackground() {
+      // Deep gradient that shifts subtly with scroll
+      const t = scrollProgress;
+
+      // Hero: deep navy with teal undertone -> deeper black as you scroll
+      const r1 = Math.round(8 - t * 6);
+      const g1 = Math.round(12 + t * 4);
+      const b1 = Math.round(28 - t * 15);
+
+      const r2 = Math.round(2);
+      const g2 = Math.round(4 + t * 2);
+      const b2 = Math.round(12 - t * 6);
+
+      const grad = ctx.createLinearGradient(0, 0, canvas.width * 0.3, canvas.height);
+      grad.addColorStop(0, `rgb(${r1}, ${g1}, ${b1})`);
+      grad.addColorStop(1, `rgb(${r2}, ${g2}, ${b2})`);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Subtle aurora glow in the hero area that fades on scroll
+      const auroraOpacity = Math.max(0, 0.12 - t * 0.12);
+      if (auroraOpacity > 0.005) {
+        const glow = ctx.createRadialGradient(
+          canvas.width * 0.5, canvas.height * 0.3, 0,
+          canvas.width * 0.5, canvas.height * 0.3, canvas.width * 0.6
+        );
+        glow.addColorStop(0, `rgba(80, 160, 220, ${auroraOpacity})`);
+        glow.addColorStop(0.4, `rgba(60, 130, 200, ${auroraOpacity * 0.5})`);
+        glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Second glow offset for depth
+        const glow2 = ctx.createRadialGradient(
+          canvas.width * 0.7, canvas.height * 0.15, 0,
+          canvas.width * 0.7, canvas.height * 0.15, canvas.width * 0.4
+        );
+        glow2.addColorStop(0, `rgba(100, 180, 240, ${auroraOpacity * 0.6})`);
+        glow2.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = glow2;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
     function connectParticles() {
+      const maxDist = 130;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 120) {
-            ctx.strokeStyle = `rgba(157, 211, 247, ${0.2 * (1 - distance / 120)})`;
-            ctx.lineWidth = 1;
+          if (distance < maxDist) {
+            const lineOpacity = 0.15 * (1 - distance / maxDist);
+            ctx.strokeStyle = `rgba(157, 211, 247, ${lineOpacity})`;
+            ctx.lineWidth = 0.8;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -896,38 +1075,49 @@
           }
         }
       }
+
+      // Draw connections from mouse to nearby particles
+      for (let i = 0; i < particles.length; i++) {
+        const dx = particles[i].x - mouse.x;
+        const dy = particles[i].y - mouse.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 200) {
+          const lineOpacity = 0.2 * (1 - distance / 200);
+          ctx.strokeStyle = `rgba(180, 220, 250, ${lineOpacity})`;
+          ctx.lineWidth = 0.6;
+          ctx.beginPath();
+          ctx.moveTo(mouse.x, mouse.y);
+          ctx.lineTo(particles[i].x, particles[i].y);
+          ctx.stroke();
+        }
+      }
     }
 
-    function animateParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(particle => {
-        particle.update();
-        particle.draw();
-      });
+    function animate() {
+      drawBackground();
+      particles.forEach(p => { p.update(); p.draw(); });
       connectParticles();
-      requestAnimationFrame(animateParticles);
+      requestAnimationFrame(animate);
     }
 
     initParticles();
-    animateParticles();
+    animate();
+
+    // Track scroll progress (0 = top, 1 = past hero)
+    function updateScroll() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      scrollProgress = Math.min(1, window.pageYOffset / (window.innerHeight * 1.5));
+    }
+    window.addEventListener('scroll', updateScroll);
 
     // Scroll Animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
-    };
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, observerOptions);
+    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
 
-    document.querySelectorAll('section').forEach(section => {
-      observer.observe(section);
-    });
+    document.querySelectorAll('section').forEach(section => observer.observe(section));
 
     // Animate hero text
     const heroText = document.querySelector('.text');
@@ -935,32 +1125,25 @@
       heroText.style.animation = 'glow 2s ease-in-out infinite alternate, fadeInUp 1s ease-out forwards';
     }, 100);
 
-    // Navigation Active State
+    // Navigation
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('section');
 
     function updateActiveNav() {
       let current = '';
       sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        if (window.pageYOffset >= sectionTop - 200) {
+        if (window.pageYOffset >= section.offsetTop - 200) {
           current = section.getAttribute('id');
         }
       });
-
       navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-          link.classList.add('active');
-        }
+        link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
       });
     }
 
     window.addEventListener('scroll', updateActiveNav);
     updateActiveNav();
 
-    // Smooth scroll for nav links
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -968,46 +1151,9 @@
         if (targetId === '#home') {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-          const targetSection = document.querySelector(targetId);
-          if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+          document.querySelector(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
-    });
-
-    // Backdrop animation and fade effect
-    document.addEventListener('DOMContentLoaded', () => {
-      const backdrop = document.querySelector('.backdrop');
-      const fadeOverlay = document.querySelector('.backdrop-fade-overlay');
-      const aboutSection = document.getElementById('about');
-      
-      requestAnimationFrame(() => {
-        backdrop.style.transition = 'background-position-y 10s linear';
-        backdrop.style.backgroundPositionY = `${-window.innerHeight * 0.11}px`;
-      });
-
-      // Parallax effect and fade to black on scroll
-      function updateBackdropFade() {
-        const scrolled = window.pageYOffset;
-        const windowHeight = window.innerHeight;
-        const aboutTop = aboutSection.offsetTop;
-        
-        // Parallax effect
-        backdrop.style.transform = `translateY(${scrolled * 0.5}px)`;
-        
-        // Calculate fade progress: start fading when we're 50% through the hero section
-        // Complete fade when about section is fully in view
-        const fadeStart = windowHeight * 0.5;
-        const fadeEnd = aboutTop;
-        const fadeProgress = Math.min(1, Math.max(0, (scrolled - fadeStart) / (fadeEnd - fadeStart)));
-        
-        // Apply fade overlay opacity
-        fadeOverlay.style.opacity = fadeProgress;
-      }
-
-      window.addEventListener('scroll', updateBackdropFade);
-      updateBackdropFade(); // Initial call
     });
   </script>
 </body>
