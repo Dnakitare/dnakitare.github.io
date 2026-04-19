@@ -874,14 +874,16 @@
       <div class="project-card" onclick="window.open('https://github.com/Dnakitare/laravel-outbox', '_blank')">
         <h3>Laravel Outbox</h3>
         <p>
-          Transactional Outbox Pattern for Laravel. Guarantees at-least-once message delivery
-          in distributed systems, preventing data loss during service failures with
-          relay-based processing.
+          Transactional Outbox pattern for Laravel. Persists events and queued jobs
+          atomically with business writes, then replays them through a concurrent-safe
+          worker with exponential backoff and dead-letter. At-least-once delivery for
+          distributed systems.
         </p>
         <div class="project-tags">
           <span class="project-tag">PHP</span>
           <span class="project-tag">Laravel</span>
-          <span class="project-tag">Redis</span>
+          <span class="project-tag">PostgreSQL</span>
+          <span class="project-tag">Reliability</span>
         </div>
         <a href="https://github.com/Dnakitare/laravel-outbox" target="_blank" class="project-link">View on GitHub</a>
       </div>
