@@ -196,11 +196,7 @@
       max-width: 1100px;
       margin: 0 auto;
       padding: 6rem var(--gutter) 5rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
     }
-    section.visible { opacity: 1; transform: translateY(0); }
 
     .eyebrow {
       font-family: var(--mono);
@@ -397,7 +393,7 @@
     }
     .project-row {
       display: grid;
-      grid-template-columns: 220px 1fr 180px;
+      grid-template-columns: 220px 1fr 240px;
       gap: 2rem;
       padding: 1.5rem 0;
       border-bottom: 1px solid var(--rule);
@@ -1012,15 +1008,18 @@
     console.log('%c' + consoleArt, 'color:#e8a317;font-family:monospace;font-size:12px;line-height:1.4;');
     console.log('%cYou opened devtools. We should talk.', 'color:#f1e8d4;font-family:monospace;');
 
-    // ===================================================== Section reveal
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -80px 0px' });
-    document.querySelectorAll('section').forEach(s => observer.observe(s));
-    // Hero is immediately visible
-    document.querySelector('header.hero').classList.add('visible');
+    // ===================================================== Deep-link recovery
+    // Browsers can lose the initial-load anchor scroll when fonts ship a
+    // layout shift mid-paint. Retry across several layout-settle moments.
+    if (location.hash && location.hash.length > 1) {
+      const scrollToHash = () => {
+        const target = document.querySelector(location.hash);
+        if (target) target.scrollIntoView({ behavior: 'instant', block: 'start' });
+      };
+      setTimeout(scrollToHash, 0);
+      setTimeout(scrollToHash, 250);
+      window.addEventListener('load', () => setTimeout(scrollToHash, 50));
+    }
 
     // ===================================================== Atmosphere dim on scroll
     const atmos = document.getElementById('atmosphere');
