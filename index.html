@@ -4,1232 +4,1083 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Daniel Nakitare - Senior Software Engineer | MBA | Combat Veteran. 7+ years building backend systems across healthcare SaaS and legal tech - EHR integrations across 9+ platforms, compliance-aware APIs. Currently Senior SWE at a healthcare SaaS company. Shipped PhotoPare on the App Store.">
-  <meta name="keywords" content="Daniel Nakitare, Senior Software Engineer, Backend Engineer, Healthcare SaaS, Legal Tech, EHR Integrations, Laravel, PHP, Swift, iOS, PhotoPare, MBA, Combat Veteran">
-  <meta property="og:title" content="Daniel Nakitare - Senior Software Engineer">
-  <meta property="og:description" content="Senior software engineer with 7+ years across healthcare SaaS and legal tech backends - EHR integrations, data pipelines, compliance-aware systems. Currently at a healthcare SaaS company. Recently shipped PhotoPare on the App Store. MBA. Combat veteran.">
-  <title>Daniel Nakitare - Senior Software Engineer</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%23000'/><text x='16' y='22' font-family='sans-serif' font-size='16' font-weight='bold' fill='%239dd3f7' text-anchor='middle'>DN</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta name="description" content="Daniel Nakitare — Senior software engineer building backend systems in healthcare SaaS, legal tech, and AI infrastructure. EHR integrations across 9+ platforms. MBA. 101st Airborne, Purple Heart. Shipped PhotoPare on the App Store.">
+  <meta name="keywords" content="Daniel Nakitare, Senior Software Engineer, Staff Engineer, Backend Engineer, Healthcare SaaS, Legal Tech, EHR Integrations, AI Infrastructure, Laravel, PHP, Swift, iOS, PhotoPare, MBA, Combat Veteran">
+  <meta property="og:title" content="Daniel Nakitare — Senior Software Engineer">
+  <meta property="og:description" content="Backend systems where the consequences are real. Healthcare SaaS, legal tech, AI infrastructure. Currently shipping at Carefeed.">
+  <title>Daniel Nakitare</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%230a0908'/><text x='16' y='22' font-family='Georgia,serif' font-style='italic' font-size='17' font-weight='500' fill='%23e8a317' text-anchor='middle'>dn</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,30..100,0..1;1,9..144,300..700,30..100,0..1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --primary-color: rgb(157, 211, 247);
-      --text-color: #ffffff;
-      --background-color: #000000;
-      --section-spacing: 100px;
+      /* Paper-warm palette. Echoes the Castellan UI to signal a single craft hand. */
+      --paper: #0a0908;
+      --paper-deep: #060403;
+      --ink: #f1e8d4;
+      --ink-soft: rgba(241, 232, 212, 0.72);
+      --ink-faint: rgba(241, 232, 212, 0.42);
+      --rule: rgba(241, 232, 212, 0.10);
+      --rule-strong: rgba(241, 232, 212, 0.22);
+
+      /* Signal-only color. Used sparingly. */
+      --amber: #e8a317;
+      --amber-soft: rgba(232, 163, 23, 0.72);
+      --amber-dim: rgba(232, 163, 23, 0.18);
+      --copper: #d4623a;
+
+      --display: 'Fraunces', Georgia, serif;
+      --body: 'Inter', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+
+      --measure: 64ch;
+      --gutter: clamp(1.5rem, 5vw, 3.5rem);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--background-color);
-      font-family: 'Inter', sans-serif;
-      color: var(--text-color);
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--body);
+      font-weight: 400;
+      font-size: 17px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
       overflow-x: hidden;
     }
 
-    /* Background Canvas */
-    #particleCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    /* Navigation */
-    .nav-menu {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      z-index: 100;
-      display: flex;
-      gap: 2rem;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 1rem 2rem;
-      border-radius: 50px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(157, 211, 247, 0.2);
-    }
-
-    .nav-menu a {
-      color: var(--text-color);
-      text-decoration: none;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      position: relative;
-      padding: 0.5rem 0;
-    }
-
-    .nav-menu a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary-color);
-      transition: width 0.3s ease;
-    }
-
-    .nav-menu a:hover::after,
-    .nav-menu a.active::after {
-      width: 100%;
-    }
-
-    .nav-menu a:hover,
-    .nav-menu a.active {
-      color: var(--primary-color);
-    }
-
-    /* Hero Section */
-    .hero {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .text-container {
-      margin-bottom: 2rem;
-    }
-
-    .text {
-      color: var(--text-color);
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(2rem, 10vw, 6rem);
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      mix-blend-mode: difference;
-      text-shadow: 0 0 10px var(--primary-color),
-                   -2px -2px 0 #000,  
-                    2px -2px 0 #000,
-                   -2px  2px 0 #000,
-                    2px  2px 0 #000,
-                   -1px -1px 0 #000,  
-                    1px -1px 0 #000,
-                   -1px  1px 0 #000,
-                    1px  1px 0 #000;
-      animation: glow 2s ease-in-out infinite alternate;
-      opacity: 0;
-      transform: translateY(30px);
-      animation-fill-mode: forwards;
-    }
-
-    .subtitle {
-      font-size: clamp(1rem, 3vw, 1.5rem);
-      color: var(--primary-color);
-      margin-top: 1rem;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 1s ease-out 0.5s forwards;
-      font-family: 'Inter', sans-serif;
-      font-weight: 300;
-      letter-spacing: 0.2em;
-    }
-
-    .hero-cta {
-      display: inline-block;
-      margin-top: 2rem;
-      padding: 1rem 2.5rem;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-      color: var(--primary-color);
-      text-decoration: none;
-      border: 2px solid var(--primary-color);
-      border-radius: 50px;
-      transition: all 0.3s ease;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 1s ease-out 0.8s forwards;
-      letter-spacing: 0.1em;
-    }
-
-    .hero-cta:hover {
-      background: var(--primary-color);
-      color: var(--background-color);
-      box-shadow: 0 0 30px rgba(157, 211, 247, 0.5);
-      transform: translateY(-3px);
-    }
-
-    .scroll-indicator {
-      position: absolute;
-      bottom: 3rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      opacity: 0;
-      animation: fadeInUp 1s ease-out 1s forwards;
-      cursor: pointer;
-    }
-
-    .scroll-indicator span {
-      font-size: 0.8rem;
-      color: var(--primary-color);
-      letter-spacing: 0.1em;
-    }
-
-    .scroll-indicator::after {
-      content: '';
-      width: 2px;
-      height: 30px;
-      background: var(--primary-color);
-      animation: scrollBounce 2s infinite;
-    }
-
-    /* Sections */
-    section {
-      position: relative;
-      z-index: 1;
-      padding: var(--section-spacing) 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      opacity: 0;
-      transform: translateY(50px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    section.visible {
+    /* Atmosphere: subtle warm aurora behind the hero only, fades on scroll. */
+    .atmosphere {
+      position: fixed; inset: 0;
+      z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60vw 50vh at 70% 18%, rgba(232, 163, 23, 0.07), transparent 60%),
+        radial-gradient(ellipse 80vw 60vh at 20% 32%, rgba(212, 98, 58, 0.05), transparent 60%);
       opacity: 1;
-      transform: translateY(0);
+      transition: opacity 0.6s ease;
+    }
+    .atmosphere.dim { opacity: 0.35; }
+
+    /* Subtle grain to keep the paper from looking dead-flat. */
+    .grain {
+      position: fixed; inset: 0;
+      z-index: 1; pointer-events: none; opacity: 0.025;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.85 0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      mix-blend-mode: overlay;
     }
 
-    .section-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(2rem, 5vw, 4rem);
-      color: var(--primary-color);
-      margin-bottom: 3rem;
-      text-align: center;
+    main, header, nav, footer { position: relative; z-index: 2; }
+
+    /* ============================================================ NAV */
+    nav.top {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem var(--gutter);
+      z-index: 50;
+      background: linear-gradient(180deg, rgba(10, 9, 8, 0.85), rgba(10, 9, 8, 0));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    nav.top .mark {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 1.05rem;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      text-decoration: none;
+      font-variation-settings: 'opsz' 14, 'SOFT' 50, 'WONK' 1;
+    }
+    nav.top .mark::before {
+      content: '· ';
+      color: var(--amber);
+    }
+    nav.top ul {
+      display: flex; gap: 1.75rem;
+      list-style: none;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: lowercase;
+    }
+    nav.top a {
+      color: var(--ink-soft);
+      text-decoration: none;
+      transition: color 0.18s ease;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+    }
+    nav.top a:hover, nav.top a.active {
+      color: var(--ink);
+      border-bottom-color: var(--amber);
+    }
+    @media (max-width: 720px) {
+      nav.top ul { gap: 1rem; font-size: 0.72rem; }
+    }
+
+    /* ============================================================ HERO */
+    header.hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 6rem var(--gutter) 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header.hero .meta {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--amber-soft);
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      position: relative;
-      display: inline-block;
-      width: 100%;
+      margin-bottom: 2.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    header.hero .meta::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--amber);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(232, 163, 23, 0.6);
+      animation: pulse-amber 2.4s ease-in-out infinite;
+    }
+    header.hero h1 {
+      font-family: var(--display);
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(3.2rem, 9vw, 7.5rem);
+      line-height: 0.96;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 0;
+      margin-bottom: 1.5rem;
+    }
+    header.hero .conviction {
+      font-family: var(--display);
+      font-weight: 300;
+      font-style: normal;
+      font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+      line-height: 1.35;
+      color: var(--ink-soft);
+      max-width: 36ch;
+      letter-spacing: -0.005em;
+      font-variation-settings: 'opsz' 36, 'SOFT' 60, 'WONK' 0;
+    }
+    header.hero .conviction em {
+      font-style: italic;
+      color: var(--amber);
+      font-variation-settings: 'opsz' 36, 'SOFT' 80, 'WONK' 1;
+    }
+    header.hero .bottom-rule {
+      margin-top: auto;
+      padding-top: 4rem;
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-top: 1px solid var(--rule);
+      padding-top: 1.25rem;
+    }
+    header.hero .bottom-rule .where {
+      color: var(--ink-soft);
     }
 
-    .section-title::after {
+    /* ============================================================ SECTIONS */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem var(--gutter) 5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    section.visible { opacity: 1; transform: translateY(0); }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--amber-soft);
+      margin-bottom: 0.6rem;
+    }
+    h2.section-title {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      line-height: 1.05;
+      color: var(--ink);
+      margin-bottom: 3rem;
+      letter-spacing: -0.015em;
+      font-variation-settings: 'opsz' 72, 'SOFT' 50, 'WONK' 0;
+      max-width: 22ch;
+    }
+
+    /* ============================================================ ABOUT */
+    #about .prose {
+      max-width: var(--measure);
+      font-size: 1.075rem;
+      line-height: 1.75;
+      color: var(--ink-soft);
+    }
+    #about .prose p + p { margin-top: 1.4rem; }
+    #about .prose .lede {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.4rem;
+      line-height: 1.45;
+      color: var(--ink);
+      margin-bottom: 2rem;
+      font-variation-settings: 'opsz' 36, 'SOFT' 60, 'WONK' 0;
+    }
+    /* ============================================================ EXPERIENCE (timeline) */
+    .timeline {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2.5rem 3rem;
+      max-width: 1000px;
+    }
+    .timeline + .timeline-row { margin-top: 0; }
+    .timeline-row {
+      display: contents;
+    }
+    .timeline-row .ledger {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+      padding-top: 0.3rem;
+    }
+    .timeline-row .ledger .dates {
+      color: var(--amber-soft);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .timeline-row .ledger .org {
+      color: var(--ink-soft);
+      display: block;
+    }
+    .timeline-row .entry {
+      border-left: 1px solid var(--rule);
+      padding-left: 2rem;
+      padding-bottom: 2.5rem;
+      position: relative;
+    }
+    .timeline-row .entry::before {
       content: '';
       position: absolute;
-      bottom: -10px;
+      left: -4px; top: 0.6rem;
+      width: 7px; height: 7px;
+      background: var(--ink-soft);
+      border-radius: 50%;
+    }
+    .timeline-row.featured .entry::before {
+      background: var(--amber);
+      box-shadow: 0 0 12px rgba(232, 163, 23, 0.5);
+    }
+    .timeline-row:last-child .entry { padding-bottom: 0; }
+    .timeline-row .role {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.45rem;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 0.8rem;
+      font-variation-settings: 'opsz' 36, 'SOFT' 50, 'WONK' 0;
+    }
+    .timeline-row .entry p {
+      color: var(--ink-soft);
+      line-height: 1.7;
+      margin-bottom: 0.8rem;
+    }
+    .timeline-row .highlight {
+      display: block;
+      margin-top: 1rem;
+      padding: 0.9rem 1.2rem;
+      border-left: 2px solid var(--amber);
+      background: rgba(232, 163, 23, 0.04);
+      font-family: var(--display);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--ink);
+      line-height: 1.45;
+      font-variation-settings: 'opsz' 24, 'SOFT' 50, 'WONK' 0;
+    }
+    .timeline-row .highlight em {
+      color: var(--amber);
+      font-style: normal;
+      font-family: var(--mono);
+      font-size: 0.95em;
+      font-variation-settings: normal;
+    }
+    @media (max-width: 720px) {
+      .timeline { grid-template-columns: 1fr; gap: 1rem; }
+      .timeline-row .ledger { padding-top: 0; }
+      .timeline-row .entry { border-left: none; padding-left: 0; padding-bottom: 3rem; }
+      .timeline-row .entry::before { display: none; }
+    }
+
+    /* ============================================================ PROJECTS */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin-bottom: 4rem;
+    }
+    .featured-card {
+      background: var(--paper);
+      padding: 2.5rem 2rem;
+      display: flex; flex-direction: column;
+      cursor: pointer;
+      transition: background 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .featured-card:hover {
+      background: rgba(232, 163, 23, 0.04);
+    }
+    .featured-card .tag-row {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--amber-soft);
+      margin-bottom: 1rem;
+    }
+    .featured-card h3 {
+      font-family: var(--display);
+      font-weight: 400;
+      font-style: italic;
+      font-size: 2rem;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      font-variation-settings: 'opsz' 36, 'SOFT' 50, 'WONK' 0;
+    }
+    .featured-card p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+    .featured-card .stack {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.06em;
+      padding-top: 1rem;
+      border-top: 1px solid var(--rule);
+    }
+    .featured-card .stack span + span::before {
+      content: ' · ';
+      color: var(--rule-strong);
+    }
+
+    .project-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      border-top: 1px solid var(--rule);
+    }
+    .project-row {
+      display: grid;
+      grid-template-columns: 220px 1fr 180px;
+      gap: 2rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: baseline;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s ease, padding-left 0.2s ease;
+    }
+    .project-row:hover {
+      background: rgba(232, 163, 23, 0.03);
+      padding-left: 0.5rem;
+    }
+    .project-row .name {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.3rem;
+      color: var(--ink);
+      font-variation-settings: 'opsz' 24, 'SOFT' 50, 'WONK' 0;
+    }
+    .project-row .desc {
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .project-row .meta-r {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.05em;
+      text-align: right;
+    }
+    @media (max-width: 720px) {
+      .project-row {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+      }
+      .project-row .meta-r { text-align: left; }
+    }
+
+    /* ============================================================ WRITING */
+    .writing-entry {
+      max-width: var(--measure);
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    .writing-entry .stamp {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--amber-soft);
+      margin-bottom: 0.6rem;
+    }
+    .writing-entry h3 {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.8rem;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      font-variation-settings: 'opsz' 36, 'SOFT' 50, 'WONK' 0;
+    }
+    .writing-entry p {
+      color: var(--ink-soft);
+      line-height: 1.7;
+      margin-bottom: 1.2rem;
+    }
+    .writing-entry .read {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid var(--amber-dim);
+      padding-bottom: 2px;
+      transition: border-color 0.2s ease;
+    }
+    .writing-entry .read:hover { border-bottom-color: var(--amber); }
+    .writing-entry .read::after { content: ' →'; }
+
+    /* ============================================================ EDUCATION */
+    .education-line {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+      max-width: 900px;
+    }
+    .education-line .degree {
+      border-left: 1px solid var(--rule);
+      padding-left: 1.5rem;
+    }
+    .education-line .degree .institution {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.25rem;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+      font-variation-settings: 'opsz' 24, 'SOFT' 50, 'WONK' 0;
+    }
+    .education-line .degree .study {
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      margin-bottom: 0.3rem;
+    }
+    .education-line .degree .year {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.08em;
+    }
+
+    /* ============================================================ CONTACT */
+    #contact .prose {
+      max-width: 50ch;
+      font-size: 1.075rem;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      margin-bottom: 2.5rem;
+    }
+    #contact .availability {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      background: rgba(232, 163, 23, 0.06);
+      border: 1px solid var(--amber-dim);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--amber);
+      letter-spacing: 0.04em;
+      margin-bottom: 3rem;
+    }
+    #contact .availability::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--amber);
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(232, 163, 23, 0.7);
+      animation: pulse-amber 2.4s ease-in-out infinite;
+    }
+    .contact-links {
+      display: flex; flex-wrap: wrap; gap: 2rem;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+    }
+    .contact-links a {
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid var(--rule-strong);
+      padding-bottom: 2px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+    .contact-links a:hover {
+      color: var(--amber);
+      border-bottom-color: var(--amber);
+    }
+    .contact-links a .label-key {
+      color: var(--ink-faint);
+      margin-right: 0.5rem;
+    }
+
+    /* ============================================================ FOOTER */
+    footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem var(--gutter) 2.5rem;
+      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.05em;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    footer .colophon {
+      max-width: 50ch;
+    }
+    footer .footer-links a {
+      color: var(--ink-faint);
+      text-decoration: none;
+      margin-left: 1.5rem;
+      transition: color 0.18s ease;
+    }
+    footer .footer-links a:hover { color: var(--amber); }
+
+    /* ============================================================ MOTION */
+    @keyframes pulse-amber {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    /* ============================================================ KONAMI BANNER */
+    #konami-banner {
+      position: fixed;
+      bottom: -100px;
       left: 50%;
       transform: translateX(-50%);
-      width: 100px;
-      height: 3px;
-      background: var(--primary-color);
-      box-shadow: 0 0 10px var(--primary-color);
-    }
-
-    /* About Section */
-    .about-content {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .about-text {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .about-text p {
-      margin-bottom: 1.5rem;
-    }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .skill-item {
-      background: rgba(157, 211, 247, 0.1);
-      border: 1px solid rgba(157, 211, 247, 0.3);
-      padding: 1rem;
-      text-align: center;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      cursor: default;
-    }
-
-    .skill-item:hover {
-      background: rgba(157, 211, 247, 0.2);
-      border-color: var(--primary-color);
-      transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(157, 211, 247, 0.3);
-    }
-
-    .skills-section {
-      margin-top: 2.5rem;
-    }
-
-    .skill-category {
-      margin-bottom: 1.5rem;
-    }
-
-    .skill-category-label {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.75rem;
-      color: var(--primary-color);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      margin-bottom: 0.75rem;
-      opacity: 0.7;
-    }
-
-    /* Projects Section */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .project-card {
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(157, 211, 247, 0.3);
-      border-radius: 12px;
-      padding: 2rem;
-      transition: all 0.4s ease;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .project-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(157, 211, 247, 0.1), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .project-card:hover::before {
-      left: 100%;
-    }
-
-    .project-card:hover {
-      transform: translateY(-10px);
-      border-color: var(--primary-color);
-      box-shadow: 0 10px 40px rgba(157, 211, 247, 0.4);
-    }
-
-    .project-card h3 {
-      font-family: 'Orbitron', sans-serif;
-      color: var(--primary-color);
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .project-card p {
-      color: rgba(255, 255, 255, 0.8);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-
-    .project-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-
-    .project-tag {
-      background: rgba(157, 211, 247, 0.2);
-      color: var(--primary-color);
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      border: 1px solid rgba(157, 211, 247, 0.3);
-    }
-
-    .project-link {
-      display: inline-block;
-      margin-top: 1rem;
-      color: var(--primary-color);
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .project-link:hover {
-      transform: translateX(5px);
-    }
-
-    .project-link::after {
-      content: ' →';
-      transition: transform 0.3s ease;
-    }
-
-    .project-link:hover::after {
-      transform: translateX(5px);
-    }
-
-    /* Experience Section */
-    .experience-content {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .experience-item {
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(157, 211, 247, 0.3);
-      border-radius: 12px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      transition: all 0.4s ease;
-      backdrop-filter: blur(10px);
-    }
-
-    .experience-item:hover {
-      border-color: var(--primary-color);
-      box-shadow: 0 10px 40px rgba(157, 211, 247, 0.2);
-      transform: translateY(-5px);
-    }
-
-    .experience-item h3 {
-      font-family: 'Orbitron', sans-serif;
-      color: var(--primary-color);
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .experience-item h4 {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 1.1rem;
-      margin-bottom: 0.3rem;
-      font-weight: 500;
-    }
-
-    .experience-date {
-      display: block;
-      font-size: 0.85rem;
-      color: rgba(157, 211, 247, 0.7);
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 0.05em;
-      margin-bottom: 1rem;
-    }
-
-    .experience-item ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .experience-item li {
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.8;
-      margin-bottom: 0.8rem;
-      padding-left: 1.5rem;
-      position: relative;
-    }
-
-    .experience-item li::before {
-      content: '▸';
-      position: absolute;
-      left: 0;
-      color: var(--primary-color);
-    }
-
-    /* Contact Section */
-    .contact-content {
-      max-width: 600px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .contact-text {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: rgba(255, 255, 255, 0.9);
-      margin-bottom: 2rem;
-    }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-      margin-top: 2rem;
-    }
-
-    .social-link {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text-color);
-      text-decoration: none;
       padding: 1rem 2rem;
-      background: rgba(157, 211, 247, 0.1);
-      border: 1px solid rgba(157, 211, 247, 0.3);
-      border-radius: 50px;
-      transition: all 0.3s ease;
-      font-size: 1rem;
-    }
-
-    .social-link:hover {
-      background: rgba(157, 211, 247, 0.2);
-      border-color: var(--primary-color);
-      transform: translateY(-5px);
-      box-shadow: 0 5px 20px rgba(157, 211, 247, 0.3);
-      color: var(--primary-color);
-    }
-
-    .social-link svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-      flex-shrink: 0;
-    }
-
-    .availability-status {
-      margin-top: 2rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #4ade80;
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
-      animation: pulse-dot 2s infinite;
-    }
-
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .game-link {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      color: var(--text-color);
-      text-decoration: none;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
-      padding: 1rem 2rem;
-      border: 2px solid var(--primary-color);
-      border-radius: 50px;
-      transition: all 0.3s ease;
-      background: rgba(0, 0, 0, 0.7);
+      background: var(--paper-deep);
+      border: 1px solid var(--amber);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--amber);
+      letter-spacing: 0.08em;
       z-index: 100;
-      box-shadow: 0 0 15px rgba(157, 211, 247, 0.3);
-      backdrop-filter: blur(10px);
+      transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 40px rgba(232, 163, 23, 0.25);
     }
-
-    .game-link:hover {
-      background: var(--primary-color);
-      color: var(--background-color);
-      box-shadow: 0 0 30px var(--primary-color);
-      transform: scale(1.05);
-    }
-
-    /* Animations */
-    @keyframes glow {
-      from {
-        text-shadow: 0 0 10px var(--primary-color),
-                     -2px -2px 0 #000,  
-                      2px -2px 0 #000,
-                     -2px  2px 0 #000,
-                      2px  2px 0 #000,
-                     -1px -1px 0 #000,  
-                      1px -1px 0 #000,
-                     -1px  1px 0 #000,
-                      1px  1px 0 #000;
-      }
-      to {
-        text-shadow: 0 0 20px var(--primary-color),
-                     0 0 30px var(--primary-color),
-                     -2px -2px 0 #000,  
-                      2px -2px 0 #000,
-                     -2px  2px 0 #000,
-                      2px  2px 0 #000,
-                     -1px -1px 0 #000,  
-                      1px -1px 0 #000,
-                     -1px  1px 0 #000,
-                      1px  1px 0 #000;
-      }
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes scrollBounce {
-      0%, 100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      50% {
-        transform: translateY(10px);
-        opacity: 0.5;
-      }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .nav-menu {
-        top: 1rem;
-        right: 1rem;
-        padding: 0.8rem 1.5rem;
-        gap: 1rem;
-      }
-
-      .nav-menu a {
-        font-size: 0.9rem;
-      }
-
-      .projects-grid {
-        grid-template-columns: 1fr;
-      }
-
-      section {
-        padding: 60px 1.5rem;
-      }
-
-      .game-link {
-        bottom: 1rem;
-        right: 1rem;
-        font-size: 1rem;
-        padding: 0.8rem 1.5rem;
-      }
-
-      .social-links {
-        flex-direction: column;
-        align-items: center;
-      }
+    #konami-banner.show { bottom: 2rem; }
+    #konami-banner a {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--amber);
+      padding-bottom: 2px;
+      margin-left: 0.5rem;
     }
   </style>
 </head>
 
 <body>
-  <canvas id="particleCanvas"></canvas>
-  
-  <nav class="nav-menu">
-    <a href="#home" class="nav-link active">Home</a>
-    <a href="#about" class="nav-link">About</a>
-    <a href="#experience" class="nav-link">Experience</a>
-    <a href="#projects" class="nav-link">Building</a>
-    <a href="#contact" class="nav-link">Contact</a>
+  <div class="atmosphere" id="atmosphere"></div>
+  <div class="grain"></div>
+
+  <nav class="top">
+    <a href="#home" class="mark">Daniel Nakitare</a>
+    <ul>
+      <li><a href="#about" class="nav-link">about</a></li>
+      <li><a href="#experience" class="nav-link">work</a></li>
+      <li><a href="#projects" class="nav-link">projects</a></li>
+      <li><a href="#writing" class="nav-link">writing</a></li>
+      <li><a href="#contact" class="nav-link">contact</a></li>
+    </ul>
   </nav>
 
-  <section id="home" class="hero">
-    <div class="text-container">
-      <h1 class="text">Daniel Nakitare</h1>
-      <p class="subtitle">Senior Software Engineer &bull; MBA &bull; Combat Veteran</p>
-      <a href="#experience" class="hero-cta">View My Work</a>
+  <header class="hero" id="home">
+    <div class="meta">Currently shipping · Carefeed</div>
+    <h1>Daniel<br>Nakitare</h1>
+    <p class="conviction">
+      Backend systems where the <em>consequences are real</em>.
+      Healthcare, legal tech, and the trust substrate for AI agents.
+    </p>
+    <div class="bottom-rule">
+      <span>est. 2019 — building production systems</span>
     </div>
-    <div class="scroll-indicator" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">
-      <span>Scroll</span>
-    </div>
-  </section>
+  </header>
 
-  <section id="about">
-    <h2 class="section-title">About</h2>
-    <div class="about-content">
-      <div class="about-text">
-        <p>
-          Senior software engineer with 7+ years building production backend and full-stack systems
-          in healthcare SaaS, legal tech, and enterprise platforms. I own EHR integrations across
-          9+ platforms at scale, architect data pipelines, and design APIs that regulated industries
-          depend on. Before tech, I served in the 101st Airborne and ran a business in East Africa
-          for a decade. I bring that same discipline to every system I build.
+  <main>
+    <section id="about">
+      <div class="eyebrow">about</div>
+      <h2 class="section-title">From a fireteam to a build pipeline.</h2>
+      <div class="prose">
+        <p class="lede">
+          Before software, I was an 11B Infantryman in the 101st Airborne Division. Combat
+          Infantry Badge · Purple Heart, Afghanistan, 2011–2014. The discipline that kept us
+          alive — clear ownership, real consequences, no half-measures — is the same discipline
+          I bring to the systems I ship now.
         </p>
-        <div class="skills-section">
-          <div class="skill-category">
-            <div class="skill-category-label">Languages</div>
-            <div class="skills-grid">
-              <div class="skill-item">PHP</div>
-              <div class="skill-item">TypeScript</div>
-              <div class="skill-item">Python</div>
-              <div class="skill-item">SQL</div>
-              <div class="skill-item">JavaScript</div>
-              <div class="skill-item">Swift</div>
-              <div class="skill-item">Go</div>
-            </div>
+        <p>
+          Seven years building production backend and full-stack systems across healthcare SaaS,
+          legal tech, and enterprise platforms. I own EHR integrations across nine-plus platforms
+          at Carefeed, architect data pipelines that hundreds of facilities depend on, and design
+          APIs for the kind of environments where a failure case becomes a regulatory finding.
+        </p>
+        <p>
+          Lately, the AI-infrastructure work: runtime governance for agents (Imara, on npm),
+          MCP gateways (Mavryn), capability-broker architecture for local agents in regulated
+          industries (Castellan). MBA from Temple. BA from Pomona. Ran a business in East Africa
+          for a decade before returning to the keyboard.
+        </p>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="eyebrow">work history</div>
+      <h2 class="section-title">Where the bills got paid.</h2>
+      <div class="timeline">
+
+        <div class="timeline-row featured">
+          <div class="ledger">
+            <span class="dates">Jun 2025 — present</span>
+            <span class="org">Carefeed</span>
           </div>
-          <div class="skill-category">
-            <div class="skill-category-label">Frameworks &amp; Databases</div>
-            <div class="skills-grid">
-              <div class="skill-item">Laravel</div>
-              <div class="skill-item">Vue.js</div>
-              <div class="skill-item">Node.js</div>
-              <div class="skill-item">SwiftUI</div>
-              <div class="skill-item">PostgreSQL</div>
-              <div class="skill-item">MySQL</div>
-              <div class="skill-item">Redis</div>
-            </div>
-          </div>
-          <div class="skill-category">
-            <div class="skill-category-label">Infrastructure &amp; Practices</div>
-            <div class="skills-grid">
-              <div class="skill-item">AWS</div>
-              <div class="skill-item">Docker</div>
-              <div class="skill-item">Terraform</div>
-              <div class="skill-item">REST API Design</div>
-              <div class="skill-item">EHR / HL7</div>
-              <div class="skill-item">CI/CD</div>
-              <div class="skill-item">AI / LLM Integration</div>
-            </div>
+          <div class="entry">
+            <div class="role">Senior Software Engineer</div>
+            <p>
+              Own all EHR integrations across nine-plus platforms (Epic, PointClickCare,
+              MatrixCare, and others) — architecting secure data-exchange protocols and
+              webhook handlers for patient and facility data sync. Built the enterprise
+              PDF/OCR pipeline that automates invoice handling for hundreds of healthcare
+              facilities, and modernized SFTP integration architecture across 20+ payroll
+              systems.
+            </p>
+            <span class="highlight">
+              Cleared a four-year backlog of <em>27,000+</em> failed EHR uploads with
+              a memory-efficient, fault-tolerant retry system — restored data integrity
+              to <em>99%+</em> reliability.
+            </span>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="experience">
-    <h2 class="section-title">Experience</h2>
-    <div class="experience-content">
-      <div class="experience-item">
-        <h3>Senior Software Engineer</h3>
-        <h4>Carefeed</h4>
-        <span class="experience-date">Jun 2025 &mdash; Present</span>
-        <ul>
-          <li>Own all EHR integrations across 9+ platforms (Epic, PointClickCare, MatrixCare) &mdash; architected secure data exchange protocols and webhook handlers for patient and facility data sync</li>
-          <li>Architected enterprise PDF/OCR processing pipeline automating invoice handling for hundreds of healthcare facilities</li>
-          <li>Cleared a 4-year backlog of 27,000+ failed EHR uploads with a memory-efficient, fault-tolerant retry system &mdash; restored data integrity to 99%+ reliability</li>
-          <li>Modernized SFTP integration architecture for 20+ payroll systems, standardizing data mapping and cutting code duplication</li>
-        </ul>
-      </div>
-      <div class="experience-item">
-        <h3>Senior Engineer</h3>
-        <h4>nQ Zebraworks</h4>
-        <span class="experience-date">Aug 2024 &mdash; Jun 2025</span>
-        <ul>
-          <li>Returned to nQ at Senior level to own the DataQ product's API infrastructure end-to-end, a data integration platform for law firms handling sensitive conflict-of-interest data</li>
-          <li>Built high-performance RESTful APIs improving data processing efficiency by 30%</li>
-          <li>Implemented OAuth2 and role-based access control to meet legal sector compliance requirements</li>
-        </ul>
-      </div>
-      <div class="experience-item">
-        <h3>Full Stack Engineer</h3>
-        <h4>Sensible Care</h4>
-        <span class="experience-date">Jun 2023 &mdash; Apr 2024</span>
-        <ul>
-          <li>Full-stack engineer on a healthcare SaaS platform serving behavioral health providers (Laravel/Vue.js)</li>
-          <li>Automated medical referral processing using Tesseract OCR, eliminating manual data entry across clinical workflows</li>
-          <li>Integrated payment processor and insurance validation APIs; migrated billing system from legacy codebase into modern Laravel monolith</li>
-        </ul>
-      </div>
-      <div class="experience-item">
-        <h3>Software Engineer</h3>
-        <h4>nQ Zebraworks</h4>
-        <span class="experience-date">Jul 2021 &mdash; May 2023</span>
-        <ul>
-          <li>Architected the backend of a business intelligence dashboard on a cloud-based legal practice management platform</li>
-          <li>Cut infrastructure costs by 50% through MySQL query optimization</li>
-          <li>Slashed data aggregation processing times by 75% using Redis caching and Laravel deferred job queues</li>
-        </ul>
-      </div>
-      <div class="experience-item">
-        <h3>Software Engineer</h3>
-        <h4>Buckeye Interactive</h4>
-        <span class="experience-date">Oct 2020 &mdash; Jul 2021</span>
-        <ul>
-          <li>Built MVPs for multiple clients simultaneously at a small engineering agency; led projects as primary developer</li>
-          <li>Managed AWS EC2/Docker/Nginx cloud infrastructure for all client projects</li>
-          <li>Shipped production applications for Columbus Metropolitan Library, OpportunityPort, and AFCPE</li>
-        </ul>
-      </div>
-      <div class="experience-item">
-        <h3>Software Engineer</h3>
-        <h4>boomtime Word of Mouth Marketing</h4>
-        <span class="experience-date">Mar 2019 &mdash; Oct 2020</span>
-        <ul>
-          <li>Built secure internal and external APIs with authentication and RBAC for a digital agency's proprietary platforms</li>
-          <li>Established comprehensive unit test coverage, reducing bug reports by 90%</li>
-          <li>Designed custom integrations automating data export to clients' third-party services</li>
-        </ul>
-      </div>
-      <div class="experience-item">
-        <h3>11B Infantryman</h3>
-        <h4>United States Army, 101st Airborne Division</h4>
-        <span class="experience-date">2011 &mdash; 2014</span>
-        <ul>
-          <li>Combat Infantry Badge &bull; Purple Heart &bull; Afghanistan Deployment</li>
-          <li>Trained 200+ personnel on tactical operations; managed $2M+ in military equipment under combat conditions</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section id="projects">
-    <h2 class="section-title">Projects</h2>
-    <div class="projects-grid">
-      <div class="project-card" onclick="window.open('https://apps.apple.com/us/app/photopare/id6762467066', '_blank')">
-        <h3>PhotoPare</h3>
-        <p>
-          Privacy-first iOS app that cleans up photo libraries by finding duplicates, blurry
-          shots, and forgotten screenshots. Runs 100% on-device using Apple's Vision framework.
-          No accounts, no uploads, no tracking SDKs. Free to scan, one-time $4.99 unlock for
-          deletion. Shipped on the App Store.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">Swift</span>
-          <span class="project-tag">SwiftUI</span>
-          <span class="project-tag">Vision Framework</span>
-          <span class="project-tag">StoreKit 2</span>
+        <div class="timeline-row">
+          <div class="ledger">
+            <span class="dates">Aug 2024 — Jun 2025</span>
+            <span class="org">nQ Zebraworks</span>
+          </div>
+          <div class="entry">
+            <div class="role">Senior Engineer</div>
+            <p>
+              Returned to nQ at Senior level to own DataQ's API infrastructure end-to-end —
+              a data integration platform for law firms handling sensitive conflict-of-interest
+              data. Built high-performance RESTful APIs improving data-processing efficiency
+              by 30%; implemented OAuth2 and role-based access control to meet legal-sector
+              compliance requirements.
+            </p>
+          </div>
         </div>
-        <a href="https://apps.apple.com/us/app/photopare/id6762467066" target="_blank" class="project-link">Download on App Store</a>
-      </div>
 
-      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/aether', '_blank')">
-        <h3>Aether</h3>
-        <p>
-          AI agent runtime with hardware-level isolation via Firecracker microVMs. Multi-tenant
-          REST API, distributed scheduler with Kafka and etcd, JWT/RBAC authentication,
-          PostgreSQL persistence, OpenTelemetry observability, and Kubernetes/Terraform deployment.
-          48K lines of Go. Beta.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">Go</span>
-          <span class="project-tag">Firecracker</span>
-          <span class="project-tag">Kubernetes</span>
-          <span class="project-tag">PostgreSQL</span>
-          <span class="project-tag">Kafka</span>
+        <div class="timeline-row">
+          <div class="ledger">
+            <span class="dates">Jun 2023 — Apr 2024</span>
+            <span class="org">Sensible Care</span>
+          </div>
+          <div class="entry">
+            <div class="role">Full Stack Engineer</div>
+            <p>
+              Full-stack engineer on a healthcare SaaS platform serving behavioral health
+              providers (Laravel/Vue.js). Automated medical referral processing with
+              Tesseract OCR, eliminating manual data entry across clinical workflows;
+              integrated payment-processor and insurance-validation APIs; migrated the
+              billing system from legacy codebase into a modern Laravel monolith.
+            </p>
+          </div>
         </div>
-        <a href="https://github.com/Dnakitare/aether" class="project-link" target="_blank">View on GitHub</a>
+
+        <div class="timeline-row">
+          <div class="ledger">
+            <span class="dates">Jul 2021 — May 2023</span>
+            <span class="org">nQ Zebraworks</span>
+          </div>
+          <div class="entry">
+            <div class="role">Software Engineer</div>
+            <p>
+              Architected the backend of a business-intelligence dashboard on a cloud-based
+              legal practice-management platform. Cut infrastructure costs by 50% through
+              MySQL query optimization; slashed data-aggregation processing times by 75%
+              with Redis caching and Laravel deferred job queues.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="ledger">
+            <span class="dates">Oct 2020 — Jul 2021</span>
+            <span class="org">Buckeye Interactive</span>
+          </div>
+          <div class="entry">
+            <div class="role">Software Engineer</div>
+            <p>
+              Built MVPs for multiple clients simultaneously at a small engineering agency.
+              Led projects as primary developer; managed AWS EC2/Docker/Nginx infrastructure
+              for all client work; shipped production applications for Columbus Metropolitan
+              Library, OpportunityPort, and AFCPE.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="ledger">
+            <span class="dates">Mar 2019 — Oct 2020</span>
+            <span class="org">boomtime</span>
+          </div>
+          <div class="entry">
+            <div class="role">Software Engineer</div>
+            <p>
+              Built secure internal and external APIs with authentication and RBAC for a
+              digital agency's proprietary platforms. Established comprehensive unit-test
+              coverage, reducing bug reports by 90%; designed custom integrations automating
+              data export to clients' third-party services.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <div class="ledger">
+            <span class="dates">2011 — 2014</span>
+            <span class="org">U.S. Army · 101st Airborne</span>
+          </div>
+          <div class="entry">
+            <div class="role">11B Infantryman</div>
+            <p>
+              Combat Infantry Badge · Purple Heart · Afghanistan Deployment. Trained 200+
+              personnel on tactical operations; managed $2M+ in military equipment under
+              combat conditions.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="eyebrow">building</div>
+      <h2 class="section-title">Selected work.</h2>
+
+      <div class="featured-grid">
+
+        <a class="featured-card" href="https://github.com/Dnakitare/castellan-notes" target="_blank" rel="noopener">
+          <div class="tag-row">Spec · 2026</div>
+          <h3>Castellan</h3>
+          <p>
+            Specifications and decision records for a proof-of-concept on delegated authority
+            in local AI agent systems, applied to industrial maintenance work-order triage.
+            Capability-broker architecture, hash-chained audit substrate, refusal as a
+            first-class outcome. Written from the auditor's perspective.
+          </p>
+          <div class="stack">
+            <span>Architecture</span><span>Local LLMs</span><span>Industrial</span><span>Spec-first</span>
+          </div>
+        </a>
+
+        <a class="featured-card" href="https://github.com/Dnakitare/aether" target="_blank" rel="noopener">
+          <div class="tag-row">Building · Beta</div>
+          <h3>Aether</h3>
+          <p>
+            AI agent runtime with hardware-level isolation via Firecracker microVMs.
+            Multi-tenant REST API, distributed scheduler with Kafka and etcd, JWT/RBAC,
+            PostgreSQL persistence, OpenTelemetry observability, Kubernetes/Terraform
+            deployment. Forty-eight thousand lines of Go.
+          </p>
+          <div class="stack">
+            <span>Go</span><span>Firecracker</span><span>Kubernetes</span><span>Kafka</span>
+          </div>
+        </a>
+
+        <a class="featured-card" href="https://apps.apple.com/us/app/photopare/id6762467066" target="_blank" rel="noopener">
+          <div class="tag-row">Shipped · App Store</div>
+          <h3>PhotoPare</h3>
+          <p>
+            Privacy-first iOS app for cleaning up photo libraries. Finds duplicates, blurry
+            shots, and forgotten screenshots using Apple's Vision framework — one hundred
+            percent on-device. No accounts, no uploads, no tracking SDKs. Free to scan,
+            one-time $4.99 unlock for deletion.
+          </p>
+          <div class="stack">
+            <span>Swift</span><span>SwiftUI</span><span>Vision</span><span>StoreKit 2</span>
+          </div>
+        </a>
+
       </div>
 
-      <div class="project-card">
-        <h3>Kombe</h3>
+      <div class="project-list">
+        <a class="project-row" href="https://prior-auth-assistant.pages.dev" target="_blank" rel="noopener">
+          <div class="name">Prior Auth Assistant</div>
+          <div class="desc">
+            Reference architecture for a HIPAA-shaped healthcare AI app. PostgreSQL row-level
+            security, Fernet field-level PHI encryption, HMAC-chained audit log, prompt-injection
+            hardening. Live demo.
+          </div>
+          <div class="meta-r">Python · FastAPI · React</div>
+        </a>
+        <a class="project-row" href="https://github.com/Dnakitare/imara" target="_blank" rel="noopener">
+          <div class="name">Imara</div>
+          <div class="desc">
+            Runtime AI agent governance. MCP tool-call interception, YAML policy engine,
+            SHA-256 hash-chained audit trails. EU AI Act, SOC 2, HIPAA compliance mapping.
+            Published on npm.
+          </div>
+          <div class="meta-r">TypeScript · MCP · OPA</div>
+        </a>
+        <a class="project-row" href="https://github.com/Dnakitare/mavryn" target="_blank" rel="noopener">
+          <div class="name">Mavryn</div>
+          <div class="desc">
+            MCP gateway that proxies multiple upstream MCP servers through one endpoint.
+            Tool namespacing, intelligent search, allow/deny policies, health checks, audit
+            logging. Published on npm.
+          </div>
+          <div class="meta-r">TypeScript · MCP · Gateway</div>
+        </a>
+        <a class="project-row" href="https://github.com/Dnakitare/kombe" target="_blank" rel="noopener">
+          <div class="name">Kombe</div>
+          <div class="desc">
+            AI-assisted iOS SSH terminal with WireGuard encrypted tunneling, Claude API
+            command assistance, and a companion macOS daemon for tunnel management.
+            Pre-App Store.
+          </div>
+          <div class="meta-r">SwiftUI · WireGuard · macOS</div>
+        </a>
+        <a class="project-row" href="https://github.com/Dnakitare/laravel-outbox" target="_blank" rel="noopener">
+          <div class="name">Laravel Outbox</div>
+          <div class="desc">
+            Transactional Outbox pattern for Laravel. Persists events and queued jobs
+            atomically with business writes, then replays them through a concurrent-safe
+            worker with backoff and dead-letter.
+          </div>
+          <div class="meta-r">PHP · Laravel · Reliability</div>
+        </a>
+        <a class="project-row" href="https://github.com/Dnakitare" target="_blank" rel="noopener">
+          <div class="name">More on GitHub</div>
+          <div class="desc">
+            Web scrapers, data pipelines, smart contracts, a maze game, and other open-source
+            work.
+          </div>
+          <div class="meta-r">github.com/Dnakitare →</div>
+        </a>
+      </div>
+    </section>
+
+    <section id="writing">
+      <div class="eyebrow">writing</div>
+      <h2 class="section-title">Thinking out loud, in public.</h2>
+      <div class="writing-entry">
+        <div class="stamp">May 2026 · Specs &amp; decision records</div>
+        <h3>Castellan — delegated authority for local AI agents</h3>
         <p>
-          AI-assisted iOS SSH terminal with WireGuard encrypted tunneling, Claude API-powered
-          command assistance, session resilience across network changes, and gesture-optimized
-          mobile input. Companion macOS daemon for tunnel management and device pairing. Pre-App Store.
+          Six specifications and thirteen architectural decision records for a
+          proof-of-concept on delegated authority in local AI agent systems, applied to
+          industrial maintenance work-order triage. Capability-broker architecture, hash-chained
+          audit substrate, refusal as a first-class outcome. The thesis: an industrial buyer
+          should not have to trust the AI — they should have to trust the authority broker
+          and the audit substrate, which are small, inspectable, and behave like things they
+          already know how to evaluate.
         </p>
-        <div class="project-tags">
-          <span class="project-tag">SwiftUI</span>
-          <span class="project-tag">WireGuard</span>
-          <span class="project-tag">Claude API</span>
-          <span class="project-tag">macOS Daemon</span>
+        <a class="read" href="https://github.com/Dnakitare/castellan-notes" target="_blank" rel="noopener">Read on GitHub</a>
+      </div>
+    </section>
+
+    <section id="education">
+      <div class="eyebrow">education</div>
+      <h2 class="section-title">Where the credentials came from.</h2>
+      <div class="education-line">
+        <div class="degree">
+          <div class="institution">Temple University</div>
+          <div class="study">MBA · Innovation Management &amp; Strategy</div>
+          <div class="year">2017 · Fox School of Business</div>
+        </div>
+        <div class="degree">
+          <div class="institution">Pomona College</div>
+          <div class="study">BA · Politics &amp; Economics</div>
+          <div class="year">2010</div>
         </div>
       </div>
+    </section>
 
-      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/mavryn', '_blank')">
-        <h3>Mavryn</h3>
-        <p>
-          The MCP control plane. One server that proxies all your upstream MCP servers
-          with tool namespacing, intelligent search, allow/deny policies, health checks,
-          and audit logging. Replace 15 MCP configs with one. Published on npm.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">TypeScript</span>
-          <span class="project-tag">MCP</span>
-          <span class="project-tag">TF-IDF</span>
-          <span class="project-tag">Gateway</span>
-        </div>
-        <a href="https://github.com/Dnakitare/mavryn" target="_blank" class="project-link">View on GitHub</a>
-      </div>
-
-      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/imara', '_blank')">
-        <h3>Imara</h3>
-        <p>
-          Runtime AI agent governance with compliance-grade audit trails, hash-chained
-          tamper-proof logging, and a YAML policy engine. Maps to EU AI Act, SOC 2,
-          and HIPAA compliance frameworks.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">Next.js</span>
-          <span class="project-tag">MCP Proxy</span>
-          <span class="project-tag">OPA</span>
-          <span class="project-tag">PostgreSQL</span>
-        </div>
-        <a href="https://github.com/Dnakitare/imara" target="_blank" class="project-link">View on GitHub</a>
-      </div>
-
-      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/castellan-notes', '_blank')">
-        <h3>Castellan</h3>
-        <p>
-          Specifications and decision records for a proof-of-concept on delegated
-          authority in local AI agent systems, applied to industrial maintenance
-          work-order triage. Capability-broker architecture, hash-chained audit
-          substrate, refusal as a first-class outcome. Written from the auditor's
-          perspective. Implementation kept private.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">Architecture</span>
-          <span class="project-tag">Local LLMs</span>
-          <span class="project-tag">Industrial</span>
-          <span class="project-tag">Spec-first</span>
-        </div>
-        <a href="https://github.com/Dnakitare/castellan-notes" target="_blank" class="project-link">View on GitHub</a>
-      </div>
-
-      <div class="project-card" onclick="window.open('https://prior-auth-assistant.pages.dev', '_blank')">
-
-        <h3>Prior Auth Assistant</h3>
-        <p>
-          Reference architecture for a HIPAA-shaped healthcare AI app. Postgres row-level
-          security with a two-role deployment, Fernet field-level PHI encryption with rotation,
-          HMAC-chained tamper-evident audit log, prompt-injection hardening with delimited
-          nonces and identifier post-validation. Claude does OCR, extraction, and appeal
-          generation through one vendor. Public live demo.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">Python</span>
-          <span class="project-tag">FastAPI</span>
-          <span class="project-tag">React</span>
-          <span class="project-tag">PostgreSQL RLS</span>
-          <span class="project-tag">Claude API</span>
-        </div>
-        <a href="https://prior-auth-assistant.pages.dev" target="_blank" class="project-link">Try the live demo</a>
-        <a href="https://github.com/Dnakitare/prior-auth-assistant" target="_blank" class="project-link">View on GitHub</a>
-      </div>
-
-      <div class="project-card" onclick="window.open('https://github.com/Dnakitare/laravel-outbox', '_blank')">
-        <h3>Laravel Outbox</h3>
-        <p>
-          Transactional Outbox pattern for Laravel. Persists events and queued jobs
-          atomically with business writes, then replays them through a concurrent-safe
-          worker with exponential backoff and dead-letter. At-least-once delivery for
-          distributed systems.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">PHP</span>
-          <span class="project-tag">Laravel</span>
-          <span class="project-tag">PostgreSQL</span>
-          <span class="project-tag">Reliability</span>
-        </div>
-        <a href="https://github.com/Dnakitare/laravel-outbox" target="_blank" class="project-link">View on GitHub</a>
-      </div>
-
-      <div class="project-card" onclick="window.open('maze.html', '_blank')">
-        <h3>Terminal Maze</h3>
-        <p>
-          Interactive terminal-themed maze game with multiple difficulty levels and three
-          generation algorithms (DFS, Prim's, Kruskal's). Real-time path tracking with
-          a retro scanline aesthetic.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">JavaScript</span>
-          <span class="project-tag">Canvas</span>
-          <span class="project-tag">Algorithms</span>
-        </div>
-        <a href="maze.html" class="project-link">Play Game</a>
-      </div>
-
-      <div class="project-card" onclick="window.open('https://github.com/Dnakitare', '_blank')">
-        <h3>More on GitHub</h3>
-        <p>
-          Web scrapers, data pipelines, and AI tooling. More open-source work.
-        </p>
-        <div class="project-tags">
-          <span class="project-tag">Open Source</span>
-        </div>
-        <a href="https://github.com/Dnakitare" target="_blank" class="project-link">Visit GitHub</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="education">
-    <h2 class="section-title">Education</h2>
-    <div class="experience-content">
-      <div class="experience-item">
-        <h3>Master of Business Administration</h3>
-        <h4>Temple University, Fox School of Business</h4>
-        <span class="experience-date">Innovation Management &amp; Strategy &bull; 2017</span>
-      </div>
-      <div class="experience-item">
-        <h3>Bachelor of Arts</h3>
-        <h4>Pomona College</h4>
-        <span class="experience-date">Politics &amp; Economics &bull; 2010</span>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <h2 class="section-title">Contact</h2>
-    <div class="contact-content">
-      <p class="contact-text">
+    <section id="contact">
+      <div class="eyebrow">contact</div>
+      <h2 class="section-title">Let's talk.</h2>
+      <div class="prose">
         Open to senior backend engineering roles, with staff-level scope at the right fit.
-        Particular interest in healthcare SaaS, AI infrastructure, and compliance-regulated systems.
-        Also happy to talk backend architecture, API design, or anything you're building.
-      </p>
-      <div class="social-links">
-        <a href="https://github.com/Dnakitare" target="_blank" class="social-link">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          <span>GitHub</span>
-        </a>
-        <a href="mailto:dnakitare@gmail.com" class="social-link">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-          <span>Email</span>
-        </a>
-        <a href="https://linkedin.com/in/dnakitare" target="_blank" class="social-link">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          <span>LinkedIn</span>
-        </a>
+        Particular interest in healthcare SaaS, AI infrastructure, and compliance-regulated
+        systems. Also happy to talk backend architecture, API design, or whatever you're
+        building.
       </div>
-      <div class="availability-status">
-        <span class="status-dot"></span>
-        Open to senior backend &amp; fullstack engineering roles
+      <div class="availability">Open to senior &amp; staff conversations</div>
+      <div class="contact-links">
+        <a href="mailto:dnakitare@gmail.com"><span class="label-key">email</span>dnakitare@gmail.com</a>
+        <a href="https://github.com/Dnakitare" target="_blank" rel="noopener"><span class="label-key">github</span>Dnakitare</a>
+        <a href="https://linkedin.com/in/dnakitare" target="_blank" rel="noopener"><span class="label-key">linkedin</span>in/dnakitare</a>
       </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <a href="maze.html" class="game-link">Play Maze Game</a>
+  <footer>
+    <div class="colophon">
+      Set in Fraunces and Inter. Hand-coded. No framework. No tracking.
+      &copy; 2026 Daniel Nakitare.
+    </div>
+    <div class="footer-links">
+      <a href="maze.html">/maze</a>
+      <a href="https://github.com/Dnakitare/dnakitare.github.io" target="_blank" rel="noopener">/src</a>
+    </div>
+  </footer>
+
+  <div id="konami-banner">
+    Konami unlock acknowledged.
+    <a href="maze.html">enter the maze</a>
+  </div>
 
   <script>
-    const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let mouse = { x: -1000, y: -1000 };
-    let scrollProgress = 0;
+    // ===================================================== Console easter egg
+    const consoleArt = [
+      '',
+      '   ▌                ▌  ▌',
+      '   ▛▀▖▛▀▖▝▀▖▌ ▌ ▝▀▖▙▄▘▛▀▖',
+      '   ▌ ▌▌ ▌▖▘▌▌ ▌ ▖▘▌▛▄▖▌ ▌',
+      '   ▘ ▘▘ ▘▝▀▘▝▀▘ ▝▀▘▘ ▘▘ ▘',
+      '',
+      '   Daniel Nakitare — senior software engineer',
+      '   Backend systems where the consequences are real.',
+      '',
+      '   Open to senior & staff conversations.',
+      '   dnakitare@gmail.com',
+      ''
+    ].join('\n');
+    console.log('%c' + consoleArt, 'color:#e8a317;font-family:monospace;font-size:12px;line-height:1.4;');
+    console.log('%cYou opened devtools. We should talk.', 'color:#f1e8d4;font-family:monospace;');
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-    window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
-
-    // Track mouse position relative to viewport
-    window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
-    window.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
-
-    class Particle {
-      constructor() {
-        this.reset();
-      }
-
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.baseSize = Math.random() * 1.5 + 0.5;
-        this.size = this.baseSize;
-        this.speedX = (Math.random() - 0.5) * 0.3;
-        this.speedY = (Math.random() - 0.5) * 0.3;
-        this.baseOpacity = Math.random() * 0.4 + 0.1;
-        this.opacity = this.baseOpacity;
-        // Slight color variation: some particles lean teal, some lean blue-white
-        this.hueShift = Math.random() * 30 - 15; // -15 to +15
-      }
-
-      update() {
-        // Mouse interaction: particles gently push away from cursor
-        const dx = this.x - mouse.x;
-        const dy = this.y - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const mouseRadius = 150;
-
-        if (dist < mouseRadius) {
-          const force = (mouseRadius - dist) / mouseRadius;
-          const angle = Math.atan2(dy, dx);
-          this.x += Math.cos(angle) * force * 2;
-          this.y += Math.sin(angle) * force * 2;
-          // Brighten near cursor
-          this.opacity = Math.min(0.8, this.baseOpacity + force * 0.5);
-          this.size = this.baseSize + force * 2;
-        } else {
-          this.opacity += (this.baseOpacity - this.opacity) * 0.05;
-          this.size += (this.baseSize - this.size) * 0.05;
-        }
-
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        if (this.x > canvas.width) this.x = 0;
-        if (this.x < 0) this.x = canvas.width;
-        if (this.y > canvas.height) this.y = 0;
-        if (this.y < 0) this.y = canvas.height;
-      }
-
-      draw() {
-        const r = 157 + this.hueShift;
-        const g = 211 + this.hueShift * 0.5;
-        const b = 247;
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    function initParticles() {
-      particles = [];
-      const count = Math.min(120, Math.floor((canvas.width * canvas.height) / 12000));
-      for (let i = 0; i < count; i++) {
-        particles.push(new Particle());
-      }
-    }
-
-    function drawBackground() {
-      // Deep gradient that shifts subtly with scroll
-      const t = scrollProgress;
-
-      // Hero: deep navy with teal undertone -> deeper black as you scroll
-      const r1 = Math.round(8 - t * 6);
-      const g1 = Math.round(12 + t * 4);
-      const b1 = Math.round(28 - t * 15);
-
-      const r2 = Math.round(2);
-      const g2 = Math.round(4 + t * 2);
-      const b2 = Math.round(12 - t * 6);
-
-      const grad = ctx.createLinearGradient(0, 0, canvas.width * 0.3, canvas.height);
-      grad.addColorStop(0, `rgb(${r1}, ${g1}, ${b1})`);
-      grad.addColorStop(1, `rgb(${r2}, ${g2}, ${b2})`);
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Subtle aurora glow in the hero area that fades on scroll
-      const auroraOpacity = Math.max(0, 0.12 - t * 0.12);
-      if (auroraOpacity > 0.005) {
-        const glow = ctx.createRadialGradient(
-          canvas.width * 0.5, canvas.height * 0.3, 0,
-          canvas.width * 0.5, canvas.height * 0.3, canvas.width * 0.6
-        );
-        glow.addColorStop(0, `rgba(80, 160, 220, ${auroraOpacity})`);
-        glow.addColorStop(0.4, `rgba(60, 130, 200, ${auroraOpacity * 0.5})`);
-        glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = glow;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Second glow offset for depth
-        const glow2 = ctx.createRadialGradient(
-          canvas.width * 0.7, canvas.height * 0.15, 0,
-          canvas.width * 0.7, canvas.height * 0.15, canvas.width * 0.4
-        );
-        glow2.addColorStop(0, `rgba(100, 180, 240, ${auroraOpacity * 0.6})`);
-        glow2.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = glow2;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-    }
-
-    function connectParticles() {
-      const maxDist = 130;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < maxDist) {
-            const lineOpacity = 0.15 * (1 - distance / maxDist);
-            ctx.strokeStyle = `rgba(157, 211, 247, ${lineOpacity})`;
-            ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      // Draw connections from mouse to nearby particles
-      for (let i = 0; i < particles.length; i++) {
-        const dx = particles[i].x - mouse.x;
-        const dy = particles[i].y - mouse.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 200) {
-          const lineOpacity = 0.2 * (1 - distance / 200);
-          ctx.strokeStyle = `rgba(180, 220, 250, ${lineOpacity})`;
-          ctx.lineWidth = 0.6;
-          ctx.beginPath();
-          ctx.moveTo(mouse.x, mouse.y);
-          ctx.lineTo(particles[i].x, particles[i].y);
-          ctx.stroke();
-        }
-      }
-    }
-
-    function animate() {
-      drawBackground();
-      particles.forEach(p => { p.update(); p.draw(); });
-      connectParticles();
-      requestAnimationFrame(animate);
-    }
-
-    initParticles();
-    animate();
-
-    // Track scroll progress (0 = top, 1 = past hero)
-    function updateScroll() {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      scrollProgress = Math.min(1, window.pageYOffset / (window.innerHeight * 1.5));
-    }
-    window.addEventListener('scroll', updateScroll);
-
-    // Scroll Animations
+    // ===================================================== Section reveal
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
+    }, { threshold: 0.08, rootMargin: '0px 0px -80px 0px' });
+    document.querySelectorAll('section').forEach(s => observer.observe(s));
+    // Hero is immediately visible
+    document.querySelector('header.hero').classList.add('visible');
 
-    document.querySelectorAll('section').forEach(section => observer.observe(section));
+    // ===================================================== Atmosphere dim on scroll
+    const atmos = document.getElementById('atmosphere');
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.pageYOffset;
+      if (y > 200 && lastScroll <= 200) atmos.classList.add('dim');
+      else if (y <= 200 && lastScroll > 200) atmos.classList.remove('dim');
+      lastScroll = y;
+    });
 
-    // Animate hero text
-    const heroText = document.querySelector('.text');
-    setTimeout(() => {
-      heroText.style.animation = 'glow 2s ease-in-out infinite alternate, fadeInUp 1s ease-out forwards';
-    }, 100);
-
-    // Navigation
+    // ===================================================== Active nav
     const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('section');
-
+    const sections = document.querySelectorAll('main > section');
     function updateActiveNav() {
+      // Only highlight a nav link if we're actually past the hero.
+      if (window.pageYOffset < window.innerHeight * 0.5) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        return;
+      }
       let current = '';
-      sections.forEach(section => {
-        if (window.pageYOffset >= section.offsetTop - 200) {
-          current = section.getAttribute('id');
+      sections.forEach(s => {
+        if (window.pageYOffset >= s.offsetTop - 200) {
+          current = s.getAttribute('id') || current;
         }
       });
-      navLinks.forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+      navLinks.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
       });
     }
-
-    window.addEventListener('scroll', updateActiveNav);
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    window.addEventListener('resize', updateActiveNav);
+    document.fonts.ready.then(updateActiveNav);
     updateActiveNav();
 
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        if (targetId === '#home') {
+    // ===================================================== Smooth scroll for nav
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const target = a.getAttribute('href');
+        if (target === '#home') {
+          e.preventDefault();
           window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-          document.querySelector(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (target.length > 1) {
+          const el = document.querySelector(target);
+          if (el) {
+            e.preventDefault();
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         }
       });
+    });
+
+    // ===================================================== Konami code → /maze
+    const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let kIdx = 0;
+    window.addEventListener('keydown', (e) => {
+      const expected = konami[kIdx];
+      if (e.key === expected) {
+        kIdx++;
+        if (kIdx === konami.length) {
+          document.getElementById('konami-banner').classList.add('show');
+          kIdx = 0;
+          setTimeout(() => {
+            document.getElementById('konami-banner').classList.remove('show');
+          }, 6000);
+        }
+      } else {
+        kIdx = (e.key === konami[0]) ? 1 : 0;
+      }
     });
   </script>
 </body>
