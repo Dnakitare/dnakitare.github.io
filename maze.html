@@ -1,846 +1,738 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL MAZE v1.0</title>
-    <style>
-        body {
-            font-family: 'Courier New', monospace;
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: #0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* CRT Screen Effect */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(rgba(0, 0, 0, 0) 50%, 
-                rgba(0, 15, 0, 0.15) 50%),
-                linear-gradient(90deg, rgba(0, 15, 0, 0.06), rgba(0, 15, 0, 0.01));
-            background-size: 100% 4px, 4px 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        /* Scanline Effect */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                rgba(0, 30, 0, 0.8),
-                rgba(0, 30, 0, 0.8) 3px,
-                transparent 3px,
-                transparent 6px
-            );
-            background-size: 100% 6px;
-            animation: scanline 6s linear infinite;
-            pointer-events: none;
-            z-index: 11;
-        }
-        
-        @keyframes scanline {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(100vh); }
-        }
-        
-        header {
-            text-align: center;
-            padding: 20px;
-            width: 100%;
-            background-color: #000;
-            border-bottom: 2px solid #0f0;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        h1 {
-            margin: 0;
-            color: #0f0;
-            text-shadow: 0 0 5px #0f0;
-            letter-spacing: 2px;
-            margin-left: 20px;
-        }
-        
-        .home-button {
-            background-color: #000;
-            color: #0f0;
-            border: 1px solid #0f0;
-            padding: 8px 15px;
-            border-radius: 0;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 0 3px #0f0;
-            text-decoration: none;
-            margin-left: 20px;
-            margin-right: 20px;
-        }
-        
-        .home-button:hover {
-            background-color: #0f0;
-            color: #000;
-            box-shadow: 0 0 10px #0f0;
-        }
-        
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            flex-grow: 1;
-            position: relative;
-        }
-        
-        #gameCanvas {
-            background-color: #000;
-            border: 2px solid #0f0;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
-            margin: 20px 0;
-            image-rendering: pixelated;
-        }
-        
-        .menu {
-            background-color: #000;
-            padding: 20px;
-            border: 2px solid #0f0;
-            border-radius: 0;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-            margin-bottom: 20px;
-            width: 80%;
-            max-width: 500px;
-        }
-        
-        .menu-section {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #0f0;
-            text-shadow: 0 0 3px #0f0;
-        }
-        
-        select, input {
-            width: 100%;
-            padding: 8px;
-            border-radius: 0;
-            border: 1px solid #0f0;
-            background-color: #000;
-            color: #0f0;
-            margin-bottom: 10px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        select:focus, input:focus {
-            outline: none;
-            box-shadow: 0 0 5px #0f0;
-        }
-        
-        button {
-            background-color: #000;
-            color: #0f0;
-            border: 1px solid #0f0;
-            padding: 10px 20px;
-            border-radius: 0;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
-            margin: 5px;
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 0 3px #0f0;
-        }
-        
-        button:hover {
-            background-color: #0f0;
-            color: #000;
-            box-shadow: 0 0 10px #0f0;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .timer {
-            font-size: 24px;
-            margin: 10px 0;
-            color: #0f0;
-            text-shadow: 0 0 5px #0f0;
-            letter-spacing: 2px;
-        }
-        
-        .instructions {
-            background-color: #000;
-            padding: 15px;
-            border: 1px solid #0f0;
-            border-radius: 0;
-            margin-top: 20px;
-            width: 80%;
-            max-width: 500px;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 10px;
-            width: 100%;
-            background-color: #000;
-            border-top: 1px solid #0f0;
-            margin-top: auto;
-            font-size: 14px;
-        }
-        
-        /* Terminal Glitch Effect */
-        @keyframes glitch {
-            0% { text-shadow: 0 0 5px #0f0; }
-            25% { text-shadow: -2px 0 5px #f0f, 2px 0 5px #0ff; }
-            50% { text-shadow: 0 0 5px #0f0; }
-            75% { text-shadow: -3px 0 5px #f0f, 3px 0 5px #0ff; }
-            100% { text-shadow: 0 0 5px #0f0; }
-        }
-        
-        .glitch {
-            animation: glitch 10s infinite;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A maze, rendered as a schematic. An easter egg on Daniel Nakitare's site.">
+  <title>maze · daniel_nakitare</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2316181D'/><text x='16' y='20' font-family='ui-monospace,monospace' font-size='16' font-weight='700' fill='%23ECEAE3' text-anchor='middle'>dn</text><rect x='9' y='23.5' width='14' height='2.6' rx='1' fill='%231F7A4D'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bone: #ECEAE3;
+      --card: #F3F1EA;
+      --bone-2: #E4E1D8;
+      --ink: #16181D;
+      --ink-2: #3A3D45;
+      --ink-3: #6B6E76;
+      --hair: rgba(22, 24, 29, 0.14);
+      --hair-2: rgba(22, 24, 29, 0.28);
+      --green: #1F7A4D;
+      --green-bg: rgba(31, 122, 77, 0.10);
+      --red: #B23A2E;
+      --grid: rgba(22, 24, 29, 0.05);
+      --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+      --display: 'Archivo', system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bone);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+    /* ===================================================== NAV */
+    nav.top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; min-height: 56px;
+      padding: 0 clamp(1.1rem, 4vw, 2.5rem);
+      border-bottom: 1px solid var(--hair);
+    }
+    nav.top .mark { font-weight: 600; letter-spacing: 0.02em; }
+    nav.top .mark .brk { color: var(--ink-3); }
+    nav.top .mark.done .brk { color: var(--green); }
+    nav.top .back {
+      color: var(--ink-3); text-decoration: none; font-size: 0.82rem;
+      border-bottom: 1px solid transparent; padding-bottom: 2px;
+      transition: color 0.18s ease, border-color 0.18s ease;
+    }
+    nav.top .back:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+    /* ===================================================== LAYOUT */
+    main {
+      flex: 1; width: 100%; max-width: 720px; margin: 0 auto;
+      padding: clamp(1.5rem, 5vw, 3rem) clamp(1.1rem, 4vw, 2.5rem) 3rem;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .eyebrow {
+      font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-3); align-self: flex-start; margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--display); font-weight: 800;
+      font-size: clamp(2.4rem, 9vw, 3.6rem);
+      letter-spacing: -0.02em; text-transform: uppercase;
+      align-self: flex-start; line-height: 0.95; margin-bottom: 0.6rem;
+    }
+    .lede {
+      color: var(--ink-2); align-self: flex-start; max-width: 48ch;
+      margin-bottom: 2rem;
+    }
+    .lede b { color: var(--ink); font-weight: 600; }
+
+    .hidden { display: none !important; }
+
+    /* ===================================================== PANEL (config) */
+    .panel {
+      width: 100%; max-width: 460px;
+      background: var(--card); border: 1px solid var(--hair-2);
+      padding: 1.5rem;
+    }
+    .panel .ph {
+      font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-3); margin-bottom: 1.25rem;
+      padding-bottom: 0.7rem; border-bottom: 1px solid var(--hair);
+    }
+    .field { margin-bottom: 1.1rem; }
+    .field label {
+      display: block; margin-bottom: 0.45rem;
+      font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    select {
+      width: 100%; padding: 0.6rem 0.7rem;
+      background: var(--bone); color: var(--ink);
+      border: 1px solid var(--hair-2); border-radius: 0;
+      font-family: var(--mono); font-size: 0.85rem;
+      cursor: pointer;
+      appearance: none; -webkit-appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--ink-3) 50%),
+        linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
+      background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+    select:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+    /* ===================================================== BUTTONS */
+    .btn {
+      font-family: var(--mono); font-size: 0.74rem;
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+      color: var(--ink); background: var(--bone);
+      border: 1px solid var(--hair-2); border-radius: 0;
+      padding: 0.6rem 1.1rem; cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    }
+    .btn:hover { background: var(--ink); color: var(--bone); border-color: var(--ink); }
+    .btn--primary {
+      width: 100%; margin-top: 0.4rem; padding: 0.8rem;
+      font-size: 0.82rem;
+      background: var(--ink); color: var(--bone); border-color: var(--ink);
+    }
+    .btn--primary:hover { background: var(--green); border-color: var(--green); }
+
+    /* ===================================================== GAME */
+    .game { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    .statusbar {
+      width: 100%; max-width: 600px;
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 0.74rem; letter-spacing: 0.05em; color: var(--ink-3);
+      padding-bottom: 0.7rem; margin-bottom: 0.9rem;
+      border-bottom: 1px solid var(--hair);
+    }
+    .statusbar .k { color: var(--ink-3); }
+    .statusbar .v { color: var(--ink); font-weight: 600; }
+    .statusbar .time .v { color: var(--green); }
+
+    .stage { width: 100%; max-width: 600px; display: flex; justify-content: center; }
+    .board {
+      border: 1px solid var(--hair-2);
+      background:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+        var(--bone);
+      background-size: 24px 24px, 24px 24px, 100% 100%;
+      padding: 6px; line-height: 0;
+    }
+    canvas { display: block; touch-action: none; }
+
+    /* ===================================================== D-PAD + CONTROLS */
+    .dpad {
+      display: none; grid-template-columns: repeat(3, 56px);
+      grid-template-rows: repeat(2, 56px); gap: 6px;
+      margin-top: 1.2rem; justify-content: center;
+    }
+    body.touch .dpad { display: grid; }
+    .dpad button {
+      font-family: var(--mono); font-size: 1.2rem; color: var(--ink);
+      background: var(--card); border: 1px solid var(--hair-2); cursor: pointer;
+      display: grid; place-items: center; user-select: none;
+      -webkit-user-select: none; touch-action: manipulation;
+    }
+    .dpad button:active { background: var(--ink); color: var(--bone); }
+    .dpad .up { grid-column: 2; grid-row: 1; }
+    .dpad .left { grid-column: 1; grid-row: 2; }
+    .dpad .down { grid-column: 2; grid-row: 2; }
+    .dpad .right { grid-column: 3; grid-row: 2; }
+    .ctl { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; margin-top: 1.3rem; }
+
+    .howto {
+      margin-top: 2.5rem; align-self: flex-start;
+      font-size: 0.78rem; color: var(--ink-3); line-height: 1.7;
+      border-top: 1px solid var(--hair); padding-top: 1.1rem; width: 100%;
+    }
+    .howto .key {
+      color: var(--ink-2); border: 1px solid var(--hair-2);
+      padding: 0.05em 0.4em; font-size: 0.9em;
+    }
+
+    /* ===================================================== WIN OVERLAY */
+    .overlay { position: fixed; inset: 0; z-index: 100; display: flex; }
+    .overlay[hidden] { display: none; }
+    .overlay .scrim { position: absolute; inset: 0; background: rgba(10, 9, 8, 0.55); }
+    .overlay .receipt {
+      position: relative; margin: auto;
+      width: min(92vw, 380px); background: var(--bone);
+      border: 1px solid var(--ink); padding: 1.75rem;
+      box-shadow: 0 24px 60px rgba(10, 9, 8, 0.4);
+    }
+    .overlay .stamp {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--green); font-size: 0.72rem; letter-spacing: 0.14em;
+      text-transform: uppercase; font-weight: 600; margin-bottom: 1.1rem;
+    }
+    .overlay .stamp .chk {
+      width: 16px; height: 16px; border: 1.5px solid var(--green);
+      border-radius: 50%; display: grid; place-items: center;
+    }
+    .overlay .stamp .chk svg { width: 9px; height: 9px; }
+    .overlay h2 {
+      font-family: var(--display); font-weight: 700; font-size: 1.5rem;
+      letter-spacing: -0.01em; margin-bottom: 1.25rem;
+    }
+    .overlay .row {
+      display: flex; justify-content: space-between;
+      padding: 0.5rem 0; border-top: 1px solid var(--hair);
+      font-size: 0.82rem;
+    }
+    .overlay .row .k { color: var(--ink-3); }
+    .overlay .row .v { color: var(--ink); font-weight: 600; }
+    .overlay .row .v.best { color: var(--green); }
+    .overlay .newbest {
+      margin-top: 0.9rem; font-size: 0.68rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--green);
+    }
+    .overlay .acts { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
+    .overlay .acts .btn { flex: 1; text-align: center; }
+
+    footer {
+      border-top: 1px solid var(--hair);
+      padding: 1rem clamp(1.1rem, 4vw, 2.5rem);
+      font-size: 0.7rem; color: var(--ink-3); letter-spacing: 0.05em;
+      display: flex; justify-content: space-between; gap: 1rem;
+    }
+    footer a { color: var(--ink-3); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <h1 class="glitch">>_ TERMINAL MAZE v1.0</h1>
-        <a href="index.html" class="home-button">> HOME</a>
-    </header>
-    
-    <div class="game-container">
-        <div id="mainMenu" class="menu">
-            <h2>> SYSTEM CONFIGURATION</h2>
-            
-            <div class="menu-section">
-                <label for="difficulty">> DIFFICULTY LEVEL:</label>
-                <select id="difficulty">
-                    <option value="easy">NOVICE</option>
-                    <option value="medium" selected>STANDARD</option>
-                    <option value="hard">ADVANCED</option>
-                    <option value="extreme">TERMINAL</option>
-                </select>
-            </div>
-            
-            <div class="menu-section">
-                <label for="mazeType">> MAZE ALGORITHM:</label>
-                <select id="mazeType">
-                    <option value="dfs">DFS (STANDARD)</option>
-                    <option value="prim">PRIM'S (COMPLEX)</option>
-                    <option value="kruskal">KRUSKAL'S (RANDOMIZED)</option>
-                </select>
-            </div>
-            
-            <div class="controls">
-                <button id="startGame">> INITIALIZE SYSTEM</button>
-            </div>
+  <nav class="top">
+    <span class="mark" id="mark"><span class="brk" id="brk">[ ]</span> maze</span>
+    <a class="back" href="index.html">&larr; daniel_nakitare.log</a>
+  </nav>
+
+  <main>
+    <div class="eyebrow">easter egg · an unverified path</div>
+    <h1>Maze</h1>
+    <p class="lede">
+      A maze, drawn like one of the schematics. Start at genesis, reach the
+      <b>green exit</b> to verify. Your forward path records green, backtracking records
+      <b>red</b>. Same idea as the rest of the site: the trail is the proof.
+    </p>
+
+    <!-- CONFIG -->
+    <section class="panel" id="menu">
+      <div class="ph">configuration</div>
+      <div class="field">
+        <label for="difficulty">size</label>
+        <select id="difficulty">
+          <option value="easy">novice · 10 &times; 10</option>
+          <option value="medium" selected>standard · 15 &times; 15</option>
+          <option value="hard">advanced · 25 &times; 25</option>
+          <option value="extreme">extreme · 40 &times; 40</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="mazeType">generator</label>
+        <select id="mazeType">
+          <option value="dfs">depth-first search</option>
+          <option value="prim">prim's algorithm</option>
+          <option value="kruskal">kruskal's algorithm</option>
+        </select>
+      </div>
+      <button class="btn btn--primary" id="startGame">start</button>
+    </section>
+
+    <!-- GAME -->
+    <section class="game hidden" id="gameUI">
+      <div class="statusbar">
+        <span class="time"><span class="k">time </span><span class="v" id="timer">00:00</span></span>
+        <span class="best"><span class="k">best </span><span class="v" id="best">&ndash;&ndash;</span></span>
+      </div>
+      <div class="stage">
+        <div class="board">
+          <canvas id="gameCanvas" aria-label="Maze. Navigate with arrow keys, WASD, swipe, or the on-screen pad."></canvas>
         </div>
-        
-        <div id="gameUI" class="hidden">
-            <div class="timer" id="timer">> TIME ELAPSED: 00:00</div>
-            <canvas id="gameCanvas"></canvas>
-            <div class="controls">
-                <button id="newGame">> NEW MAZE</button>
-                <button id="backToMenu">> MAIN MENU</button>
-            </div>
-        </div>
-        
-        <div class="instructions">
-            <h3>> SYSTEM INSTRUCTIONS</h3>
-            <p>> USE [WASD] OR [ARROW KEYS] TO NAVIGATE</p>
-            <p>> REACH THE RED TARGET TO COMPLETE MAZE</p>
-            <p>> AVOID BACKTRACKING FOR OPTIMAL PATH</p>
-        </div>
+      </div>
+      <div class="dpad" aria-hidden="false">
+        <button class="up" data-dir="up" aria-label="Move up">&uarr;</button>
+        <button class="left" data-dir="left" aria-label="Move left">&larr;</button>
+        <button class="down" data-dir="down" aria-label="Move down">&darr;</button>
+        <button class="right" data-dir="right" aria-label="Move right">&rarr;</button>
+      </div>
+      <div class="ctl">
+        <button class="btn" id="newGame">new maze</button>
+        <button class="btn" id="backToMenu">configure</button>
+      </div>
+    </section>
+
+    <p class="howto">
+      <span class="key">W A S D</span> or <span class="key">&larr; &uarr; &darr; &rarr;</span>
+      to navigate. on a phone, swipe the board or use the pad. reach the green exit to verify.
+    </p>
+  </main>
+
+  <footer>
+    <span>maze · hand-coded · no framework</span>
+    <a href="index.html">&larr; back to the record</a>
+  </footer>
+
+  <!-- WIN -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="scrim" data-close></div>
+    <div class="receipt" role="dialog" aria-modal="true" aria-labelledby="ov-title">
+      <div class="stamp">
+        <span class="chk"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        record verified
+      </div>
+      <h2 id="ov-title">Exit reached.</h2>
+      <div class="row"><span class="k">time</span><span class="v" id="ov-time">00:00</span></div>
+      <div class="row"><span class="k">best (this size)</span><span class="v best" id="ov-best">00:00</span></div>
+      <div class="newbest hidden" id="ov-newbest">new best time</div>
+      <div class="acts">
+        <button class="btn" id="ov-again">new maze</button>
+        <button class="btn" id="ov-menu">configure</button>
+      </div>
     </div>
-    
-    <footer>
-        <p>> SYSTEM READY</p>
-    </footer>
+  </div>
 
-    <script>
-        // Game state
-        const gameState = {
-            maze: [],
-            player: { x: 0, y: 0 },
-            end: { x: 0, y: 0 },
-            cellSize: 30,
-            width: 15,
-            height: 15,
-            startTime: 0,
-            timerInterval: null,
-            difficulty: 'medium',
-            mazeType: 'dfs',
-            colors: {
-                wall: '#0f0',
-                path: '#000',
-                player: '#0f0',
-                end: '#f00',
-                backtrack: '#f80',
-                currentPath: '#0f0'
-            },
-            visited: new Map(), // Stores visit time for animation
-            pathHistory: [],
-            hueOffset: 0
-        };
+  <script>
+    // ===================================================== State
+    const gameState = {
+      maze: [],
+      player: { x: 0, y: 0 },
+      end: { x: 0, y: 0 },
+      cellSize: 30,
+      maxCell: 30,
+      width: 15,
+      height: 15,
+      startTime: 0,
+      timerInterval: null,
+      difficulty: 'medium',
+      mazeType: 'dfs',
+      visited: new Map(),
+      pathHistory: [],
+      colors: {
+        bg: '#ECEAE3',
+        wall: '#16181D',
+        forward: 'rgba(31, 122, 77, 0.16)',
+        backtrack: 'rgba(178, 58, 46, 0.16)',
+        visited: 'rgba(22, 24, 29, 0.05)',
+        player: '#16181D',
+        exit: '#1F7A4D',
+        exitInk: '#ECEAE3'
+      }
+    };
 
-        // DOM elements
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const mainMenu = document.getElementById('mainMenu');
-        const gameUI = document.getElementById('gameUI');
-        const timerElement = document.getElementById('timer');
-        const startGameBtn = document.getElementById('startGame');
-        const newGameBtn = document.getElementById('newGame');
-        const backToMenuBtn = document.getElementById('backToMenu');
-        const difficultySelect = document.getElementById('difficulty');
-        const mazeTypeSelect = document.getElementById('mazeType');
+    const SIZES = {
+      easy:    { w: 10, h: 10, maxCell: 44 },
+      medium:  { w: 15, h: 15, maxCell: 34 },
+      hard:    { w: 25, h: 25, maxCell: 22 },
+      extreme: { w: 40, h: 40, maxCell: 15 }
+    };
 
-        // Event listeners
-        startGameBtn.addEventListener('click', startGame);
-        newGameBtn.addEventListener('click', startGame);
-        backToMenuBtn.addEventListener('click', () => {
-            stopTimer();
-            gameUI.classList.add('hidden');
-            mainMenu.classList.remove('hidden');
-        });
+    // ===================================================== DOM
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const menu = document.getElementById('menu');
+    const gameUI = document.getElementById('gameUI');
+    const timerEl = document.getElementById('timer');
+    const bestEl = document.getElementById('best');
+    const brk = document.getElementById('brk');
+    const mark = document.getElementById('mark');
+    const overlay = document.getElementById('overlay');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // Initialize game
-        function startGame() {
-            // Set game parameters based on difficulty
-            gameState.difficulty = difficultySelect.value;
-            gameState.mazeType = mazeTypeSelect.value;
-            
-            switch(gameState.difficulty) {
-                case 'easy':
-                    gameState.width = 10;
-                    gameState.height = 10;
-                    gameState.cellSize = 40;
-                    break;
-                case 'medium':
-                    gameState.width = 15;
-                    gameState.height = 15;
-                    gameState.cellSize = 30;
-                    break;
-                case 'hard':
-                    gameState.width = 25;
-                    gameState.height = 25;
-                    gameState.cellSize = 20;
-                    break;
-                case 'extreme':
-                    gameState.width = 40;
-                    gameState.height = 40;
-                    gameState.cellSize = 15;
-                    break;
-            }
-            
-            // Set canvas size
-            canvas.width = gameState.width * gameState.cellSize;
-            canvas.height = gameState.height * gameState.cellSize;
-            
-            // Generate maze
-            generateMaze();
-            
-            // Set player and end positions
-            gameState.player = { x: 0, y: 0 };
-            gameState.end = { 
-                x: gameState.width - 1, 
-                y: gameState.height - 1 
-            };
-            gameState.visited = new Map();
-            gameState.visited.set(`${0},${0}`, { time: 0, isBacktrack: false });
-            gameState.pathHistory = [{x: 0, y: 0}];
-            
-            // Start timer
-            startTimer();
-            
-            // Show game UI
-            mainMenu.classList.add('hidden');
-            gameUI.classList.remove('hidden');
-            
-            // Start animation loop (always restart to ensure it's running)
-            if (gameState.animationId) {
-                cancelAnimationFrame(gameState.animationId);
-            }
-            gameState.hueOffset = 0;
-            gameState.animationId = requestAnimationFrame(animate);
-            
-            // Draw initial state
-            drawMaze();
+    document.getElementById('startGame').addEventListener('click', startGame);
+    document.getElementById('newGame').addEventListener('click', startGame);
+    document.getElementById('backToMenu').addEventListener('click', toMenu);
+    document.getElementById('ov-again').addEventListener('click', () => { closeOverlay(); startGame(); });
+    document.getElementById('ov-menu').addEventListener('click', () => { closeOverlay(); toMenu(); });
+    overlay.addEventListener('click', (e) => { if (e.target.hasAttribute('data-close')) closeOverlay(); });
+
+    function toMenu() {
+      stopTimer();
+      gameUI.classList.add('hidden');
+      menu.classList.remove('hidden');
+      setVerified(false);
+    }
+
+    function setVerified(on) {
+      brk.textContent = on ? '[✓]' : '[ ]';
+      mark.classList.toggle('done', on);
+    }
+
+    // ===================================================== Start
+    function startGame() {
+      setVerified(false);
+      gameState.difficulty = document.getElementById('difficulty').value;
+      gameState.mazeType = document.getElementById('mazeType').value;
+      const s = SIZES[gameState.difficulty];
+      gameState.width = s.w; gameState.height = s.h; gameState.maxCell = s.maxCell;
+
+      generateMaze();
+
+      gameState.player = { x: 0, y: 0 };
+      gameState.end = { x: gameState.width - 1, y: gameState.height - 1 };
+      gameState.visited = new Map();
+      gameState.visited.set('0,0', { isBacktrack: false });
+      gameState.pathHistory = [{ x: 0, y: 0 }];
+
+      menu.classList.add('hidden');
+      gameUI.classList.remove('hidden');
+      bestEl.textContent = formatMs(getBest());
+
+      fitCanvas();
+      startTimer();
+      drawMaze();
+    }
+
+    // ===================================================== Responsive sizing
+    function fitCanvas() {
+      const stage = document.querySelector('.stage');
+      const avail = Math.min(stage.clientWidth, 600) - 14; // minus board padding
+      let cs = Math.floor(avail / gameState.width);
+      cs = Math.max(6, Math.min(cs, gameState.maxCell));
+      gameState.cellSize = cs;
+      canvas.width = gameState.width * cs;
+      canvas.height = gameState.height * cs;
+    }
+
+    window.addEventListener('resize', () => {
+      if (gameUI.classList.contains('hidden')) return;
+      fitCanvas();
+      drawMaze();
+    });
+
+    // ===================================================== Maze generation
+    function blankGrid(extra) {
+      gameState.maze = Array(gameState.height).fill().map(() =>
+        Array(gameState.width).fill().map(() => Object.assign({
+          top: true, right: true, bottom: true, left: true, visited: false
+        }, extra || {}))
+      );
+    }
+
+    function generateMaze() {
+      if (gameState.mazeType === 'prim') generatePrim();
+      else if (gameState.mazeType === 'kruskal') generateKruskal();
+      else generateDFS();
+    }
+
+    function generateDFS() {
+      blankGrid();
+      const stack = [];
+      const sx = Math.floor(Math.random() * gameState.width);
+      const sy = Math.floor(Math.random() * gameState.height);
+      let current = gameState.maze[sy][sx];
+      current.visited = true;
+      stack.push([sx, sy]);
+      while (stack.length > 0) {
+        const [x, y] = stack[stack.length - 1];
+        const n = [];
+        if (y > 0 && !gameState.maze[y - 1][x].visited) n.push([x, y - 1, 'top', 'bottom']);
+        if (x < gameState.width - 1 && !gameState.maze[y][x + 1].visited) n.push([x + 1, y, 'right', 'left']);
+        if (y < gameState.height - 1 && !gameState.maze[y + 1][x].visited) n.push([x, y + 1, 'bottom', 'top']);
+        if (x > 0 && !gameState.maze[y][x - 1].visited) n.push([x - 1, y, 'left', 'right']);
+        if (n.length > 0) {
+          const [nx, ny, dir, opp] = n[Math.floor(Math.random() * n.length)];
+          current[dir] = false;
+          gameState.maze[ny][nx][opp] = false;
+          gameState.maze[ny][nx].visited = true;
+          stack.push([nx, ny]);
+          current = gameState.maze[ny][nx];
+        } else {
+          stack.pop();
+          if (stack.length > 0) {
+            const [px, py] = stack[stack.length - 1];
+            current = gameState.maze[py][px];
+          }
         }
+      }
+    }
 
-        // Animation loop
-        function animate() {
-            gameState.hueOffset = (gameState.hueOffset + 0.5) % 360;
-            drawMaze();
-            gameState.animationId = requestAnimationFrame(animate);
+    function generatePrim() {
+      blankGrid();
+      const sx = Math.floor(Math.random() * gameState.width);
+      const sy = Math.floor(Math.random() * gameState.height);
+      gameState.maze[sy][sx].visited = true;
+      const frontiers = [];
+      addFrontiers(sx, sy);
+      while (frontiers.length > 0) {
+        const i = Math.floor(Math.random() * frontiers.length);
+        const [fx, fy] = frontiers.splice(i, 1)[0];
+        const n = [];
+        if (fy > 0 && gameState.maze[fy - 1][fx].visited) n.push([fx, fy - 1, 'top', 'bottom']);
+        if (fx < gameState.width - 1 && gameState.maze[fy][fx + 1].visited) n.push([fx + 1, fy, 'right', 'left']);
+        if (fy < gameState.height - 1 && gameState.maze[fy + 1][fx].visited) n.push([fx, fy + 1, 'bottom', 'top']);
+        if (fx > 0 && gameState.maze[fy][fx - 1].visited) n.push([fx - 1, fy, 'left', 'right']);
+        if (n.length > 0) {
+          const [nx, ny, dir, opp] = n[Math.floor(Math.random() * n.length)];
+          gameState.maze[fy][fx][dir] = false;
+          gameState.maze[ny][nx][opp] = false;
+          gameState.maze[fy][fx].visited = true;
+          addFrontiers(fx, fy);
         }
+      }
+      function addFrontiers(x, y) {
+        if (y > 0 && !gameState.maze[y - 1][x].visited) frontiers.push([x, y - 1]);
+        if (x < gameState.width - 1 && !gameState.maze[y][x + 1].visited) frontiers.push([x + 1, y]);
+        if (y < gameState.height - 1 && !gameState.maze[y + 1][x].visited) frontiers.push([x, y + 1]);
+        if (x > 0 && !gameState.maze[y][x - 1].visited) frontiers.push([x - 1, y]);
+      }
+    }
 
-        // Maze generation
-        function generateMaze() {
-            switch(gameState.mazeType) {
-                case 'dfs':
-                    generateDFSMaze();
-                    break;
-                case 'prim':
-                    generatePrimMaze();
-                    break;
-                case 'kruskal':
-                    generateKruskalMaze();
-                    break;
-            }
+    function generateKruskal() {
+      blankGrid({ set: null });
+      const walls = [];
+      const setOf = []; // flat union-find
+      let id = 0;
+      for (let y = 0; y < gameState.height; y++) {
+        for (let x = 0; x < gameState.width; x++) {
+          gameState.maze[y][x].set = id;
+          setOf[id] = id;
+          id++;
+          if (x < gameState.width - 1) walls.push({ x, y, dir: 'right' });
+          if (y < gameState.height - 1) walls.push({ x, y, dir: 'bottom' });
         }
-
-        // Depth-First Search maze generation
-        function generateDFSMaze() {
-            // Initialize grid with all walls
-            gameState.maze = Array(gameState.height).fill().map(() => 
-                Array(gameState.width).fill().map(() => ({
-                    top: true,
-                    right: true,
-                    bottom: true,
-                    left: true,
-                    visited: false
-                }))
-            );
-            
-            // Start from random cell
-            const stack = [];
-            const startX = Math.floor(Math.random() * gameState.width);
-            const startY = Math.floor(Math.random() * gameState.height);
-            let current = gameState.maze[startY][startX];
-            current.visited = true;
-            stack.push([startX, startY]);
-            
-            // Depth-first search maze generation
-            while (stack.length > 0) {
-                const [x, y] = stack[stack.length - 1];
-                const neighbors = [];
-                
-                // Check neighbors
-                if (y > 0 && !gameState.maze[y-1][x].visited) neighbors.push([x, y-1, 'top', 'bottom']);
-                if (x < gameState.width-1 && !gameState.maze[y][x+1].visited) neighbors.push([x+1, y, 'right', 'left']);
-                if (y < gameState.height-1 && !gameState.maze[y+1][x].visited) neighbors.push([x, y+1, 'bottom', 'top']);
-                if (x > 0 && !gameState.maze[y][x-1].visited) neighbors.push([x-1, y, 'left', 'right']);
-                
-                if (neighbors.length > 0) {
-                    // Choose random neighbor
-                    const [nx, ny, dir, oppositeDir] = neighbors[
-                        Math.floor(Math.random() * neighbors.length)
-                    ];
-                    
-                    // Remove walls between current and neighbor
-                    current[dir] = false;
-                    gameState.maze[ny][nx][oppositeDir] = false;
-                    
-                    // Mark as visited and push to stack
-                    gameState.maze[ny][nx].visited = true;
-                    stack.push([nx, ny]);
-                    current = gameState.maze[ny][nx];
-                } else {
-                    // Backtrack
-                    stack.pop();
-                    if (stack.length > 0) {
-                        const [px, py] = stack[stack.length - 1];
-                        current = gameState.maze[py][px];
-                    }
-                }
-            }
+      }
+      function find(a) { while (setOf[a] !== a) { setOf[a] = setOf[setOf[a]]; a = setOf[a]; } return a; }
+      for (let i = walls.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [walls[i], walls[j]] = [walls[j], walls[i]];
+      }
+      for (const w of walls) {
+        const cell = gameState.maze[w.y][w.x];
+        let nx = w.x, ny = w.y, opp;
+        if (w.dir === 'right') { nx = w.x + 1; opp = 'left'; } else { ny = w.y + 1; opp = 'top'; }
+        const neighbor = gameState.maze[ny][nx];
+        const ra = find(cell.set), rb = find(neighbor.set);
+        if (ra !== rb) {
+          cell[w.dir] = false;
+          neighbor[opp] = false;
+          setOf[ra] = rb;
         }
+      }
+    }
 
-        // Prim's algorithm maze generation
-        function generatePrimMaze() {
-            // Initialize grid with all walls
-            gameState.maze = Array(gameState.height).fill().map(() => 
-                Array(gameState.width).fill().map(() => ({
-                    top: true,
-                    right: true,
-                    bottom: true,
-                    left: true,
-                    visited: false
-                }))
-            );
-            
-            // Start from random cell
-            const startX = Math.floor(Math.random() * gameState.width);
-            const startY = Math.floor(Math.random() * gameState.height);
-            gameState.maze[startY][startX].visited = true;
-            
-            // List of frontier cells
-            const frontiers = [];
-            addFrontiers(startX, startY, frontiers);
-            
-            while (frontiers.length > 0) {
-                // Randomly select a frontier cell
-                const randomIndex = Math.floor(Math.random() * frontiers.length);
-                const [fx, fy] = frontiers[randomIndex];
-                frontiers.splice(randomIndex, 1);
-                
-                // Get visited neighbors
-                const neighbors = [];
-                if (fy > 0 && gameState.maze[fy-1][fx].visited) neighbors.push([fx, fy-1, 'top', 'bottom']);
-                if (fx < gameState.width-1 && gameState.maze[fy][fx+1].visited) neighbors.push([fx+1, fy, 'right', 'left']);
-                if (fy < gameState.height-1 && gameState.maze[fy+1][fx].visited) neighbors.push([fx, fy+1, 'bottom', 'top']);
-                if (fx > 0 && gameState.maze[fy][fx-1].visited) neighbors.push([fx-1, fy, 'left', 'right']);
-                
-                if (neighbors.length > 0) {
-                    // Connect to random visited neighbor
-                    const [nx, ny, dir, oppositeDir] = neighbors[
-                        Math.floor(Math.random() * neighbors.length)
-                    ];
-                    
-                    gameState.maze[fy][fx][dir] = false;
-                    gameState.maze[ny][nx][oppositeDir] = false;
-                    gameState.maze[fy][fx].visited = true;
-                    
-                    // Add new frontiers
-                    addFrontiers(fx, fy, frontiers);
-                }
-            }
-            
-            function addFrontiers(x, y, frontiers) {
-                if (y > 0 && !gameState.maze[y-1][x].visited) {
-                    frontiers.push([x, y-1]);
-                }
-                if (x < gameState.width-1 && !gameState.maze[y][x+1].visited) {
-                    frontiers.push([x+1, y]);
-                }
-                if (y < gameState.height-1 && !gameState.maze[y+1][x].visited) {
-                    frontiers.push([x, y+1]);
-                }
-                if (x > 0 && !gameState.maze[y][x-1].visited) {
-                    frontiers.push([x-1, y]);
-                }
-            }
+    // ===================================================== Draw
+    function drawMaze() {
+      const cs = gameState.cellSize;
+      ctx.fillStyle = gameState.colors.bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // visited cell fills
+      for (let y = 0; y < gameState.height; y++) {
+        for (let x = 0; x < gameState.width; x++) {
+          const key = x + ',' + y;
+          if (!gameState.visited.has(key)) continue;
+          const v = gameState.visited.get(key);
+          const onPath = gameState.pathHistory.some(p => p.x === x && p.y === y);
+          ctx.fillStyle = v.isBacktrack ? gameState.colors.backtrack
+            : onPath ? gameState.colors.forward
+            : gameState.colors.visited;
+          ctx.fillRect(x * cs + 1, y * cs + 1, cs - 2, cs - 2);
         }
+      }
 
-        // Kruskal's algorithm maze generation
-        function generateKruskalMaze() {
-            // Initialize grid with all walls
-            gameState.maze = Array(gameState.height).fill().map(() => 
-                Array(gameState.width).fill().map(() => ({
-                    top: true,
-                    right: true,
-                    bottom: true,
-                    left: true,
-                    set: null
-                }))
-            );
-            
-            // Create list of all walls
-            const walls = [];
-            
-            // Assign unique set to each cell
-            let setCounter = 0;
-            for (let y = 0; y < gameState.height; y++) {
-                for (let x = 0; x < gameState.width; x++) {
-                    gameState.maze[y][x].set = setCounter++;
-                    
-                    // Add walls to the list (only right and bottom to avoid duplicates)
-                    if (x < gameState.width - 1) {
-                        walls.push({ x, y, dir: 'right' });
-                    }
-                    if (y < gameState.height - 1) {
-                        walls.push({ x, y, dir: 'bottom' });
-                    }
-                }
-            }
-            
-            // Shuffle walls
-            shuffleArray(walls);
-            
-            // Process walls
-            for (const wall of walls) {
-                const { x, y, dir } = wall;
-                const cell = gameState.maze[y][x];
-                let neighborX = x, neighborY = y;
-                let oppositeDir;
-                
-                if (dir === 'right') {
-                    neighborX = x + 1;
-                    oppositeDir = 'left';
-                } else { // bottom
-                    neighborY = y + 1;
-                    oppositeDir = 'top';
-                }
-                
-                const neighbor = gameState.maze[neighborY][neighborX];
-                
-                if (cell.set !== neighbor.set) {
-                    // Remove the wall
-                    cell[dir] = false;
-                    neighbor[oppositeDir] = false;
-                    
-                    // Merge sets
-                    const oldSet = neighbor.set;
-                    const newSet = cell.set;
-                    for (let y = 0; y < gameState.height; y++) {
-                        for (let x = 0; x < gameState.width; x++) {
-                            if (gameState.maze[y][x].set === oldSet) {
-                                gameState.maze[y][x].set = newSet;
-                            }
-                        }
-                    }
-                }
-            }
-            
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-            }
+      // walls
+      ctx.strokeStyle = gameState.colors.wall;
+      ctx.lineWidth = Math.max(1, Math.round(cs / 16));
+      for (let y = 0; y < gameState.height; y++) {
+        for (let x = 0; x < gameState.width; x++) {
+          const cell = gameState.maze[y][x];
+          const px = x * cs, py = y * cs;
+          if (cell.top) line(px, py, px + cs, py);
+          if (cell.right) line(px + cs, py, px + cs, py + cs);
+          if (cell.bottom) line(px, py + cs, px + cs, py + cs);
+          if (cell.left) line(px, py, px, py + cs);
         }
+      }
 
-        // Drawing functions
-        function drawMaze() {
-            // Clear canvas with black background
-            ctx.fillStyle = gameState.colors.path;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw walls in green
-            ctx.strokeStyle = gameState.colors.wall;
-            ctx.lineWidth = 2;
-            
-            for (let y = 0; y < gameState.height; y++) {
-                for (let x = 0; x < gameState.width; x++) {
-                    const cell = gameState.maze[y][x];
-                    const xPos = x * gameState.cellSize;
-                    const yPos = y * gameState.cellSize;
-                    
-                    if (cell.top) {
-                        ctx.beginPath();
-                        ctx.moveTo(xPos, yPos);
-                        ctx.lineTo(xPos + gameState.cellSize, yPos);
-                        ctx.stroke();
-                    }
-                    
-                    if (cell.right) {
-                        ctx.beginPath();
-                        ctx.moveTo(xPos + gameState.cellSize, yPos);
-                        ctx.lineTo(xPos + gameState.cellSize, yPos + gameState.cellSize);
-                        ctx.stroke();
-                    }
-                    
-                    if (cell.bottom) {
-                        ctx.beginPath();
-                        ctx.moveTo(xPos, yPos + gameState.cellSize);
-                        ctx.lineTo(xPos + gameState.cellSize, yPos + gameState.cellSize);
-                        ctx.stroke();
-                    }
-                    
-                    if (cell.left) {
-                        ctx.beginPath();
-                        ctx.moveTo(xPos, yPos);
-                        ctx.lineTo(xPos, yPos + gameState.cellSize);
-                        ctx.stroke();
-                    }
-                    
-                    // Draw visited cells with RGB cycling effect
-                    if (gameState.visited.has(`${x},${y}`)) {
-                        const visitData = gameState.visited.get(`${x},${y}`);
-                        const isCurrentPath = gameState.pathHistory.some(pos => 
-                            pos.x === x && pos.y === y
-                        );
-                        
-                        if (visitData.isBacktrack) {
-                            // Backtrack path (orange)
-                            ctx.fillStyle = gameState.colors.backtrack;
-                        } else if (isCurrentPath) {
-                            // Current path (RGB cycling)
-                            const hue = (gameState.hueOffset + x * 3 + y * 3) % 360;
-                            ctx.fillStyle = `hsl(${hue}, 100%, 30%)`;
-                        } else {
-                            // Visited but not current path (darker green)
-                            ctx.fillStyle = '#030';
-                        }
-                        
-                        ctx.fillRect(
-                            xPos + 1, 
-                            yPos + 1, 
-                            gameState.cellSize - 2, 
-                            gameState.cellSize - 2
-                        );
-                    }
-                }
-            }
-            
-            // Draw end point (red)
-            const endX = gameState.end.x * gameState.cellSize;
-            const endY = gameState.end.y * gameState.cellSize;
-            ctx.fillStyle = gameState.colors.end;
-            ctx.fillRect(
-                endX + 2, 
-                endY + 2, 
-                gameState.cellSize - 4, 
-                gameState.cellSize - 4
-            );
-            
-            // Draw player (green square with scanline effect)
-            const playerX = gameState.player.x * gameState.cellSize;
-            const playerY = gameState.player.y * gameState.cellSize;
-            ctx.fillStyle = gameState.colors.player;
-            ctx.fillRect(
-                playerX + 2, 
-                playerY + 2, 
-                gameState.cellSize - 4, 
-                gameState.cellSize - 4
-            );
-            
-            // Add scanline effect to player
-            ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
-            ctx.lineWidth = 1;
-            for (let y = playerY + 2; y < playerY + gameState.cellSize - 2; y += 2) {
-                ctx.beginPath();
-                ctx.moveTo(playerX + 2, y);
-                ctx.lineTo(playerX + gameState.cellSize - 2, y);
-                ctx.stroke();
-            }
-        }
+      // exit (green, with a check if there's room)
+      const ex = gameState.end.x * cs, ey = gameState.end.y * cs;
+      ctx.fillStyle = gameState.colors.exit;
+      ctx.fillRect(ex + 2, ey + 2, cs - 4, cs - 4);
+      if (cs >= 18) {
+        ctx.strokeStyle = gameState.colors.exitInk;
+        ctx.lineWidth = Math.max(1.5, cs / 14);
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(ex + cs * 0.30, ey + cs * 0.52);
+        ctx.lineTo(ex + cs * 0.45, ey + cs * 0.68);
+        ctx.lineTo(ex + cs * 0.72, ey + cs * 0.34);
+        ctx.stroke();
+        ctx.lineCap = 'butt';
+      }
 
-        // Timer functions
-        function startTimer() {
-            gameState.startTime = Date.now();
-            stopTimer();
-            gameState.timerInterval = setInterval(updateTimer, 100);
-        }
+      // player (ink token)
+      const plx = gameState.player.x * cs, ply = gameState.player.y * cs;
+      ctx.fillStyle = gameState.colors.player;
+      ctx.fillRect(plx + 3, ply + 3, cs - 6, cs - 6);
+      ctx.fillStyle = gameState.colors.bg;
+      const inner = Math.max(2, cs * 0.22);
+      ctx.fillRect(plx + cs / 2 - inner / 2, ply + cs / 2 - inner / 2, inner, inner);
 
-        function stopTimer() {
-            if (gameState.timerInterval) {
-                clearInterval(gameState.timerInterval);
-                gameState.timerInterval = null;
-            }
-        }
+      function line(x1, y1, x2, y2) {
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      }
+    }
 
-        function updateTimer() {
-            const elapsed = Date.now() - gameState.startTime;
-            const seconds = Math.floor(elapsed / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const displaySeconds = (seconds % 60).toString().padStart(2, '0');
-            const displayMinutes = minutes.toString().padStart(2, '0');
-            timerElement.textContent = `> TIME ELAPSED: ${displayMinutes}:${displaySeconds}`;
-        }
+    // ===================================================== Timer
+    function startTimer() {
+      stopTimer();
+      gameState.startTime = Date.now();
+      timerEl.textContent = '00:00';
+      gameState.timerInterval = setInterval(() => {
+        timerEl.textContent = formatMs(Date.now() - gameState.startTime);
+      }, 200);
+    }
+    function stopTimer() {
+      if (gameState.timerInterval) { clearInterval(gameState.timerInterval); gameState.timerInterval = null; }
+    }
+    function formatMs(ms) {
+      if (ms == null) return '– –';
+      const s = Math.floor(ms / 1000);
+      return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+    }
 
-        // Player movement
-        function movePlayer(dx, dy) {
-            const newX = gameState.player.x + dx;
-            const newY = gameState.player.y + dy;
-            const currentPosKey = `${gameState.player.x},${gameState.player.y}`;
-            const newPosKey = `${newX},${newY}`;
-            
-            // Check bounds
-            if (newX < 0 || newX >= gameState.width || newY < 0 || newY >= gameState.height) {
-                return;
-            }
-            
-            // Check walls
-            const cell = gameState.maze[gameState.player.y][gameState.player.x];
-            let canMove = false;
-            
-            if (dx === 1 && !cell.right) canMove = true;
-            if (dx === -1 && !cell.left) canMove = true;
-            if (dy === 1 && !cell.bottom) canMove = true;
-            if (dy === -1 && !cell.top) canMove = true;
-            
-            if (canMove) {
-                // Check if this is backtracking (revisiting a cell)
-                const isBacktrack = gameState.visited.has(newPosKey);
-                
-                // Update visited cells
-                gameState.visited.set(newPosKey, { 
-                    time: Date.now(), 
-                    isBacktrack 
-                });
-                
-                // Update path history
-                if (!isBacktrack) {
-                    gameState.pathHistory.push({x: newX, y: newY});
-                } else {
-                    // Remove from path history if backtracking
-                    const index = gameState.pathHistory.findIndex(pos => 
-                        pos.x === newX && pos.y === newY
-                    );
-                    if (index !== -1) {
-                        gameState.pathHistory.splice(index + 1);
-                    }
-                }
-                
-                // Update player position
-                gameState.player.x = newX;
-                gameState.player.y = newY;
-                
-                // Check win condition
-                if (newX === gameState.end.x && newY === gameState.end.y) {
-                    stopTimer();
-                    if (gameState.animationId) {
-                        cancelAnimationFrame(gameState.animationId);
-                        gameState.animationId = null;
-                    }
-                    setTimeout(() => {
-                        alert(`> MAZE COMPLETED IN ${timerElement.textContent}\n> SYSTEM RESETTING...`);
-                        startGame();
-                    }, 100);
-                }
-            }
-        }
+    // ===================================================== Best time (localStorage)
+    function bestKey() { return 'maze-best-' + gameState.difficulty; }
+    function getBest() {
+      const v = Number(localStorage.getItem(bestKey()));
+      return v > 0 ? v : null;
+    }
 
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            if (gameUI.classList.contains('hidden')) return;
-            
-            switch(e.key) {
-                case 'ArrowUp':
-                case 'w':
-                case 'W':
-                    movePlayer(0, -1);
-                    break;
-                case 'ArrowRight':
-                case 'd':
-                case 'D':
-                    movePlayer(1, 0);
-                    break;
-                case 'ArrowDown':
-                case 's':
-                case 'S':
-                    movePlayer(0, 1);
-                    break;
-                case 'ArrowLeft':
-                case 'a':
-                case 'A':
-                    movePlayer(-1, 0);
-                    break;
-            }
-        });
+    // ===================================================== Movement
+    function movePlayer(dx, dy) {
+      const cell = gameState.maze[gameState.player.y][gameState.player.x];
+      if (dx === 1 && cell.right) return;
+      if (dx === -1 && cell.left) return;
+      if (dy === 1 && cell.bottom) return;
+      if (dy === -1 && cell.top) return;
 
-        // Initialize menu
-        mainMenu.classList.remove('hidden');
-        gameUI.classList.add('hidden');
-    </script>
+      const nx = gameState.player.x + dx, ny = gameState.player.y + dy;
+      if (nx < 0 || nx >= gameState.width || ny < 0 || ny >= gameState.height) return;
+
+      const key = nx + ',' + ny;
+      const isBacktrack = gameState.visited.has(key);
+      gameState.visited.set(key, { isBacktrack });
+      if (!isBacktrack) {
+        gameState.pathHistory.push({ x: nx, y: ny });
+      } else {
+        const i = gameState.pathHistory.findIndex(p => p.x === nx && p.y === ny);
+        if (i !== -1) gameState.pathHistory.splice(i + 1);
+      }
+      gameState.player.x = nx; gameState.player.y = ny;
+
+      if (nx === gameState.end.x && ny === gameState.end.y) { win(); return; }
+      drawMaze();
+    }
+
+    function win() {
+      stopTimer();
+      const elapsed = Date.now() - gameState.startTime;
+      drawMaze();
+      setVerified(true);
+
+      const prev = getBest();
+      const improved = prev == null || elapsed < prev;
+      if (improved) localStorage.setItem(bestKey(), String(elapsed));
+      bestEl.textContent = formatMs(getBest());
+
+      document.getElementById('ov-time').textContent = formatMs(elapsed);
+      document.getElementById('ov-best').textContent = formatMs(getBest());
+      document.getElementById('ov-newbest').classList.toggle('hidden', !improved || prev == null);
+      openOverlay();
+    }
+
+    function openOverlay() {
+      overlay.hidden = false;
+      document.getElementById('ov-again').focus();
+    }
+    function closeOverlay() { overlay.hidden = true; }
+
+    // ===================================================== Input: keyboard
+    document.addEventListener('keydown', (e) => {
+      if (!overlay.hidden) { if (e.key === 'Escape') closeOverlay(); return; }
+      if (gameUI.classList.contains('hidden')) return;
+      switch (e.key) {
+        case 'ArrowUp': case 'w': case 'W': e.preventDefault(); movePlayer(0, -1); break;
+        case 'ArrowDown': case 's': case 'S': e.preventDefault(); movePlayer(0, 1); break;
+        case 'ArrowLeft': case 'a': case 'A': e.preventDefault(); movePlayer(-1, 0); break;
+        case 'ArrowRight': case 'd': case 'D': e.preventDefault(); movePlayer(1, 0); break;
+      }
+    });
+
+    // ===================================================== Input: d-pad
+    const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+    document.querySelectorAll('.dpad button').forEach(b => {
+      b.addEventListener('click', () => { const d = DIRS[b.dataset.dir]; movePlayer(d[0], d[1]); });
+    });
+
+    // ===================================================== Input: swipe
+    let ts = null;
+    canvas.addEventListener('touchstart', (e) => {
+      const t = e.touches[0]; ts = { x: t.clientX, y: t.clientY };
+    }, { passive: true });
+    canvas.addEventListener('touchmove', (e) => { if (ts) e.preventDefault(); }, { passive: false });
+    canvas.addEventListener('touchend', (e) => {
+      if (!ts) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - ts.x, dy = t.clientY - ts.y;
+      ts = null;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 22) return;
+      if (Math.abs(dx) > Math.abs(dy)) movePlayer(dx > 0 ? 1 : -1, 0);
+      else movePlayer(0, dy > 0 ? 1 : -1);
+    }, { passive: true });
+
+    // ===================================================== Init
+    if (window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0 || 'ontouchstart' in window) {
+      document.body.classList.add('touch');
+    }
+    toMenu();
+  </script>
 </body>
+
 </html>
