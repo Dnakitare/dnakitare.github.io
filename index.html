@@ -599,6 +599,18 @@
     svg.anim-ready .fade { opacity: 0; transition: opacity 0.5s ease 0.5s; }
     svg.anim-ready.is-drawn .fade { opacity: 1; }
 
+    /* Replay the draw on hover (pointer devices only). */
+    @media (hover: hover) and (pointer: fine) {
+      .sys-wrap:hover .sys-svg svg.anim-ready .draw {
+        animation: schem-redraw 1.05s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .sys-wrap:hover .sys-svg svg.anim-ready .fade {
+        animation: schem-refade 1.05s ease;
+      }
+    }
+    @keyframes schem-redraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+    @keyframes schem-refade { 0%, 45% { opacity: 0; } 100% { opacity: 1; } }
+
     /* ============================================================ MOTION */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -1425,14 +1437,13 @@
     const schematics = document.querySelectorAll('.sys-svg svg');
     if (!reduce && 'IntersectionObserver' in window) {
       schematics.forEach(s => s.classList.add('anim-ready'));
+      // Toggle (not once): redraw every time a schematic re-enters view, and
+      // reset to undrawn once it has fully left, so it animates again next time.
       const sio = new IntersectionObserver((entries) => {
         entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add('is-drawn');
-            sio.unobserve(e.target);
-          }
+          e.target.classList.toggle('is-drawn', e.isIntersecting);
         });
-      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.2 });
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.2 });
       schematics.forEach(s => sio.observe(s));
     }
 
