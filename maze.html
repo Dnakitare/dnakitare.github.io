@@ -139,6 +139,24 @@
 
     /* ===================================================== GAME */
     .game { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    .introbar {
+      display: none; width: 100%; max-width: 600px;
+      align-items: center; justify-content: space-between; gap: 1rem;
+      padding-bottom: 0.7rem; margin-bottom: 0.9rem;
+      border-bottom: 1px solid var(--hair); font-size: 0.74rem;
+    }
+    .introbar .il {
+      color: var(--ink-3); letter-spacing: 0.06em;
+      display: inline-flex; align-items: center; gap: 0.55rem;
+    }
+    .introbar .il::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 0 3px var(--green-bg);
+    }
+    .introbar .ib { display: flex; gap: 0.5rem; }
+    .introbar .btn { padding: 0.45rem 0.9rem; font-size: 0.7rem; }
+    body.demo .introbar { display: flex; }
+    body.demo .statusbar, body.demo .ctl, body.demo .dpad { display: none; }
     .statusbar {
       width: 100%; max-width: 600px;
       display: flex; justify-content: space-between; align-items: baseline;
@@ -168,7 +186,7 @@
       grid-template-rows: repeat(2, 56px); gap: 6px;
       margin-top: 1.2rem; justify-content: center;
     }
-    body.touch .dpad { display: grid; }
+    body.touch:not(.demo) .dpad { display: grid; }
     .dpad button {
       font-family: var(--mono); font-size: 1.2rem; color: var(--ink);
       background: var(--card); border: 1px solid var(--hair-2); cursor: pointer;
@@ -286,6 +304,13 @@
 
     <!-- GAME -->
     <section class="game hidden" id="gameUI">
+      <div class="introbar" id="introbar">
+        <span class="il">auto-solving</span>
+        <span class="ib">
+          <button class="btn" id="introPlay">play</button>
+          <button class="btn" id="introConfig">configure</button>
+        </span>
+      </div>
       <div class="statusbar">
         <span class="time"><span class="k">time </span><span class="v" id="timer">00:00</span></span>
         <span class="best"><span class="k">best </span><span class="v" id="best">&ndash;&ndash;</span></span>
@@ -390,8 +415,88 @@
     document.getElementById('ov-again').addEventListener('click', () => { closeOverlay(); startGame(); });
     document.getElementById('ov-menu').addEventListener('click', () => { closeOverlay(); toMenu(); });
     overlay.addEventListener('click', (e) => { if (e.target.hasAttribute('data-close')) closeOverlay(); });
+    document.getElementById('introPlay').addEventListener('click', startGame);
+    document.getElementById('introConfig').addEventListener('click', toMenu);
+
+    // ===================================================== Intro demo (auto-solve)
+    let demoActive = false;
+    let demoTimer = null;
+
+    function solvePath(start, end) {
+      const W = gameState.width, H = gameState.height, M = gameState.maze;
+      const q = [[start.x, start.y]], prev = {}, seen = {};
+      seen[start.x + ',' + start.y] = true;
+      while (q.length) {
+        const [x, y] = q.shift();
+        if (x === end.x && y === end.y) break;
+        const c = M[y][x];
+        const nb = [];
+        if (!c.top && y > 0) nb.push([x, y - 1]);
+        if (!c.bottom && y < H - 1) nb.push([x, y + 1]);
+        if (!c.left && x > 0) nb.push([x - 1, y]);
+        if (!c.right && x < W - 1) nb.push([x + 1, y]);
+        for (const [nx, ny] of nb) {
+          const k = nx + ',' + ny;
+          if (!seen[k]) { seen[k] = true; prev[k] = [x, y]; q.push([nx, ny]); }
+        }
+      }
+      const path = [];
+      let cur = [end.x, end.y];
+      while (cur && !(cur[0] === start.x && cur[1] === start.y)) {
+        path.push(cur);
+        cur = prev[cur[0] + ',' + cur[1]];
+      }
+      return path.reverse();
+    }
+
+    function startDemo() {
+      demoActive = true;
+      document.body.classList.add('demo');
+      menu.classList.add('hidden');
+      gameUI.classList.remove('hidden');
+      runDemoRound();
+    }
+
+    function runDemoRound() {
+      if (!demoActive) return;
+      setVerified(false);
+      const gens = ['dfs', 'prim', 'kruskal'];
+      gameState.difficulty = 'medium';
+      gameState.mazeType = gens[Math.floor(Math.random() * gens.length)];
+      const s = SIZES.medium;
+      gameState.width = s.w; gameState.height = s.h; gameState.maxCell = s.maxCell;
+      generateMaze();
+      gameState.player = { x: 0, y: 0 };
+      gameState.end = { x: gameState.width - 1, y: gameState.height - 1 };
+      gameState.visited = new Map([['0,0', { isBacktrack: false }]]);
+      gameState.pathHistory = [{ x: 0, y: 0 }];
+      fitCanvas();
+      drawMaze();
+      const path = solvePath(gameState.player, gameState.end);
+      stepDemo(path, 0);
+    }
+
+    function stepDemo(path, idx) {
+      if (!demoActive) return;
+      if (document.hidden) { demoTimer = setTimeout(() => stepDemo(path, idx), 400); return; }
+      if (idx >= path.length) {
+        setVerified(true);
+        demoTimer = setTimeout(runDemoRound, 1400);
+        return;
+      }
+      const [x, y] = path[idx];
+      movePlayer(x - gameState.player.x, y - gameState.player.y);
+      demoTimer = setTimeout(() => stepDemo(path, idx + 1), 85);
+    }
+
+    function stopDemo() {
+      demoActive = false;
+      if (demoTimer) { clearTimeout(demoTimer); demoTimer = null; }
+      document.body.classList.remove('demo');
+    }
 
     function toMenu() {
+      stopDemo();
       stopTimer();
       gameUI.classList.add('hidden');
       menu.classList.remove('hidden');
@@ -405,6 +510,7 @@
 
     // ===================================================== Start
     function startGame() {
+      stopDemo();
       setVerified(false);
       gameState.difficulty = document.getElementById('difficulty').value;
       gameState.mazeType = document.getElementById('mazeType').value;
@@ -666,7 +772,10 @@
       }
       gameState.player.x = nx; gameState.player.y = ny;
 
-      if (nx === gameState.end.x && ny === gameState.end.y) { win(); return; }
+      if (nx === gameState.end.x && ny === gameState.end.y) {
+        if (demoActive) { drawMaze(); return; }
+        win(); return;
+      }
       drawMaze();
     }
 
@@ -696,6 +805,12 @@
     // ===================================================== Input: keyboard
     document.addEventListener('keydown', (e) => {
       if (!overlay.hidden) { if (e.key === 'Escape') closeOverlay(); return; }
+      if (demoActive) {
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D', 'Enter', ' '].includes(e.key)) {
+          e.preventDefault(); stopDemo(); startGame();
+        }
+        return;
+      }
       if (gameUI.classList.contains('hidden')) return;
       switch (e.key) {
         case 'ArrowUp': case 'w': case 'W': e.preventDefault(); movePlayer(0, -1); break;
@@ -708,12 +823,17 @@
     // ===================================================== Input: d-pad
     const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
     document.querySelectorAll('.dpad button').forEach(b => {
-      b.addEventListener('click', () => { const d = DIRS[b.dataset.dir]; movePlayer(d[0], d[1]); });
+      b.addEventListener('click', () => {
+        if (demoActive) { stopDemo(); startGame(); return; }
+        const d = DIRS[b.dataset.dir]; movePlayer(d[0], d[1]);
+      });
     });
 
     // ===================================================== Input: swipe
     let ts = null;
+    canvas.addEventListener('click', () => { if (demoActive) { stopDemo(); startGame(); } });
     canvas.addEventListener('touchstart', (e) => {
+      if (demoActive) { stopDemo(); startGame(); return; }
       const t = e.touches[0]; ts = { x: t.clientX, y: t.clientY };
     }, { passive: true });
     canvas.addEventListener('touchmove', (e) => { if (ts) e.preventDefault(); }, { passive: false });
@@ -731,7 +851,7 @@
     if (window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0 || 'ontouchstart' in window) {
       document.body.classList.add('touch');
     }
-    toMenu();
+    if (reduce) toMenu(); else startDemo();
   </script>
 </body>
 
