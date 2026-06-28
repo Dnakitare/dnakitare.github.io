@@ -343,6 +343,71 @@
       white-space: nowrap;
     }
     .sys-foot .ext svg { width: 9px; height: 9px; }
+
+    /* zoom-to-expand schematic */
+    .sys-wrap { position: relative; display: flex; }
+    .sys-wrap > .system-card { flex: 1 1 auto; width: 100%; }
+    .zoom-btn {
+      position: absolute; top: 1.55rem; right: 1.55rem;
+      width: 34px; height: 34px; padding: 0;
+      display: inline-grid; place-items: center;
+      background: rgba(243, 241, 234, 0.82);
+      border: 1px solid var(--hair-2); color: var(--ink-2);
+      cursor: pointer; opacity: 0.55;
+      transition: opacity 0.18s ease, color 0.18s ease, background 0.18s ease;
+      -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+    }
+    .zoom-btn svg { width: 15px; height: 15px; display: block; }
+    .sys-wrap:hover .zoom-btn, .zoom-btn:hover, .zoom-btn:focus-visible {
+      opacity: 1; color: var(--ink); background: var(--card);
+    }
+    @media (hover: none) { .zoom-btn { opacity: 0.9; } }
+
+    .lightbox { position: fixed; inset: 0; z-index: 300; display: flex; }
+    .lightbox[hidden] { display: none; }
+    .lb-backdrop { position: absolute; inset: 0; background: rgba(10, 9, 8, 0.66); }
+    .lb-dialog {
+      position: relative; margin: auto;
+      width: min(96vw, 1000px); max-height: 92vh;
+      background: var(--bone); border: 1px solid var(--ink);
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 60px rgba(10, 9, 8, 0.4);
+    }
+    .lb-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; padding: 0.7rem 0.9rem;
+      border-bottom: 1px solid var(--hair);
+      font-family: var(--mono);
+    }
+    .lb-title {
+      font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    .lb-close {
+      font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+      text-transform: uppercase; cursor: pointer;
+      background: none; border: 1px solid var(--hair-2); color: var(--ink-2);
+      padding: 0.35rem 0.6rem;
+    }
+    .lb-close:hover, .lb-close:focus-visible { color: var(--ink); border-color: var(--ink); }
+    .lb-stage {
+      overflow: auto; padding: 0.9rem;
+      background:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+        var(--bone);
+      background-size: 28px 28px, 28px 28px, 100% 100%;
+      touch-action: pan-x pan-y pinch-zoom;
+      -webkit-overflow-scrolling: touch;
+    }
+    .lb-stage svg { display: block; height: auto; }
+    .lb-hint {
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-3);
+      padding: 0.5rem 0.9rem; border-top: 1px solid var(--hair);
+      text-align: center;
+    }
+
     @media (max-width: 760px) {
       .systems-plate { grid-template-columns: 1fr; }
     }
@@ -802,7 +867,7 @@
           <!-- ============================ governance / infra systems plate -->
           <div class="systems-plate">
             <!-- FIG. 01 – AETHER -->
-            <a class="system-card" href="https://github.com/Dnakitare/aether" target="_blank" rel="noopener">
+            <div class="sys-wrap"><a class="system-card" href="https://github.com/Dnakitare/aether" target="_blank" rel="noopener">
               <div class="sys-svg">
                 <svg id="aether-svg" viewBox="0 0 860 520" role="img"
                      aria-labelledby="aether-title aether-desc" preserveAspectRatio="xMidYMid meet">
@@ -896,9 +961,11 @@
                 <span class="ext"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> signed</span>
               </div>
             </a>
+              <button type="button" class="zoom-btn" data-target="aether-svg" data-label="Aether schematic" aria-label="Expand Aether schematic at full size"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
 
             <!-- FIG. 02 – MAVRYN -->
-            <a class="system-card" href="https://github.com/Dnakitare/mavryn" target="_blank" rel="noopener">
+            <div class="sys-wrap"><a class="system-card" href="https://github.com/Dnakitare/mavryn" target="_blank" rel="noopener">
               <div class="sys-svg">
                 <svg id="mavryn-svg" viewBox="0 0 760 460" role="img"
                      aria-labelledby="mavryn-title mavryn-desc" preserveAspectRatio="xMidYMid meet">
@@ -963,9 +1030,11 @@
                 <span class="ext"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> signed</span>
               </div>
             </a>
+              <button type="button" class="zoom-btn" data-target="mavryn-svg" data-label="Mavryn schematic" aria-label="Expand Mavryn schematic at full size"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
 
             <!-- FIG. 03 – IMARA -->
-            <a class="system-card" href="https://github.com/Dnakitare/imara" target="_blank" rel="noopener">
+            <div class="sys-wrap"><a class="system-card" href="https://github.com/Dnakitare/imara" target="_blank" rel="noopener">
               <div class="sys-svg">
                 <svg id="imara-svg" viewBox="0 0 760 460" role="img"
                      aria-labelledby="imara-title imara-desc" preserveAspectRatio="xMidYMid meet">
@@ -1040,9 +1109,11 @@
                 <span class="ext"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> signed</span>
               </div>
             </a>
+              <button type="button" class="zoom-btn" data-target="imara-svg" data-label="Imara schematic" aria-label="Expand Imara schematic at full size"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
 
             <!-- FIG. 04 – CASTELLAN -->
-            <a class="system-card" href="https://github.com/Dnakitare/castellan-notes" target="_blank" rel="noopener">
+            <div class="sys-wrap"><a class="system-card" href="https://github.com/Dnakitare/castellan-notes" target="_blank" rel="noopener">
               <div class="sys-svg">
                 <svg id="castellan-svg" viewBox="0 0 760 460" role="img"
                      aria-labelledby="castellan-title castellan-desc" preserveAspectRatio="xMidYMid meet">
@@ -1121,6 +1192,8 @@
                 <span class="ext"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> signed</span>
               </div>
             </a>
+              <button type="button" class="zoom-btn" data-target="castellan-svg" data-label="Castellan schematic" aria-label="Expand Castellan schematic at full size"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
           </div>
 
           <!-- ============================ remaining records -->
@@ -1293,6 +1366,18 @@
     <a href="maze.html">enter the maze</a>
   </div>
 
+  <div class="lightbox" id="schematic-lightbox" hidden>
+    <div class="lb-backdrop" data-close></div>
+    <div class="lb-dialog" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+      <div class="lb-bar">
+        <span class="lb-title" id="lb-title"></span>
+        <button type="button" class="lb-close" data-close aria-label="Close schematic">esc &times;</button>
+      </div>
+      <div class="lb-stage" id="lb-stage"></div>
+      <div class="lb-hint">drag to pan &middot; pinch to zoom</div>
+    </div>
+  </div>
+
   <script>
     // ===================================================== Console note
     const consoleArt = [
@@ -1413,6 +1498,62 @@
         kIdx = (e.key === konami[0]) ? 1 : 0;
       }
     });
+
+    // ===================================================== Schematic tap-to-zoom
+    (function () {
+      const lb = document.getElementById('schematic-lightbox');
+      const stage = document.getElementById('lb-stage');
+      const titleEl = document.getElementById('lb-title');
+      if (!lb || !stage) return;
+      let lastFocus = null;
+
+      function openLb(targetId, label) {
+        const src = document.getElementById(targetId);
+        if (!src) return;
+        const clone = src.cloneNode(true);
+        clone.removeAttribute('id');
+        // Force the fully-drawn state regardless of scroll-animation classes.
+        clone.classList.remove('anim-ready', 'is-drawn');
+        clone.style.width = '920px';
+        clone.style.maxWidth = 'none';
+        stage.innerHTML = '';
+        stage.appendChild(clone);
+        titleEl.textContent = label || 'Schematic';
+        lastFocus = document.activeElement;
+        lb.hidden = false;
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => {
+          stage.scrollLeft = Math.max(0, (stage.scrollWidth - stage.clientWidth) / 2);
+          const close = lb.querySelector('.lb-close');
+          if (close) close.focus();
+        });
+      }
+
+      function closeLb() {
+        if (lb.hidden) return;
+        lb.hidden = true;
+        stage.innerHTML = '';
+        document.body.style.overflow = '';
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+
+      document.querySelectorAll('.zoom-btn').forEach((b) => {
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openLb(b.getAttribute('data-target'), b.getAttribute('data-label'));
+        });
+      });
+
+      lb.addEventListener('click', (e) => {
+        if (e.target.hasAttribute('data-close')) closeLb();
+      });
+      lb.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { closeLb(); }
+        // minimal focus trap: keep focus on the close control
+        else if (e.key === 'Tab') { e.preventDefault(); lb.querySelector('.lb-close').focus(); }
+      });
+    })();
   </script>
 </body>
 
