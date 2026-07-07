@@ -886,10 +886,10 @@
                   <title id="aether-title">Aether architecture schematic</title>
                   <desc id="aether-desc">
                     Schematic of Aether, an AI agent runtime. A multi-tenant REST API with JWT and RBAC
-                    feeds a distributed scheduler built on Kafka and etcd. The scheduler fans agent jobs
-                    out to a pool of Firecracker microVMs inside a hardware isolation boundary, and
-                    persists state to PostgreSQL with OpenTelemetry observability. Forty-eight thousand
-                    lines of Go.
+                    feeds an in-process scheduler with bin-packing, spread, and best-fit placement. The
+                    scheduler fans agent jobs out to a pool of Firecracker microVMs inside a hardware
+                    isolation boundary, and persists state to PostgreSQL with OpenTelemetry observability.
+                    A single-region control plane, about thirty-five thousand lines of Go.
                   </desc>
                   <rect class="s-frame" x="8" y="8" width="844" height="504"/>
                   <g>
@@ -901,8 +901,8 @@
                   <g>
                     <polyline class="leader draw" points="307,222 307,64" pathLength="1"/>
                     <circle class="dot fade" cx="307" cy="222" r="2.6"/>
-                    <text class="s-anno key fade" x="307" y="40" text-anchor="middle">DISTRIBUTED SCHEDULER</text>
-                    <text class="s-anno fade" x="307" y="54" text-anchor="middle">KAFKA + etcd</text>
+                    <text class="s-anno key fade" x="307" y="40" text-anchor="middle">IN-PROCESS SCHEDULER</text>
+                    <text class="s-anno fade" x="307" y="54" text-anchor="middle">BIN-PACK · SPREAD · BEST-FIT</text>
                   </g>
                   <g>
                     <polyline class="leader draw" points="690,140 690,64" pathLength="1"/>
@@ -938,9 +938,9 @@
                   <rect class="s-box-key draw" x="232" y="222" width="150" height="120" pathLength="1"/>
                   <text class="s-label" x="307" y="246" text-anchor="middle">SCHEDULER</text>
                   <rect class="s-inner draw" x="248" y="258" width="118" height="26" pathLength="1"/>
-                  <text class="s-sub" x="307" y="275" text-anchor="middle">KAFKA · QUEUE</text>
+                  <text class="s-sub" x="307" y="275" text-anchor="middle">PLACEMENT</text>
                   <rect class="s-inner draw" x="248" y="298" width="118" height="26" pathLength="1"/>
-                  <text class="s-sub" x="307" y="315" text-anchor="middle">etcd · STATE</text>
+                  <text class="s-sub" x="307" y="315" text-anchor="middle">IN-PROCESS QUEUE</text>
                   <rect class="s-box draw" x="232" y="384" width="150" height="54" pathLength="1"/>
                   <text class="s-label" x="307" y="407" text-anchor="middle">PostgreSQL</text>
                   <text class="s-sub" x="307" y="424" text-anchor="middle">PERSIST · OTel</text>
@@ -957,19 +957,19 @@
                   <line class="dim draw" x1="828" y1="486" x2="828" y2="502" pathLength="1"/>
                   <line class="dim draw" x1="40" y1="494" x2="372" y2="494" pathLength="1"/>
                   <line class="dim draw" x1="496" y1="494" x2="828" y2="494" pathLength="1"/>
-                  <text class="s-dimtxt" x="434" y="498" text-anchor="middle">AETHER · 48,000 LINES OF Go</text>
+                  <text class="s-dimtxt" x="434" y="498" text-anchor="middle">AETHER · 35,000 LINES OF Go</text>
                 </svg>
               </div>
               <div class="sys-fig">FIG. 01 – Aether agent runtime · microVM isolation</div>
               <h3 class="sys-name">Aether</h3>
               <p class="sys-desc">
                 AI agent runtime with hardware-level isolation via Firecracker microVMs.
-                Multi-tenant REST API, distributed scheduler with Kafka and etcd, JWT/RBAC,
-                PostgreSQL persistence, OpenTelemetry observability, Kubernetes/Terraform
-                deployment. Forty-eight thousand lines of Go.
+                Single-region control plane: multi-tenant REST API, in-process scheduler with
+                bin-packing, spread, and best-fit placement, JWT/RBAC, PostgreSQL persistence,
+                OpenTelemetry observability, Kubernetes/Terraform deployment. About 35,000 lines of Go.
               </p>
               <div class="sys-foot">
-                <span class="stack">Go · Firecracker · Kubernetes · Kafka</span>
+                <span class="stack">Go · Firecracker · Kubernetes · PostgreSQL</span>
                 <span class="ext"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> signed</span>
               </div>
             </a>
