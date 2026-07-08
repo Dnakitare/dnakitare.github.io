@@ -694,14 +694,18 @@
               discipline I bring to the systems I ship now.
             </p>
             <p>
-              Seven years building production backend and full-stack systems across healthcare
-              SaaS, legal tech, and enterprise platforms. I own EHR integrations across nine-plus
-              platforms at Carefeed, architect data pipelines that hundreds of facilities depend
-              on, and design APIs for the kind of environments where a failure case becomes a
-              regulatory finding.
+              Seven years shipping production backends across healthcare SaaS, legal tech, and
+              enterprise platforms. At Carefeed I own the EHR integration architecture end to end:
+              data exchange across nine-plus platforms (Epic, PointClickCare, MatrixCare), the
+              webhook and PDF/OCR pipelines that hundreds of facilities depend on, and the auth
+              layer behind a multi-tenant SaaS. When I inherited a four-year backlog of 27,000-plus
+              failed uploads, I fixed the root cause and shipped the cleanup tooling that brought
+              integrity back above 99 percent. This is the work: systems where a wrong record is a
+              regulatory finding, not a failed unit test.
             </p>
             <p>
-              Lately, the AI-infrastructure work: runtime governance for agents (<a class="inline" href="https://github.com/Dnakitare/imara" target="_blank" rel="noopener">Imara</a>, on npm),
+              Alongside the day job, my side work concentrates on the infrastructure around an LLM,
+              not the model itself: runtime governance for agents (<a class="inline" href="https://github.com/Dnakitare/imara" target="_blank" rel="noopener">Imara</a>, on npm),
               MCP gateways (Mavryn), and capability-broker architecture for local agents in
               regulated industries (Castellan).
             </p>
@@ -957,7 +961,7 @@
                   <line class="dim draw" x1="828" y1="486" x2="828" y2="502" pathLength="1"/>
                   <line class="dim draw" x1="40" y1="494" x2="372" y2="494" pathLength="1"/>
                   <line class="dim draw" x1="496" y1="494" x2="828" y2="494" pathLength="1"/>
-                  <text class="s-dimtxt" x="434" y="498" text-anchor="middle">AETHER · 35,000 LINES OF Go</text>
+                  <text class="s-dimtxt" x="434" y="498" text-anchor="middle">AETHER · SINGLE-REGION CONTROL PLANE · Go</text>
                 </svg>
               </div>
               <div class="sys-fig">FIG. 01 – Aether agent runtime · microVM isolation</div>
@@ -966,7 +970,7 @@
                 AI agent runtime with hardware-level isolation via Firecracker microVMs.
                 Single-region control plane: multi-tenant REST API, in-process scheduler with
                 bin-packing, spread, and best-fit placement, JWT/RBAC, PostgreSQL persistence,
-                OpenTelemetry observability, Kubernetes/Terraform deployment. About 35,000 lines of Go.
+                OpenTelemetry observability, Kubernetes/Terraform deployment. Beta.
               </p>
               <div class="sys-foot">
                 <span class="stack">Go · Firecracker · Kubernetes · PostgreSQL</span>
