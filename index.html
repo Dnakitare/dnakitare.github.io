@@ -7,7 +7,12 @@
   <meta name="description" content="Daniel Nakitare is a senior backend engineer. Seven years of production systems across healthcare SaaS and legal tech, EHR integration ownership across nine-plus platforms, and side work on audit infrastructure for AI agents.">
   <meta name="keywords" content="Daniel Nakitare, Senior Software Engineer, Backend Engineer, Healthcare SaaS, Legal Tech, AI Infrastructure, Audit Log, Hash Chain, Laravel, MCP, PhotoPare, MBA, Combat Veteran">
   <meta property="og:title" content="Daniel Nakitare, Senior Backend Engineer">
-  <meta property="og:description" content="Backend systems where the consequences are real. Audit substrates you can verify, not trust on faith.">
+  <meta property="og:description" content="Backend systems where the consequences are real. Seven years of production healthcare and legal-tech infrastructure.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dnakitare.github.io/">
+  <meta property="og:image" content="https://dnakitare.github.io/og-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://dnakitare.github.io/og-card.png">
   <title>Daniel Nakitare · Audit Record</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2316181D'/><text x='16' y='20' font-family='ui-monospace,monospace' font-size='16' font-weight='700' fill='%23ECEAE3' text-anchor='middle'>dn</text><rect x='9' y='23.5' width='14' height='2.6' rx='1' fill='%231F7A4D'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,14 +26,14 @@
       --bone-2: #E4E1D8;
       --ink: #16181D;
       --ink-2: #3A3D45;
-      --ink-3: #6B6E76;
+      --ink-3: #5E6168;
       --hair: rgba(22, 24, 29, 0.14);
       --hair-2: rgba(22, 24, 29, 0.28);
       --card: #F3F1EA;
       --grid: rgba(22, 24, 29, 0.04);
 
       /* Signal only. Green = verified/allow. Red = deny/refusal. */
-      --verify: #1F7A4D;
+      --verify: #1B6B44;
       --verify-bg: rgba(31, 122, 77, 0.08);
       --refuse: #B23A2E;
       --refuse-bg: rgba(178, 58, 46, 0.08);
@@ -116,7 +121,11 @@
       color: var(--ink); border-bottom-color: var(--ink);
     }
     @media (max-width: 680px) {
-      nav.top ul { display: none; }
+      nav.top ul {
+        gap: 1rem; overflow-x: auto;
+        -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      }
+      nav.top ul::-webkit-scrollbar { display: none; }
     }
 
     /* ============================================================ RECORD CHAIN */
@@ -544,7 +553,7 @@
     footer .links a:hover { color: var(--ink); }
 
     /* ============================================================ KONAMI BANNER */
-    #konami-banner {
+    #konami-banner, #dive-banner {
       position: fixed; bottom: -120px; left: 50%;
       transform: translateX(-50%);
       padding: 0.9rem 1.8rem;
@@ -556,26 +565,8 @@
       transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 8px 40px rgba(22, 24, 29, 0.14);
     }
-    #konami-banner.show { bottom: 2rem; }
-    #konami-banner a {
-      color: var(--ink); text-decoration: none;
-      border-bottom: 1px solid var(--verify);
-      padding-bottom: 2px; margin-left: 0.5rem;
-    }
-    #dive-banner {
-      position: fixed; bottom: -120px; left: 50%;
-      transform: translateX(-50%);
-      padding: 0.9rem 1.8rem;
-      background: var(--card);
-      border: 1px solid var(--verify);
-      font-family: var(--mono); font-size: 0.8rem;
-      color: var(--verify); letter-spacing: 0.06em;
-      z-index: 100;
-      transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 8px 40px rgba(22, 24, 29, 0.14);
-    }
-    #dive-banner.show { bottom: 2rem; }
-    #dive-banner a {
+    #konami-banner.show, #dive-banner.show { bottom: 2rem; }
+    #konami-banner a, #dive-banner a {
       color: var(--ink); text-decoration: none;
       border-bottom: 1px solid var(--verify);
       padding-bottom: 2px; margin-left: 0.5rem;
@@ -1449,7 +1440,7 @@
             systems. Also happy to talk backend architecture, API design, or whatever you're
             building.
           </div>
-          <div class="availability"><span class="dot"></span> Open to senior &amp; staff conversations</div>
+          <div class="availability"><span class="dot"></span> Open to senior &amp; staff conversations · remote (US) · based in New Mexico, works Eastern hours</div>
           <div class="contact-links">
             <a href="mailto:dnakitare@gmail.com"><span class="k">email</span>dnakitare@gmail.com</a>
             <a href="https://github.com/Dnakitare" target="_blank" rel="noopener"><span class="k">github</span>Dnakitare</a>
@@ -1593,7 +1584,7 @@
     // shift mid-paint. Retry across several layout-settle moments.
     if (location.hash && location.hash.length > 1) {
       const scrollToHash = () => {
-        const t = document.querySelector(location.hash);
+        const t = document.getElementById(location.hash.slice(1));
         if (t) t.scrollIntoView({ behavior: 'instant', block: 'start' });
       };
       setTimeout(scrollToHash, 0);
