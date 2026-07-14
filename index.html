@@ -1440,7 +1440,7 @@
             <span class="rid">RECORD 0x0004</span>
             <span class="hashes">
               <span class="prev"><span class="hk">prev:</span> <span class="hv">d81b8fa4107f</span></span>
-              <span class="this"><span class="hk">this:</span> <span class="hv">93d1b04305c4</span></span>
+              <span class="this"><span class="hk">this:</span> <span class="hv">ba84764175b0</span></span>
             </span>
             <span class="stamp"><span class="check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="word"></span></span>
           </div>
@@ -1450,11 +1450,11 @@
             <div class="stamp-w">July 2026 · Postmortem</div>
             <h3>I broke my own audit log</h3>
             <p>
-              In June I shipped Imara 0.2.0 and broke verification of every 0.1.x hash chain
-              myself. Nothing was tampered with; the serialization moved underneath the
-              verifier. A postmortem on why the hash preimage is part of the security contract,
-              what the migration should have been, and why the cheap moment to fix it is before
-              anyone depends on you.
+              I changed Imara's serialization format in 0.2.0 and every log written by 0.1.x
+              stopped verifying. Nothing was tampered with. I broke it myself, in the one place
+              a tamper-evidence tool can't afford to break. This is the writeup of what I got
+              wrong and how the migration should have worked. Imara's README links it too,
+              right where the audit chain is pitched.
             </p>
             <a class="read" href="/writing/i-broke-my-own-audit-log.html">Read the postmortem</a>
           </div>
@@ -1483,8 +1483,8 @@
           <div class="ledger-strip">
             <span class="rid">RECORD 0x0005</span>
             <span class="hashes">
-              <span class="prev"><span class="hk">prev:</span> <span class="hv">93d1b04305c4</span></span>
-              <span class="this"><span class="hk">this:</span> <span class="hv">fd1fdf765db7</span></span>
+              <span class="prev"><span class="hk">prev:</span> <span class="hv">ba84764175b0</span></span>
+              <span class="this"><span class="hk">this:</span> <span class="hv">8a2df03a566a</span></span>
             </span>
             <span class="stamp"><span class="check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="word"></span></span>
           </div>
@@ -1514,8 +1514,8 @@
           <div class="ledger-strip">
             <span class="rid">RECORD 0x0006</span>
             <span class="hashes">
-              <span class="prev"><span class="hk">prev:</span> <span class="hv">fd1fdf765db7</span></span>
-              <span class="this"><span class="hk">this:</span> <span class="hv">a06af8f056be</span></span>
+              <span class="prev"><span class="hk">prev:</span> <span class="hv">8a2df03a566a</span></span>
+              <span class="this"><span class="hk">this:</span> <span class="hv">5e94808ef686</span></span>
             </span>
             <span class="stamp"><span class="check" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="word"></span></span>
           </div>
@@ -1546,7 +1546,7 @@
         Set in Archivo and IBM Plex Mono. Hand-coded. No framework. No tracking.
         &copy; 2026 Daniel Nakitare.
         <span class="final">
-          <span id="chain-count">7</span> records · chain head <b id="chain-head">a06af8f056be</b> · <span id="seal-status">verifying…</span>
+          <span id="chain-count">7</span> records · chain head <b id="chain-head">5e94808ef686</b> · <span id="seal-status">verifying…</span>
         </span>
         <span class="seal-note">
           Section hashes are a real SHA-256 chain, computed from the text of each record at
