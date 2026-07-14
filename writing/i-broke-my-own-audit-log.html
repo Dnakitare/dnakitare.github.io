@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A postmortem of the Imara 0.1.x to 0.2.0 hash-format change: how I broke verification of my own tamper-evident audit log, what shipped as the answer, and what the migration should have been.">
+  <meta property="og:title" content="I broke my own audit log">
+  <meta property="og:description" content="The serialization of a hash preimage is part of the security contract. I treated it as an implementation detail. A postmortem.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://dnakitare.github.io/writing/i-broke-my-own-audit-log.html">
+  <meta property="og:image" content="https://dnakitare.github.io/og-card.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://dnakitare.github.io/og-card.png">
+  <title>I broke my own audit log · Daniel Nakitare</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2316181D'/><text x='16' y='20' font-family='ui-monospace,monospace' font-size='16' font-weight='700' fill='%23ECEAE3' text-anchor='middle'>dn</text><rect x='9' y='23.5' width='14' height='2.6' rx='1' fill='%231F7A4D'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bone: #ECEAE3;
+      --ink: #16181D;
+      --ink-2: #3A3D45;
+      --ink-3: #5E6168;
+      --hair: rgba(22, 24, 29, 0.14);
+      --card: #F3F1EA;
+      --verify: #1B6B44;
+      --red: #A03232;
+      --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bone); color: var(--ink);
+      font-family: 'Archivo', sans-serif;
+      font-size: 1.02rem; line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 46rem; margin: 0 auto; padding: 0 1.4rem; }
+    header.top {
+      border-bottom: 1px solid var(--hair);
+      padding: 1.1rem 0;
+      font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.02em;
+    }
+    header.top .wrap { display: flex; justify-content: space-between; align-items: baseline; }
+    header.top a { color: var(--ink-3); text-decoration: none; }
+    header.top a:hover { color: var(--ink); }
+    header.top .mark { color: var(--ink); font-weight: 600; }
+    article { padding: 4rem 0 3rem; }
+    .eyebrow {
+      font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--ink-3); margin-bottom: 1.2rem;
+    }
+    .eyebrow b { color: var(--verify); font-weight: 500; }
+    h1 {
+      font-size: clamp(2rem, 5vw, 2.9rem); line-height: 1.08;
+      letter-spacing: -0.015em; margin-bottom: 1.4rem;
+    }
+    .standfirst {
+      font-size: 1.12rem; color: var(--ink-2); margin-bottom: 2.6rem;
+      padding-bottom: 2.2rem; border-bottom: 1px solid var(--hair);
+    }
+    h2 {
+      font-size: 1.25rem; letter-spacing: -0.01em;
+      margin: 2.6rem 0 0.9rem;
+    }
+    p { margin-bottom: 1.15rem; }
+    ol { margin: 0 0 1.15rem 1.4rem; }
+    ol li { margin-bottom: 0.9rem; padding-left: 0.3rem; }
+    code {
+      font-family: var(--mono); font-size: 0.86em;
+      background: var(--card); border: 1px solid var(--hair);
+      padding: 0.08em 0.35em; border-radius: 3px;
+    }
+    a { color: var(--ink); text-decoration-color: var(--verify); text-underline-offset: 3px; }
+    footer {
+      border-top: 1px solid var(--hair); padding: 1.6rem 0 3rem;
+      font-family: var(--mono); font-size: 0.72rem; color: var(--ink-3); line-height: 1.7;
+    }
+    footer a { color: inherit; }
+  </style>
+</head>
+
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="mark" href="/">Daniel Nakitare</a>
+      <a href="/#writing">&larr; writing</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <article>
+      <div class="eyebrow">writing · july 2026 · <b>postmortem</b></div>
+      <h1>I broke my own audit log</h1>
+      <p class="standfirst">
+        The serialization of a hash preimage is part of the security contract. I treated it as
+        an implementation detail I could clean up in a refactor. A postmortem of the Imara
+        0.1.x to 0.2.0 hash-format change.
+      </p>
+
+      <p>
+        <a href="https://github.com/Dnakitare/imara">Imara</a> is an MCP governance proxy I
+        build and maintain. It sits between an AI agent and its tools, applies policy to every
+        tool call, and writes each decision to a SHA-256 hash-chained audit log. The pitch to a
+        compliance buyer fits in one sentence: if anyone edits history, verification fails. The
+        contrapositive has to hold just as absolutely: if nobody edits history, verification
+        never fails. Tamper evidence is not a feature of the product. It is the product.
+      </p>
+      <p>
+        In June I shipped Imara 0.2.0 and broke that second half myself. Audit logs written by
+        0.1.x fail verification under 0.2.0, and nothing in them was tampered with. This is a
+        postmortem of how that happened, what I shipped as the answer, and why that answer
+        isn't good enough for the product Imara claims to be.
+      </p>
+
+      <h2>What the chain commits to</h2>
+      <p>
+        Each audit event is hashed with SHA-256 over a JSON array of its fields in a fixed
+        order: id, timestamp, session, server, tool name, tool arguments, annotations, policy
+        decision, policies evaluated, result status, and the previous event's hash. That last
+        field is the chain link. Rewrite any event and its hash changes; every later event's
+        <code>prevHash</code> then points at nothing, and verification reports the exact index
+        where history diverged.
+      </p>
+      <p>
+        The 0.1.x hashing code carried a comment: "Explicit key ordering for deterministic
+        hashing across environments." That was true for the top-level fields and false one
+        level down. Tool arguments and annotations are nested JSON objects, and 0.1.x
+        serialized them in whatever key order the JavaScript object happened to have. Key order
+        in a JS object is an accident of insertion: the byte order the client put on the wire,
+        or the order some transform rebuilt the object in. Two semantically identical events
+        could hash differently. Worse, the same stored event, re-serialized through any code
+        path that reconstructs the object (a schema parse, a spread merge, a redaction pass),
+        would fail verification with nothing wrong. A tamper-evidence system that raises false
+        alarms trains its operators to ignore alarms, which is worse than having no alarms at
+        all.
+      </p>
+
+      <h2>What 0.2.0 changed and why old chains break</h2>
+      <p>
+        The fix is recursive canonicalization before hashing: object keys are sorted at every
+        depth, arrays keep their order because array order carries meaning. Same logical event,
+        same hash, regardless of how the object was built.
+      </p>
+      <p>
+        The release also fixed verifier bugs that were frankly more embarrassing than the
+        serialization. The 0.1.x verifier only checked an event's stored hash if the event
+        happened to carry one; an event without a stored hash was silently accepted. The
+        genesis event was never anchored, so you could delete the first N rows of the log and
+        the remainder verified clean. 0.2.0 requires the stored hash on every event and
+        recomputes it unconditionally, requires a null <code>prevHash</code> on the genesis
+        event so prefix deletion is detected, and records a head anchor (final hash plus event
+        count) in <code>~/.imara/anchor.json</code> on each verify, so end-truncation and
+        wholesale rewrite are caught across runs. Those are things a hash chain cannot detect
+        from inside itself, and I say so in the docs now rather than implying the chain does
+        more than it can.
+      </p>
+      <p>
+        But sorting nested keys changes the hash preimage. Any 0.1.x event whose argument keys
+        weren't already in sorted order recomputes to a different hash under 0.2.0, and the
+        verifier correctly reports it as a mismatch. The verifier is doing its job. The format
+        moved underneath it. An honest history now looks tampered.
+      </p>
+
+      <h2>What I shipped as the answer</h2>
+      <p>
+        The 0.2.0 CHANGELOG says: treat 0.2.0 as a fresh baseline. Archive any
+        <code>~/.imara/audit.db</code> you need to keep, then run <code>imara verify</code> to
+        establish a new anchor.
+      </p>
+      <p>
+        That's a re-baseline: keep the old file if you care about it, start a new chain, record
+        its head. For a v0.1 tool with no production users, it's defensible. For the product
+        Imara claims to be, it isn't. Picture a compliance buyer with a 14-month retention
+        window, which is an ordinary requirement once SOC 2 audit periods and lookback are
+        involved. The instruction "archive the old file" converts fourteen months of
+        cryptographically verifiable history into a folder of bytes the auditor has to take on
+        trust. The moment the old chain can't be verified, its tamper evidence is gone
+        retroactively. You didn't lose the data. You lost the property, and the property was
+        the point.
+      </p>
+
+      <h2>What the migration should have been</h2>
+      <p>Nothing here requires novel cryptography. Three mechanisms, all boring:</p>
+      <ol>
+        <li>
+          Version-tag every record. A <code>hash_version</code> column, or a per-segment format
+          version. The verifier dispatches on it: v1 segments verify under v1 rules, v2 under
+          v2. The old hasher stays frozen in the codebase forever. It's about forty lines.
+          Deleting it saved nothing.
+        </li>
+        <li>
+          Anchor the old chain head into the new one. The first v2 event is a migration record
+          whose payload commits to the v1 head hash, the v1 event count, and the old algorithm
+          identifier. Continuity then spans the format boundary: you can't swap out the
+          archived v1 log without breaking the commitment sitting at the base of the v2 chain.
+        </li>
+        <li>
+          Record an external anchor at cutover, so the migration moment itself is pinned
+          outside the store.
+        </li>
+      </ol>
+      <p>
+        Imara does none of these today. The current design actually forecloses the second one:
+        genesis is required to have a null <code>prevHash</code>, so there's no slot to carry
+        the old head without a schema change. I'm stating that as a known gap, not as a roadmap
+        item dressed up as done. And there will be a next format change. My canonicalization
+        sorts keys but still leans on JavaScript's number formatting; a move to RFC 8785 JCS
+        proper is the likely endpoint, and when it happens it should be the first migration to
+        cross the boundary without breaking verification.
+      </p>
+
+      <h2>The actual lesson</h2>
+      <p>
+        The serialization of the hash preimage is part of the security contract, and I treated
+        it as an implementation detail I could clean up in a refactor. It's more binding than
+        the database schema. You can migrate a schema with a script. You cannot recompute a
+        commitment, because the whole point of a commitment is that nobody, including you, gets
+        to recompute it. Systems that live with this well (Certificate Transparency logs, TUF
+        metadata) treat verifier behavior for old versions as frozen and version the format
+        from day one. Doing that on day one costs a column and a switch statement. Doing it
+        after the fact costs a breaking release and an essay like this.
+      </p>
+      <p>
+        Was 0.2.0 still the right call? Yes. A verifier that accepts prefix deletion and skips
+        hash checks on unhashed events is a worse liability than a format break, and shipping
+        the fix fast mattered more than shipping it gracefully. Given the choice again I'd make
+        the same change and ship it behind a version tag.
+      </p>
+      <p>
+        One more thing, stated plainly: Imara has no production adopters yet. This break
+        inconvenienced nobody but me and my demo database. That's exactly why this is the cheap
+        moment. The migration story costs a design decision today and costs a customer's audit
+        trail later. Every real chain that gets written before record versioning lands is a
+        chain I've promised to carry across the next format change with machinery that doesn't
+        exist yet. Better to build it while the only history at stake is mine.
+      </p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      Daniel Nakitare · <a href="/">dnakitare.github.io</a> ·
+      <a href="mailto:dnakitare@gmail.com">dnakitare@gmail.com</a><br>
+      The code this essay is about: <a href="https://github.com/Dnakitare/imara">github.com/Dnakitare/imara</a>
+    </div>
+  </footer>
+</body>
+
+</html>
