@@ -96,9 +96,9 @@
       <div class="eyebrow">writing · july 2026 · <b>postmortem</b></div>
       <h1>I broke my own audit log</h1>
       <p class="standfirst">
-        The serialization of a hash preimage is part of the security contract. I treated it as
-        an implementation detail I could clean up in a refactor. A postmortem of the Imara
-        0.1.x to 0.2.0 hash-format change.
+        I treated serialization as something I could clean up in a refactor. In a hash chain,
+        it's part of the security contract. A postmortem of the Imara 0.1.x to 0.2.0
+        hash-format change.
       </p>
 
       <p>
@@ -111,9 +111,9 @@
       </p>
       <p>
         In June I shipped Imara 0.2.0 and broke that second half myself. Audit logs written by
-        0.1.x fail verification under 0.2.0, and nothing in them was tampered with. This is a
-        postmortem of how that happened, what I shipped as the answer, and why that answer
-        isn't good enough for the product Imara claims to be.
+        0.1.x fail verification under 0.2.0, and nothing in them was tampered with. This is the
+        postmortem, including why the fix I shipped still isn't good enough for the product
+        Imara claims to be.
       </p>
 
       <h2>What the chain commits to</h2>
