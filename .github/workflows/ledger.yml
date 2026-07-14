@@ -1,0 +1,14 @@
+name: Ledger
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: browser-actions/setup-chrome@v1
+      - run: CHROME_BIN="$(which chrome)" node tools/ledger.mjs --verify
