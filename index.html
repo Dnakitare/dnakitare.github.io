@@ -562,6 +562,24 @@
       border-bottom: 1px solid var(--verify);
       padding-bottom: 2px; margin-left: 0.5rem;
     }
+    #dive-banner {
+      position: fixed; bottom: -120px; left: 50%;
+      transform: translateX(-50%);
+      padding: 0.9rem 1.8rem;
+      background: var(--card);
+      border: 1px solid var(--verify);
+      font-family: var(--mono); font-size: 0.8rem;
+      color: var(--verify); letter-spacing: 0.06em;
+      z-index: 100;
+      transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 8px 40px rgba(22, 24, 29, 0.14);
+    }
+    #dive-banner.show { bottom: 2rem; }
+    #dive-banner a {
+      color: var(--ink); text-decoration: none;
+      border-bottom: 1px solid var(--verify);
+      padding-bottom: 2px; margin-left: 0.5rem;
+    }
 
     /* ============================================================ SCHEMATIC DRAWING (lifted) */
     .s-frame  { fill: none; stroke: var(--rule); }
@@ -1455,6 +1473,7 @@
       </div>
       <div class="links">
         <a href="maze.html">/maze</a>
+        <a href="/strata-dive/">/dive</a>
         <a href="https://github.com/Dnakitare/dnakitare.github.io" target="_blank" rel="noopener">/src</a>
       </div>
     </div>
@@ -1463,6 +1482,11 @@
   <div id="konami-banner">
     Konami unlock acknowledged.
     <a href="maze.html">enter the maze</a>
+  </div>
+
+  <div id="dive-banner">
+    Descent authorized. 深層降下
+    <a href="/strata-dive/">begin the dive</a>
   </div>
 
   <div class="lightbox" id="schematic-lightbox" hidden>
@@ -1594,6 +1618,25 @@
         }
       } else {
         kIdx = (e.key === konami[0]) ? 1 : 0;
+      }
+    });
+
+    // ===================================================== type "dive" -> /strata-dive
+    const diveWord = ['d', 'i', 'v', 'e'];
+    let dIdx = 0;
+    window.addEventListener('keydown', (e) => {
+      if (e.target && e.target.closest && e.target.closest('input, textarea')) return;
+      const key = (e.key || '').toLowerCase();
+      if (key === diveWord[dIdx]) {
+        dIdx++;
+        if (dIdx === diveWord.length) {
+          const b = document.getElementById('dive-banner');
+          b.classList.add('show');
+          dIdx = 0;
+          setTimeout(() => b.classList.remove('show'), 6000);
+        }
+      } else {
+        dIdx = (key === diveWord[0]) ? 1 : 0;
       }
     });
 
