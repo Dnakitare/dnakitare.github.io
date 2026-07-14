@@ -1300,6 +1300,81 @@
             </a>
               <button type="button" class="zoom-btn" data-target="muhuri-svg" data-label="Muhuri schematic" aria-label="Expand Muhuri schematic at full size"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
+            <!-- FIG. 06 – LARAVEL OUTBOX -->
+            <div class="sys-wrap"><a class="system-card" href="https://github.com/Dnakitare/laravel-outbox" target="_blank" rel="noopener">
+              <div class="sys-svg">
+                <svg id="outbox-svg" viewBox="0 0 860 520" role="img"
+                     aria-labelledby="outbox-title outbox-desc" preserveAspectRatio="xMidYMid meet">
+                  <title id="outbox-title">Laravel Outbox architecture schematic</title>
+                  <desc id="outbox-desc">
+                    Schematic of the transactional outbox pattern. A business write and its outbox row
+                    commit in one SQL transaction, so a committed write and its event can never disagree.
+                    After commit, a worker claims rows with SKIP LOCKED and dispatches them to the real
+                    event bus and queue. Failures retry with exponential backoff and land in a
+                    dead-letter table where they can be inspected and replayed. Delivery is
+                    at-least-once, so consumers stay idempotent.
+                  </desc>
+                  <rect class="s-frame" x="8" y="8" width="844" height="504"/>
+                  <g>
+                    <polyline class="leader draw" points="198,112 198,66" pathLength="1"/>
+                    <circle class="dot fade" cx="198" cy="112" r="2.6"/>
+                    <text class="s-anno key fade" x="198" y="58" text-anchor="middle">NOTHING FIRES INSIDE THE TRANSACTION</text>
+                  </g>
+                  <rect class="boundary draw" x="28" y="112" width="340" height="164" pathLength="1"/>
+                  <text class="s-anno key" x="38" y="132">ONE SQL TRANSACTION · ATOMIC</text>
+                  <rect class="s-box draw" x="48" y="150" width="130" height="56" pathLength="1"/>
+                  <text class="s-label" x="113" y="174" text-anchor="middle">BUSINESS WRITE</text>
+                  <text class="s-sub"   x="113" y="192" text-anchor="middle">orders · invoices</text>
+                  <line class="s-flow draw" x1="178" y1="178" x2="212" y2="178" pathLength="1"/>
+                  <rect class="s-box-key draw" x="212" y="150" width="136" height="56" pathLength="1"/>
+                  <text class="s-label" x="280" y="174" text-anchor="middle">OUTBOX ROW</text>
+                  <text class="s-sub"   x="280" y="192" text-anchor="middle">outbox_messages</text>
+                  <text class="s-anno" x="198" y="248" text-anchor="middle">EVENTS + JOBS · HMAC-SIGNED</text>
+                  <text class="s-anno key" x="399" y="166" text-anchor="middle">COMMIT</text>
+                  <line class="s-flow draw" x1="368" y1="178" x2="430" y2="178" pathLength="1"/>
+                  <rect class="s-box-key draw" x="430" y="150" width="136" height="56" pathLength="1"/>
+                  <text class="s-label" x="498" y="174" text-anchor="middle">WORKER</text>
+                  <text class="s-sub"   x="498" y="192" text-anchor="middle">SKIP LOCKED claim</text>
+                  <line class="s-flow s-allow draw" x1="566" y1="164" x2="640" y2="132" pathLength="1"/>
+                  <text class="s-anno t-allow" x="608" y="124" text-anchor="middle">DELIVER</text>
+                  <rect class="s-box s-allow draw" x="640" y="104" width="180" height="50" pathLength="1"/>
+                  <text class="s-label" x="730" y="126" text-anchor="middle">EVENT BUS · QUEUE</text>
+                  <text class="s-sub"   x="730" y="142" text-anchor="middle">the real dispatch</text>
+                  <line class="s-flow s-deny draw" x1="566" y1="196" x2="640" y2="238" pathLength="1"/>
+                  <text class="s-anno t-deny" x="608" y="250" text-anchor="middle">FAIL</text>
+                  <rect class="s-box draw" x="640" y="216" width="180" height="54" pathLength="1"/>
+                  <text class="s-label" x="730" y="238" text-anchor="middle">RETRY</text>
+                  <text class="s-sub"   x="730" y="256" text-anchor="middle">exp backoff + jitter</text>
+                  <line class="s-line draw" x1="730" y1="270" x2="730" y2="316" pathLength="1"/>
+                  <text class="s-anno" x="742" y="298" text-anchor="start">EXHAUSTED</text>
+                  <rect class="s-cell draw" x="640" y="316" width="180" height="60" pathLength="1"/>
+                  <text class="s-sub" x="730" y="340" text-anchor="middle">DEAD-LETTER</text>
+                  <text class="s-sub" x="730" y="358" text-anchor="middle">inspect · reset · replay</text>
+                  <text class="s-anno" x="48" y="330" text-anchor="start">AT-LEAST-ONCE · CONSUMERS IDEMPOTENT</text>
+                  <text class="s-anno" x="48" y="348" text-anchor="start">correlation_id AS THE DEDUP KEY</text>
+                  <line class="dim draw" x1="40"  y1="452" x2="40"  y2="468" pathLength="1"/>
+                  <line class="dim draw" x1="820" y1="452" x2="820" y2="468" pathLength="1"/>
+                  <line class="dim draw" x1="40"  y1="460" x2="300" y2="460" pathLength="1"/>
+                  <line class="dim draw" x1="560" y1="460" x2="820" y2="460" pathLength="1"/>
+                  <text class="s-dimtxt" x="430" y="464" text-anchor="middle">LARAVEL OUTBOX · COMMIT = PUBLISH, GUARANTEED</text>
+                </svg>
+              </div>
+              <div class="sys-fig">FIG. 06 – Transactional outbox · commit = publish, guaranteed</div>
+              <h3 class="sys-name">Laravel Outbox</h3>
+              <p class="sys-desc">
+                Domain events and queued jobs persisted in the same SQL transaction as the business
+                write, so a committed write and its event can never disagree. A worker replays them
+                with <code>SKIP LOCKED</code> claiming, exponential backoff, and a dead-letter table;
+                payloads are HMAC-signed and delivery is at-least-once. The reliability pattern every
+                distributed Laravel app eventually needs, packaged. On Packagist, in beta.
+              </p>
+              <div class="sys-foot">
+                <span class="stack">PHP · Laravel · MySQL/Postgres</span>
+                <span class="ext"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5.2 4 7.5 8.5 2.5" stroke="#1F7A4D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> signed</span>
+              </div>
+            </a>
+              <button type="button" class="zoom-btn" data-target="outbox-svg" data-label="Laravel Outbox schematic" aria-label="Expand Laravel Outbox schematic at full size"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
           </div>
 
           <!-- ============================ remaining records -->
@@ -1333,15 +1408,6 @@
                 Prisma API, Vue 3 front end, SQLite, with a test suite and CI.
               </div>
               <div class="stack-r">TypeScript · Express · Vue</div>
-            </a>
-            <a class="rec-row" href="https://github.com/Dnakitare/laravel-outbox" target="_blank" rel="noopener">
-              <div class="name">Laravel Outbox</div>
-              <div class="desc">
-                Transactional Outbox pattern for Laravel. Persists events and queued jobs
-                atomically with business writes, then replays them through a concurrent-safe worker
-                with backoff and dead-letter.
-              </div>
-              <div class="stack-r">PHP · Laravel · Reliability</div>
             </a>
             <a class="rec-row" href="https://github.com/Dnakitare" target="_blank" rel="noopener">
               <div class="name">More on GitHub</div>
