@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Oculus</title>
+<style>
+  :root { color-scheme: dark; }
+  html,body { margin:0; height:100%; background:#05060a; overflow:hidden; }
+  canvas { display:block; width:100vw; height:100vh; cursor:none; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+(() => {
+'use strict';
+
+/* ---------------------------------------------------------------
+   OCULUS
+
+   A lattice grown the way a seed head is grown: each element laid down
+   at the golden angle and then translating straight outward, its angle
+   fixed at birth. The spacing is geometric in log-radius, so the fall
+   is seamless and has no end. You are always approaching the light at
+   the centre and never arrive.
+
+   Phyllotaxis is quasi-periodic. It looks symmetrical and there is no
+   repeat to find, anywhere, ever. That is the whole reason it is here:
+   familiar enough to read as something grown, and wrong in a way that
+   cannot be located.
+
+   The flow is full-field and unidirectional, which adapts the
+   viewer's motion detectors. Once a cycle it stops. The still image
+   will appear to recede on its own for ten or twenty seconds after,
+   and so will the room. That afterimage is the piece; everything on
+   screen is only the way of delivering it.
+
+   Nothing here flashes. Every luminance change is ramped over
+   seconds, and prefers-reduced-motion removes the flow entirely.
+   --------------------------------------------------------------- */
+
+const BREATH = 0.1;       // Hz. resonant breathing rate, ~6 per minute
+const CYCLE  = 126;       // seconds
+
+const cv  = document.getElementById('c');
+const ctx = cv.getContext('2d', { alpha:false });
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let W = 0, H = 0, DPR = 1, cx = 0, cy = 0, maxR = 0;
+
+// feedback buffers: the previous frame, pushed along the same flow the
+// geometry follows, so the trails lie exactly on the streamlines
+const FB = 0.8;
+const fb  = document.createElement('canvas'), fc = fb.getContext('2d', { alpha:false });
+const tmp = document.createElement('canvas'), tc = tmp.getContext('2d', { alpha:false });
+const blm = document.createElement('canvas'), bc = blm.getContext('2d', { alpha:false });
+
+const blurOK = (() => {
+  const t = document.createElement('canvas').getContext('2d');
+  t.filter = 'blur(2px)';
+  return t.filter === 'blur(2px)';
+})();
+
+// ---- noise -------------------------------------------------------
+function makeNoise(seed) {
+  let s = seed >>> 0;
+  const rnd = () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0, s / 4294967296);
+  const perm = new Uint8Array(256);
+  for (let i = 0; i < 256; i++) perm[i] = i;
+  for (let i = 255; i > 0; i--) { const j = (rnd() * (i + 1)) | 0; const t = perm[i]; perm[i] = perm[j]; perm[j] = t; }
+  const p = new Uint8Array(512);
+  for (let i = 0; i < 512; i++) p[i] = perm[i & 255];
+  const fade = t => t * t * t * (t * (t * 6 - 15) + 10);
+  const grad = (h, x, y) => {
+    switch (h & 7) {
+      case 0: return  x + y; case 1: return  x - y;
+      case 2: return -x + y; case 3: return -x - y;
+      case 4: return  x;     case 5: return -x;
+      case 6: return  y;     default: return -y;
+    }
+  };
+  return (x, y) => {
+    const xi = Math.floor(x), yi = Math.floor(y);
+    const X = xi & 255, Y = yi & 255;
+    const fx = x - xi, fy = y - yi;
+    const u = fade(fx), v = fade(fy);
+    const A = p[X] + Y, B = p[X + 1] + Y;
+    const n00 = grad(p[A], fx, fy),         n10 = grad(p[B], fx - 1, fy);
+    const n01 = grad(p[A + 1], fx, fy - 1), n11 = grad(p[B + 1], fx - 1, fy - 1);
+    const a = n00 + u * (n10 - n00), b = n01 + u * (n11 - n01);
+    return (a + v * (b - a)) * 0.72;
+  };
+}
+const noise = makeNoise(0x0C15);
+const hash = (a, b) => {
+  let h = Math.imul(a * 374761393 + b * 668265263, 1274126177);
+  h ^= h >>> 13;
+  return ((h >>> 0) % 100000) / 100000;
+};
+
+// ---- the substance ----------------------------------------------
+// Not pigment. Structural colour: thin-film iridescence, where hue is a
+// function of depth rather than of what the thing is made of. Hue is
+// driven by log-radius, so colour moves outward through the lattice at
+// its own speed, independent of the elements carrying it.
+function hueAt(lr, n, t) {
+  return 198 + 68 * Math.sin(lr * 1.05 - t * 0.055) + 24 * Math.sin(n * 0.37 + t * 0.02);
+}
+
+// ---- the arc -----------------------------------------------------
+const sstep = t => (t = Math.max(0, Math.min(1, t)), t * t * (3 - 2 * t));
+const ramp = (t, a, b) => sstep((t - a) / (b - a));
+
+// Returns flow rate (registers/sec) and light level for a time in the cycle.
+function score(tc) {
+  let flow = 1, light = 1, still = 0;
+
+  if (tc < 8) {                       // the light comes up
+    light = ramp(tc, 0.5, 7.5);
+    flow  = 0.35 + 0.65 * ramp(tc, 1, 8);
+  } else if (tc < 84) {               // the long fall
+    light = 1;
+  } else if (tc < 96) {               // tenebrae: the light fails, the fall does not
+    const d = ramp(tc, 84, 89.5);
+    const u = ramp(tc, 92.5, 96);
+    light = 1 - d * 0.94 + u * 0.94;
+  } else if (tc < 102) {              // arrest
+    const e = ramp(tc, 96, 102);
+    flow = 1 - e;
+    light = 1 + 0.16 * Math.sin(e * Math.PI);
+    still = e;
+  } else if (tc < 119) {              // the stillness. this is the payload.
+    flow = 0; still = 1;
+    light = 1 - 0.14 * ramp(tc, 102, 119);
+  } else {                            // it begins again
+    flow = ramp(tc, 119, 126);
+    still = 1 - flow;
+    light = 0.86 + 0.14 * ramp(tc, 119, 124);
+  }
+  return { flow, light, still };
+}
+
+// ---- lattice -----------------------------------------------------
+// Elements are laid down at the golden angle and then translate straight
+// outward, which is how a seed head actually grows: the angle of a
+// primordium is fixed at birth and never changes again. The flow is
+// therefore pure radial expansion, and the lattice slides through itself.
+const PHI  = Math.PI * (3 - Math.sqrt(5));   // 137.507 degrees
+const GROW = 0.0072;                          // log-radius step per element
+const FLOW = 0.088;                           // e-folds per second
+
+// ---- scene -------------------------------------------------------
+let phase = 0, tt = 0;
+const ptr = { x:0, y:0, tx:0, ty:0 };
+
+// The only light source is the oculus, so brightness falls hard with
+// radius. Everything past the middle distance is meant to be in shadow:
+// that fall-off is what makes the window feel deep instead of flat.
+function lumAt(x, y, t) {
+  const n = noise(x * 0.0016 + t * 0.021, y * 0.0016 - t * 0.013);
+  const dx = x - cx - ptr.x * 110, dy = y - cy - ptr.y * 110;
+  const d = Math.hypot(dx, dy) / (maxR + 1);
+  const fall = Math.pow(Math.max(0, 1 - d * 0.94), 2.3);
+  return Math.max(0, Math.min(1.5, (0.10 + fall * 1.15) * (0.80 + n * 0.42)));
+}
+
+function paint(a, lum, lightLevel, boost) {
+  const l = lum * lightLevel * (boost || 1);
+  return `rgb(${Math.min(255, a[0] * l) | 0},${Math.min(255, a[1] * l) | 0},${Math.min(255, a[2] * l) | 0})`;
+}
+
+function drawScene(g, lightLevel) {
+  const breathe = 1 + 0.035 * Math.sin(tt * 2 * Math.PI * BREATH);
+  const base = maxR * 0.0125 * breathe;
+  const spin = tt * 0.013;
+
+  const rMin = 1.6, rMax = maxR * 1.30;
+  const nMin = Math.ceil((Math.log(rMin / base) - phase) / GROW);
+  const nMax = Math.floor((Math.log(rMax / base) - phase) / GROW);
+
+  for (let n = nMin; n <= nMax; n++) {
+    const lr = GROW * n + phase;
+    const r = base * Math.exp(lr);
+    const th = PHI * n + spin;
+    const x = cx + r * Math.cos(th), y = cy + r * Math.sin(th);
+
+    const h0 = hash(n, 7);
+    // a few are much larger. a field of identical cells reads as a
+    // pattern; a field with occasional bodies in it reads as a specimen.
+    const big = h0 < 0.028 ? 1.9 : (h0 < 0.10 ? 1.28 : 1);
+    const el = r * 0.186 * big;
+    if (el < 0.35) continue;
+
+    let lum = lumAt(x, y, tt);
+    // a slow wave travelling outward through the lattice, at a different
+    // speed from the lattice itself. the beat between the two is what
+    // keeps it from settling into a pattern the eye can finish.
+    lum *= 1 + 0.30 * Math.sin(lr * 2.6 - tt * 0.62);
+    lum *= 0.72 + 0.55 * hash(n, 19);
+
+    // a few cells are shut. absence in an otherwise complete lattice is
+    // what stops it reading as decoration
+    const dead = h0 > 0.955;
+    const hue = h0 < 0.045 ? 34 : hueAt(lr, n, tt);
+    const sat = 46 + 30 * Math.sin(lr * 0.7 + 1.3);
+    const L = Math.max(0, Math.min(78, lum * lightLevel * 44));
+    if (L < 0.6) continue;
+
+    g.save();
+    g.translate(x, y);
+    g.rotate(th);
+
+    // the body: a lens, slightly elongated across the flow
+    g.beginPath();
+    g.ellipse(0, 0, el * 0.80, el * 1.16, 0, 0, 6.2832);
+    g.fillStyle = dead
+      ? `hsl(${hue.toFixed(0)} 22% ${(L * 0.10).toFixed(1)}%)`
+      : `hsl(${hue.toFixed(0)} ${sat.toFixed(0)}% ${(L * 0.42).toFixed(1)}%)`;
+    g.fill();
+
+    if (dead) { g.restore(); continue; }
+
+    // the core, where the light actually gets through
+    g.beginPath();
+    g.ellipse(0, 0, el * 0.46, el * 0.68, 0, 0, 6.2832);
+    g.fillStyle = `hsl(${(hue + 16).toFixed(0)} ${Math.min(92, sat + 22).toFixed(0)}% ${Math.min(92, L * 1.34).toFixed(1)}%)`;
+    g.fill();
+
+    // rim: only the edge facing the centre catches it, which is what
+    // makes a flat plate read as a body with a side to it
+    if (L > 6) {
+      g.beginPath();
+      g.ellipse(0, 0, el * 0.80, el * 1.16, 0, 1.9, 4.4);
+      g.strokeStyle = `hsla(${(hue + 30).toFixed(0)} 90% ${Math.min(88, L * 1.7).toFixed(1)}% / ${Math.min(0.6, L / 90).toFixed(3)})`;
+      g.lineWidth = Math.max(0.6, el * 0.09);
+      g.stroke();
+    }
+
+    g.restore();
+  }
+}
+
+// The centre is an iris, not a window: a dark pupil that dilates on the
+// breath, inside a ring you are always falling toward.
+function drawOculus(g, lightLevel) {
+  const b = Math.sin(tt * 2 * Math.PI * BREATH);
+  const R = maxR * 0.052 * (1 + 0.10 * b);
+  const pupil = R * (0.40 + 0.20 * b);
+
+  const grd = g.createRadialGradient(cx, cy, pupil * 0.6, cx, cy, R * 3.4);
+  const l = lightLevel;
+  grd.addColorStop(0.00, `rgba(238,250,255,${(0.97 * l).toFixed(3)})`);
+  grd.addColorStop(0.13, `rgba(196,232,255,${(0.80 * l).toFixed(3)})`);
+  grd.addColorStop(0.34, `rgba(110,150,220,${(0.30 * l).toFixed(3)})`);
+  grd.addColorStop(1.00, 'rgba(40,60,120,0)');
+  g.fillStyle = grd;
+  g.beginPath(); g.arc(cx, cy, R * 3.4, 0, 6.2832); g.fill();
+
+  // the pupil, feathered. a hard black disc reads as a dead pixel
+  const pg = g.createRadialGradient(cx, cy, 0, cx, cy, pupil * 1.6);
+  const pa = 0.92 * Math.min(1, l * 1.6);
+  pg.addColorStop(0.00, `rgba(3,4,9,${pa.toFixed(3)})`);
+  pg.addColorStop(0.55, `rgba(3,4,9,${(pa * 0.85).toFixed(3)})`);
+  pg.addColorStop(1.00, 'rgba(3,4,9,0)');
+  g.fillStyle = pg;
+  g.beginPath(); g.arc(cx, cy, pupil * 1.6, 0, 6.2832); g.fill();
+}
+
+// ---- loop --------------------------------------------------------
+let t0 = performance.now();
+
+function frame(now) {
+  const dt = Math.max(0.001, Math.min(0.05, (now - t0) / 1000));
+  t0 = now; tt += dt;
+
+  const sc = score(((tt % CYCLE) + CYCLE) % CYCLE);
+  // Under reduced motion the fall genuinely stops. The whole mechanism
+  // here is adaptation to sustained full-field motion, so "slower" is not
+  // an acceptable reading of that preference.
+  const rate = REDUCED ? 0 : FLOW;
+  const dphase = sc.flow * rate * dt;
+  phase += dphase;
+  const dspin = 0.013 * dt;
+
+  ptr.x += (ptr.tx - ptr.x) * 0.03;
+  ptr.y += (ptr.ty - ptr.y) * 0.03;
+
+  const fw = fb.width, fh = fb.height;
+
+  // 1. push the previous frame along the flow
+  const D = window.__oculus ? window.__oculus.dbg : {};
+  if (!REDUCED && !D.noFeedback) {
+    tc.setTransform(1, 0, 0, 1, 0, 0);
+    tc.drawImage(fb, 0, 0);
+
+    const k = Math.exp(dphase);
+    const rot = dspin;
+    fc.setTransform(1, 0, 0, 1, 0, 0);
+    fc.fillStyle = '#05060a';
+    fc.fillRect(0, 0, fw, fh);
+    fc.save();
+    fc.translate(cx * FB * DPR, cy * FB * DPR);
+    fc.rotate(rot);
+    fc.scale(k, k);
+    fc.translate(-cx * FB * DPR, -cy * FB * DPR);
+    fc.globalAlpha = 0.72 - sc.still * 0.34;
+    fc.drawImage(tmp, 0, 0);
+    fc.restore();
+    fc.globalAlpha = 1;
+  } else {
+    fc.setTransform(1, 0, 0, 1, 0, 0);
+    fc.fillStyle = '#05060a';
+    fc.fillRect(0, 0, fw, fh);
+  }
+
+  // 2. the window
+  fc.setTransform(FB * DPR, 0, 0, FB * DPR, 0, 0);
+  fc.lineJoin = 'round';
+  fc.lineCap = 'round';
+  drawScene(fc, sc.light);
+  if (!D.noOculus) drawOculus(fc, sc.light);
+  fc.setTransform(1, 0, 0, 1, 0, 0);
+
+  // 3. to screen, with the glass bloom
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = '#05060a';
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.drawImage(fb, 0, 0, cv.width, cv.height);
+
+  // Blur on the small buffer, never on the screen: a large-radius canvas
+  // filter across a full-resolution surface costs hundreds of ms.
+  if (blurOK && !REDUCED && !D.noBloom) {
+    bc.setTransform(1, 0, 0, 1, 0, 0);
+    bc.filter = 'none';
+    bc.globalCompositeOperation = 'source-over';
+    bc.fillStyle = '#000';
+    bc.fillRect(0, 0, blm.width, blm.height);
+    bc.filter = `blur(${Math.max(2, blm.width * 0.012)}px)`;
+    bc.drawImage(fb, 0, 0, blm.width, blm.height);
+    bc.filter = 'none';
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    // dispersion: the three guns land slightly apart, as glass does
+    ctx.globalAlpha = 0.22 * sc.light;
+    ctx.drawImage(blm, -2.0, 0, cv.width, cv.height);
+    ctx.globalAlpha = 0.18 * sc.light;
+    ctx.drawImage(blm, 2.0, 0, cv.width, cv.height);
+    ctx.restore();
+  }
+
+  // 4. the dark you are sitting in
+  if (vig && !D.noVignette) ctx.drawImage(vig, 0, 0, cv.width, cv.height);
+
+  requestAnimationFrame(frame);
+}
+
+let vig = null;
+function buildVignette() {
+  vig = document.createElement('canvas');
+  vig.width = Math.max(2, Math.round(cv.width / 4));
+  vig.height = Math.max(2, Math.round(cv.height / 4));
+  const g = vig.getContext('2d');
+  const w = vig.width, h = vig.height;
+  const vg = g.createRadialGradient(w / 2, h / 2, w * 0.05, w / 2, h / 2, w * 0.60);
+  vg.addColorStop(0, 'rgba(0,0,0,0)');
+  vg.addColorStop(1, 'rgba(0,0,0,0.94)');
+  g.fillStyle = vg;
+  g.fillRect(0, 0, w, h);
+}
+
+function resize() {
+  DPR = Math.min(1.5, devicePixelRatio || 1);
+  W = innerWidth; H = innerHeight;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  cx = W / 2; cy = H / 2;
+  maxR = Math.hypot(W, H) / 2;
+
+  const fw = Math.round(W * FB * DPR), fh = Math.round(H * FB * DPR);
+  fb.width = fw; fb.height = fh;
+  tmp.width = fw; tmp.height = fh;
+  blm.width = Math.max(2, Math.round(fw * 0.5));
+  blm.height = Math.max(2, Math.round(fh * 0.5));
+  fc.fillStyle = '#05060a'; fc.fillRect(0, 0, fw, fh);
+  buildVignette();
+}
+
+// Seek, so the arc can be inspected without waiting two minutes for it.
+window.__oculus = {
+  dbg: { noFeedback:false, noBloom:false, noVignette:false, noOculus:false },
+  seek(s) { tt = s; },
+  now() { const c = ((tt % CYCLE) + CYCLE) % CYCLE; return { t: +tt.toFixed(1), cyc: +c.toFixed(1), ...score(c) }; },
+};
+
+addEventListener('pointermove', e => {
+  ptr.tx = (e.clientX / innerWidth) * 2 - 1;
+  ptr.ty = (e.clientY / innerHeight) * 2 - 1;
+});
+// A full-screen piece that hides the cursor should not trap anyone.
+addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (history.length > 1) history.back(); else location.href = '/';
+});
+addEventListener('resize', () => { clearTimeout(resize._t); resize._t = setTimeout(resize, 200); });
+
+resize();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

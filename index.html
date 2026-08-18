@@ -562,7 +562,7 @@
     .seal-note a { color: inherit; }
 
     /* ============================================================ KONAMI BANNER */
-    #konami-banner, #dive-banner {
+    #konami-banner, #dive-banner, #oculus-banner {
       position: fixed; bottom: -120px; left: 50%;
       transform: translateX(-50%);
       padding: 0.9rem 1.8rem;
@@ -574,8 +574,8 @@
       transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 8px 40px rgba(22, 24, 29, 0.14);
     }
-    #konami-banner.show, #dive-banner.show { bottom: 2rem; }
-    #konami-banner a, #dive-banner a {
+    #konami-banner.show, #dive-banner.show, #oculus-banner.show { bottom: 2rem; }
+    #konami-banner a, #dive-banner a, #oculus-banner a {
       color: var(--ink); text-decoration: none;
       border-bottom: 1px solid var(--verify);
       padding-bottom: 2px; margin-left: 0.5rem;
@@ -1573,6 +1573,7 @@
       <div class="links">
         <a href="maze.html">/maze</a>
         <a href="/strata-dive/">/dive</a>
+        <a href="oculus.html">/oculus</a>
         <a href="https://github.com/Dnakitare/dnakitare.github.io" target="_blank" rel="noopener">/src</a>
       </div>
     </div>
@@ -1586,6 +1587,11 @@
   <div id="dive-banner">
     Descent authorized. 深層降下
     <a href="/strata-dive/">begin the dive</a>
+  </div>
+
+  <div id="oculus-banner">
+    Aperture open.
+    <a href="oculus.html">fall into it</a>
   </div>
 
   <div class="lightbox" id="schematic-lightbox" hidden>
@@ -1798,6 +1804,26 @@
         }
       } else {
         dIdx = (key === diveWord[0]) ? 1 : 0;
+      }
+    });
+
+    // ===================================================== type "stare" -> /oculus
+    const stareWord = ['s', 't', 'a', 'r', 'e'];
+    let sIdx = 0;
+    window.addEventListener('keydown', (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.target && e.target.closest && e.target.closest('input, textarea')) return;
+      const key = (e.key || '').toLowerCase();
+      if (key === stareWord[sIdx]) {
+        sIdx++;
+        if (sIdx === stareWord.length) {
+          const b = document.getElementById('oculus-banner');
+          b.classList.add('show');
+          sIdx = 0;
+          setTimeout(() => b.classList.remove('show'), 6000);
+        }
+      } else {
+        sIdx = (key === stareWord[0]) ? 1 : 0;
       }
     });
 
